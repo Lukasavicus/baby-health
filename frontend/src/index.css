@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-background text-text-primary font-sans;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-border rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-text-secondary;
+}
+
+/* Smooth animations */
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-primary text-white rounded-lg font-semibold transition-all duration-200 hover:shadow-soft-lg active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-surface text-primary border border-border rounded-lg font-semibold transition-all duration-200 hover:bg-primary-light;
+  }
+
+  .card {
+    @apply bg-surface rounded-lg shadow-soft p-4 transition-all duration-200;
+  }
+
+  .card-interactive {
+    @apply card hover:shadow-soft-lg active:scale-[0.98] cursor-pointer;
+  }
+
+  .input {
+    @apply w-full px-3 py-2 border border-border rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all;
+  }
+
+  .badge {
+    @apply inline-block px-2 py-1 bg-primary-light text-primary rounded-full text-xs font-semibold;
+  }
+
+  .divider {
+    @apply h-px bg-border my-4;
+  }
+}
+
+/* iOS-specific fixes */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+}
+
+/* Prevent zoom on double-tap */
+input,
+select,
+textarea {
+  font-size: 16px;
+}
