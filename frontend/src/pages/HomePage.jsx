@@ -4,7 +4,7 @@ import { HeroCard } from '../components/HeroCard'
 import { TrackerCard } from '../components/TrackerCard'
 import { Timeline } from '../components/Timeline'
 import {
-  Bottle,
+  Milk,
   Droplets,
   Moon,
   Sun,
@@ -24,7 +24,7 @@ export default function HomePage() {
       {/* Tracker Cards Grid */}
       <div className="grid grid-cols-2 gap-3 mb-6">
         <TrackerCard
-          icon={Bottle}
+          icon={Milk}
           title="Alimentação"
           value={stats.feeding.count}
           unit="vezes"

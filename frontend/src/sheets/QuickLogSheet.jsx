@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { BottomSheet } from '../components/BottomSheet'
-import { Bottle, Moon, Droplet, Baby, Activity } from 'lucide-react'
+import { Milk, Moon, Droplet, Baby, Activity } from 'lucide-react'
 import { FeedingSheet } from './FeedingSheet'
 import { SleepSheet } from './SleepSheet'
 import { DiaperSheet } from './DiaperSheet'
@@ -11,7 +11,7 @@ export function QuickLogSheet({ isOpen, onClose }) {
   const [activeCategory, setActiveCategory] = useState(null)
 
   const categories = [
-    { id: 'feeding', label: 'Alimentação', icon: Bottle, color: 'secondary' },
+    { id: 'feeding', label: 'Alimentação', icon: Milk, color: 'secondary' },
     { id: 'sleep', label: 'Sono', icon: Moon, color: 'warning' },
     { id: 'diaper', label: 'Fraldas', icon: Baby, color: 'accent' },
     { id: 'hydration', label: 'Hidratação', icon: Droplet, color: 'primary' },
