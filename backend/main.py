@@ -1,7 +1,10 @@
 """FastAPI main application entry point"""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
+from pathlib import Path
+import os
 
 from config import settings
 from routers import babies, caregivers, events, dashboard, setup
@@ -40,7 +43,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
+# Include routers (API routes take priority)
 app.include_router(babies.router)
 app.include_router(caregivers.router)
 app.include_router(events.router)
@@ -68,12 +71,20 @@ async def health_check():
     }
 
 
+# Mount static files for React frontend
+# This must be done AFTER all API routes are defined so API routes take priority
+static_dir = Path(__file__).parent.parent / "frontend" / "dist"
+if static_dir.exists():
+    app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
+
+
 if __name__ == "__main__":
     import uvicorn
 
+    port = int(os.getenv("PORT", "8000"))
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=8000,
+        port=port,
         reload=settings.debug,
     )
