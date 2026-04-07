@@ -1,0 +1,167 @@
+{
+  "ageWindows": [
+    "0-3 meses",
+    "4-6 meses",
+    "6-9 meses",
+    "9-12 meses"
+  ],
+  "initialMilestones": [
+    {
+      "id": "m1",
+      "title": "Sustenta a cabeca brevemente",
+      "description": "Quando de brucos, levanta a cabeca por alguns segundos",
+      "ageRange": "0-3 meses",
+      "category": "motor_gross",
+      "status": "observed",
+      "observedDate": "2025-10-15"
+    },
+    {
+      "id": "m2",
+      "title": "Sorri em resposta",
+      "description": "Responde com sorriso quando voce sorri",
+      "ageRange": "0-3 meses",
+      "category": "social",
+      "status": "observed",
+      "observedDate": "2025-10-20"
+    },
+    {
+      "id": "m3",
+      "title": "Segue objetos com os olhos",
+      "description": "Acompanha um brinquedo colorido movendo devagar",
+      "ageRange": "0-3 meses",
+      "category": "sensory",
+      "status": "observed",
+      "observedDate": "2025-09-25"
+    },
+    {
+      "id": "m4",
+      "title": "Produz sons (gugu, agu)",
+      "description": "Emite sons de vogais em resposta a vozes",
+      "ageRange": "0-3 meses",
+      "category": "language",
+      "status": "observed",
+      "observedDate": "2025-11-01"
+    },
+    {
+      "id": "m5",
+      "title": "Rola de barriga para cima",
+      "description": "Consegue virar de brucos para de costas",
+      "ageRange": "4-6 meses",
+      "category": "motor_gross",
+      "status": "observed",
+      "observedDate": "2025-12-20"
+    },
+    {
+      "id": "m6",
+      "title": "Agarra objetos com as duas maos",
+      "description": "Pega brinquedos e leva a boca",
+      "ageRange": "4-6 meses",
+      "category": "motor_fine",
+      "status": "observed",
+      "observedDate": "2025-12-10"
+    },
+    {
+      "id": "m7",
+      "title": "Senta com apoio",
+      "description": "Fica sentado quando apoiado em almofadas",
+      "ageRange": "4-6 meses",
+      "category": "motor_gross",
+      "status": "observed",
+      "observedDate": "2026-01-05"
+    },
+    {
+      "id": "m8",
+      "title": "Reconhece rostos familiares",
+      "description": "Reage de forma diferente a pessoas conhecidas",
+      "ageRange": "4-6 meses",
+      "category": "social",
+      "status": "observed",
+      "observedDate": "2025-12-15"
+    },
+    {
+      "id": "m9",
+      "title": "Senta sem apoio",
+      "description": "Consegue sentar sozinho de forma estavel",
+      "ageRange": "6-9 meses",
+      "category": "motor_gross",
+      "status": "observed",
+      "observedDate": "2026-02-10"
+    },
+    {
+      "id": "m10",
+      "title": "Engatinha",
+      "description": "Se movimenta engatinhando para explorar",
+      "ageRange": "6-9 meses",
+      "category": "motor_gross",
+      "status": "observed",
+      "observedDate": "2026-03-01"
+    },
+    {
+      "id": "m11",
+      "title": "Puxa para ficar de pe",
+      "description": "Se segura em moveis para ficar em pe",
+      "ageRange": "6-9 meses",
+      "category": "motor_gross",
+      "status": "emerging",
+      "notes": "Tentando bastante nos ultimos dias"
+    },
+    {
+      "id": "m12",
+      "title": "Transfere objetos entre maos",
+      "description": "Passa um brinquedo de uma mao para outra",
+      "ageRange": "6-9 meses",
+      "category": "motor_fine",
+      "status": "observed",
+      "observedDate": "2026-02-20"
+    },
+    {
+      "id": "m13",
+      "title": "Balbucia silabas (ba-ba, ma-ma)",
+      "description": "Produz sequencias de silabas repetidas",
+      "ageRange": "6-9 meses",
+      "category": "language",
+      "status": "emerging"
+    },
+    {
+      "id": "m14",
+      "title": "Brinca de cade-achou",
+      "description": "Se diverte quando voce esconde e revela o rosto",
+      "ageRange": "6-9 meses",
+      "category": "cognitive",
+      "status": "observed",
+      "observedDate": "2026-02-15"
+    },
+    {
+      "id": "m15",
+      "title": "Primeiras palavras",
+      "description": "Diz 'mama' ou 'papa' com intencao",
+      "ageRange": "9-12 meses",
+      "category": "language",
+      "status": "not_yet"
+    },
+    {
+      "id": "m16",
+      "title": "Aponta para objetos",
+      "description": "Usa o indicador para mostrar o que quer",
+      "ageRange": "9-12 meses",
+      "category": "language",
+      "status": "not_yet"
+    },
+    {
+      "id": "m17",
+      "title": "Fica de pe sem apoio",
+      "description": "Consegue ficar em pe sozinho por alguns segundos",
+      "ageRange": "9-12 meses",
+      "category": "motor_gross",
+      "status": "not_yet"
+    },
+    {
+      "id": "m18",
+      "title": "Pinça fina",
+      "description": "Pega objetos pequenos entre o polegar e indicador",
+      "ageRange": "9-12 meses",
+      "category": "motor_fine",
+      "status": "not_yet"
+    }
+  ]
+}

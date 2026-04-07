@@ -93,8 +93,8 @@ def test_event_service_daily_summary(repository, test_data):
     """Test daily summary calculation"""
     service = EventService(repository)
 
-    # Create multiple events
-    now = datetime.utcnow()
+    # Fixed midday UTC so offsets stay on the same calendar day (filter is date-only)
+    now = datetime.utcnow().replace(hour=12, minute=0, second=0, microsecond=0)
     today = now.strftime("%Y-%m-%d")
 
     events_data = [
@@ -151,6 +151,9 @@ def test_event_service_daily_summary(repository, test_data):
 
     assert summary["feeding_count"] == 2
     assert summary["feeding_total_ml"] == 250
+    assert summary["hydration_total_ml"] == 0
+    assert summary["bath_count"] == 0
+    assert summary["health_count"] == 0
     assert summary["diaper_count"] == 1
     assert summary["sleep_hours"] > 0
 

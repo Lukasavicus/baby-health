@@ -1,0 +1,81 @@
+{
+  "caregivers": [
+    {
+      "id": "all",
+      "name": "Todos",
+      "emoji": "👥"
+    },
+    {
+      "id": "mom",
+      "name": "Mamãe",
+      "emoji": "👩"
+    },
+    {
+      "id": "dad",
+      "name": "Papai",
+      "emoji": "👨"
+    },
+    {
+      "id": "grandma",
+      "name": "Vovó",
+      "emoji": "👵"
+    },
+    {
+      "id": "nanny",
+      "name": "Babá",
+      "emoji": "🧑‍🍼"
+    }
+  ],
+  "sharedFeed": [
+    {
+      "type": "feeding",
+      "subType": "breast",
+      "time": "07:15",
+      "caregiver": "Mamãe",
+      "notes": "Amamentou bem"
+    },
+    {
+      "type": "diaper",
+      "subType": "wet",
+      "time": "07:45",
+      "caregiver": "Papai"
+    },
+    {
+      "type": "sleep",
+      "time": "08:30",
+      "caregiver": "Mamãe",
+      "notes": "Cochilo de 40min"
+    },
+    {
+      "type": "feeding",
+      "subType": "solids",
+      "time": "10:00",
+      "caregiver": "Vovó",
+      "notes": "Banana e aveia"
+    },
+    {
+      "type": "hydration",
+      "time": "10:30",
+      "caregiver": "Vovó"
+    },
+    {
+      "type": "activity",
+      "subType": "tummy",
+      "time": "11:00",
+      "caregiver": "Papai"
+    },
+    {
+      "type": "feeding",
+      "subType": "bottle",
+      "time": "13:00",
+      "caregiver": "Babá",
+      "notes": "150ml fórmula"
+    },
+    {
+      "type": "sleep",
+      "time": "13:30",
+      "caregiver": "Babá",
+      "notes": "Cochilo da tarde"
+    }
+  ]
+}

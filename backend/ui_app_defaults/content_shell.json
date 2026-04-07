@@ -1,0 +1,97 @@
+{
+  "tabs": [
+    {
+      "path": "/",
+      "label": "Hoje",
+      "icon": "Heart"
+    },
+    {
+      "path": "/caregivers",
+      "label": "Cuidadores",
+      "icon": "Users"
+    },
+    {
+      "path": "/routines",
+      "label": "Rotinas",
+      "icon": "BookOpen"
+    },
+    {
+      "path": "/my-baby",
+      "label": "Meu Bebê",
+      "icon": "Baby"
+    }
+  ],
+  "routinesFeatured": {
+    "tag": "Destaque",
+    "title": "Rotina do sono para 8 meses",
+    "description": "Aprenda a criar uma rotina noturna calma e consistente para seu bebê.",
+    "ctaLabel": "Começar"
+  },
+  "routines": [
+    {
+      "id": "tummy",
+      "title": "Tempo de Bruços",
+      "subtitle": "Fortalece pescoço e ombros",
+      "duration": "5-15 min",
+      "color": "from-baby-mint/30 to-baby-blue/20",
+      "icon": "Sun"
+    },
+    {
+      "id": "reading",
+      "title": "Hora da Leitura",
+      "subtitle": "Estimula linguagem e vínculo",
+      "duration": "10-20 min",
+      "color": "from-baby-lavender/30 to-baby-pink/20",
+      "icon": "BookOpen"
+    },
+    {
+      "id": "sleep-routine",
+      "title": "Rotina do Sono",
+      "subtitle": "Banho, livro, música, sono",
+      "duration": "30 min",
+      "color": "from-baby-blue/30 to-baby-lavender/20",
+      "icon": "Moon"
+    },
+    {
+      "id": "play",
+      "title": "Brincadeira Livre",
+      "subtitle": "Exploração e desenvolvimento motor",
+      "duration": "15-30 min",
+      "color": "from-baby-peach/30 to-baby-yellow/20",
+      "icon": "Play"
+    },
+    {
+      "id": "feeding-guide",
+      "title": "Guia de Alimentação",
+      "subtitle": "Introdução alimentar por idade",
+      "duration": "Consulta",
+      "color": "from-baby-peach/40 to-baby-mint/20",
+      "icon": "Apple"
+    },
+    {
+      "id": "music",
+      "title": "Música e Cantigas",
+      "subtitle": "Estímulo auditivo e calma",
+      "duration": "10 min",
+      "color": "from-baby-pink/30 to-baby-lavender/20",
+      "icon": "Music"
+    }
+  ],
+  "articles": [
+    {
+      "title": "Como criar uma rotina de sono saudável",
+      "tag": "Sono",
+      "mins": 5
+    },
+    {
+      "title": "Introdução alimentar: guia completo",
+      "tag": "Alimentação",
+      "mins": 8
+    },
+    {
+      "title": "Atividades para desenvolvimento motor",
+      "tag": "Atividades",
+      "mins": 4
+    }
+  ]
+}
