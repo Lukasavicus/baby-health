@@ -1,0 +1,10 @@
+{
+  "name": "babyhealth",
+  "private": true,
+  "scripts": {
+    "dev-api": "cd backend && python3 main.py",
+    "dev-api-seed": "cd backend && BABYHEALTH_USE_UI_SEED=1 python3 main.py",
+    "dev-api-davi": "cd backend && DATA_DIR=./data/davi_test python3 main.py",
+    "dev-api-davi-seed": "cd backend && DATA_DIR=./data/davi_test BABYHEALTH_USE_UI_SEED=1 python3 main.py"
+  }
+}
