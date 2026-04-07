@@ -2,19 +2,9 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from services import DashboardService
 from repositories import BaseRepository
+from deps import get_repository
 
 router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
-
-
-def get_repository() -> BaseRepository:
-    """Dependency injection for repository"""
-    from config import settings
-    from repositories import JsonRepository
-
-    if settings.storage_type == "json":
-        return JsonRepository(settings.data_dir)
-    else:
-        raise ValueError(f"Unsupported storage type: {settings.storage_type}")
 
 
 def get_dashboard_service(

@@ -8,6 +8,7 @@ import uuid
 from models.baby import Baby
 from models.caregiver import Caregiver
 from repositories import BaseRepository
+from deps import get_repository
 
 router = APIRouter(prefix="/api/setup", tags=["setup"])
 
@@ -41,17 +42,6 @@ class SetupResponse(BaseModel):
     baby: dict
     caregivers: list
     message: str
-
-
-def get_repository() -> BaseRepository:
-    """Dependency injection for repository"""
-    from config import settings
-    from repositories import JsonRepository
-
-    if settings.storage_type == "json":
-        return JsonRepository(settings.data_dir)
-    else:
-        raise ValueError(f"Unsupported storage type: {settings.storage_type}")
 
 
 @router.post("", response_model=SetupResponse)

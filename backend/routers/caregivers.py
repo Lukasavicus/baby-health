@@ -3,20 +3,9 @@ from typing import List
 from fastapi import APIRouter, HTTPException, Depends
 from models.caregiver import CaregiverCreate, CaregiverUpdate, CaregiverResponse, Caregiver
 from repositories import BaseRepository
+from deps import get_repository
 
 router = APIRouter(prefix="/api/caregivers", tags=["caregivers"])
-
-
-def get_repository() -> BaseRepository:
-    """Dependency injection for repository"""
-    from config import settings
-    from repositories import JsonRepository
-    from pathlib import Path
-
-    if settings.storage_type == "json":
-        return JsonRepository(settings.data_dir)
-    else:
-        raise ValueError(f"Unsupported storage type: {settings.storage_type}")
 
 
 @router.get("", response_model=List[CaregiverResponse])

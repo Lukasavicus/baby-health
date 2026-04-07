@@ -39,12 +39,12 @@ backend/
 │   ├── dashboard.py                  # Dashboard endpoints
 │   └── setup.py                      # Initial setup & demo data
 │
-├── data/                             # JSON Storage Directory
+├── data/                             # JSON storage (runtime; root from DATA_DIR)
 │   ├── .gitkeep
-│   ├── babies.json                   # Created at runtime
-│   ├── caregivers.json               # Created at runtime
-│   ├── events.json                   # Created at runtime
-│   └── medications.json              # Created at runtime
+│   └── …                             # e.g. default/, davi_test/, or flat *.json at runtime
+│
+├── ui_app_defaults/                  # Read-only UI bootstrap JSON (versioned in git)
+│   └── *.json                        # catalogs, growth, default_baby, etc.
 │
 └── tests/                            # Test Suite
     ├── __init__.py

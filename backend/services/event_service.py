@@ -72,9 +72,12 @@ class EventService:
             "feeding_count": 0,
             "feeding_total_ml": 0,
             "hydration_count": 0,
+            "hydration_total_ml": 0.0,
             "sleep_hours": 0,
             "diaper_count": 0,
             "activity_count": 0,
+            "bath_count": 0,
+            "health_count": 0,
         }
 
         for event in events:
@@ -82,11 +85,19 @@ class EventService:
 
             if event_type == "feeding":
                 summary["feeding_count"] += 1
-                if event.get("quantity"):
-                    summary["feeding_total_ml"] += event.get("quantity", 0)
+                q = event.get("quantity")
+                if q is not None:
+                    unit = (event.get("unit") or "ml").lower()
+                    if unit == "ml":
+                        summary["feeding_total_ml"] += float(q)
 
             elif event_type == "hydration":
                 summary["hydration_count"] += 1
+                q = event.get("quantity")
+                if q is not None:
+                    unit = (event.get("unit") or "ml").lower()
+                    if unit == "ml":
+                        summary["hydration_total_ml"] += float(q)
 
             elif event_type == "sleep":
                 # Calculate hours from timestamp and end_timestamp
@@ -101,6 +112,14 @@ class EventService:
 
             elif event_type == "activity":
                 summary["activity_count"] += 1
+
+            if event_type == "bath" or (
+                event_type == "activity" and event.get("subtype") == "bath"
+            ):
+                summary["bath_count"] += 1
+
+            if event_type in ("health", "medication"):
+                summary["health_count"] += 1
 
         return summary
 
@@ -123,9 +142,12 @@ class EventService:
             "feeding_count": sum(s["feeding_count"] for s in summaries),
             "feeding_total_ml": sum(s["feeding_total_ml"] for s in summaries),
             "hydration_count": sum(s["hydration_count"] for s in summaries),
+            "hydration_total_ml": sum(s["hydration_total_ml"] for s in summaries),
             "sleep_hours": sum(s["sleep_hours"] for s in summaries),
             "diaper_count": sum(s["diaper_count"] for s in summaries),
             "activity_count": sum(s["activity_count"] for s in summaries),
+            "bath_count": sum(s["bath_count"] for s in summaries),
+            "health_count": sum(s["health_count"] for s in summaries),
         }
 
         return aggregated

@@ -3,11 +3,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
-from pathlib import Path
 import os
 
-from config import settings
-from routers import babies, caregivers, events, dashboard, setup
+from config import settings, use_ui_seed
+from routers import babies, baby_ui_state, caregivers, events, dashboard, media, setup, ui_data
 
 # Application lifecycle
 @asynccontextmanager
@@ -17,6 +16,14 @@ async def lifespan(app: FastAPI):
     print(f"Starting {settings.app_name} v{settings.app_version}")
     print(f"Storage type: {settings.storage_type}")
     print(f"Data directory: {settings.data_dir}")
+    print(
+        "UI bootstrap: "
+        + (
+            "seed JSON (BABYHEALTH_USE_UI_SEED=1)"
+            if use_ui_seed()
+            else "empty payload (set BABYHEALTH_USE_UI_SEED=1 for demo catalogs)"
+        )
+    )
 
     yield
 
@@ -49,6 +56,9 @@ app.include_router(caregivers.router)
 app.include_router(events.router)
 app.include_router(dashboard.router)
 app.include_router(setup.router)
+app.include_router(ui_data.router)
+app.include_router(baby_ui_state.router)
+app.include_router(media.router)
 
 
 @app.get("/")
@@ -71,11 +81,10 @@ async def health_check():
     }
 
 
-# Mount static files for React frontend
-# This must be done AFTER all API routes are defined so API routes take priority
-static_dir = Path(__file__).parent.parent / "frontend" / "dist"
+# Mount static files for SPA (see FRONTEND_DIST_DIR in config)
+static_dir = settings.frontend_dist_dir
 if static_dir.exists():
-    app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
+    app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="static")
 
 
 if __name__ == "__main__":

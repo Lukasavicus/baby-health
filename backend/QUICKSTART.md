@@ -19,6 +19,14 @@ pip install -r requirements.txt
 python main.py
 ```
 
+By default the UI bootstrap is **empty** (no merge from `backend/ui_app_defaults/*.json`). For the app-design demo with catalogs and trackers, run:
+
+```bash
+BABYHEALTH_USE_UI_SEED=1 python main.py
+```
+
+Or from the repo root: `npm run dev-api-seed`.
+
 You should see:
 ```
 INFO:     Started server process [12345]
