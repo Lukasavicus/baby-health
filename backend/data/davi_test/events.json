@@ -1929,5 +1929,420 @@
     },
     "created_at": "2026-04-07 11:53:49.473063",
     "updated_at": "2026-04-07 11:53:49.473069"
+  },
+  {
+    "id": "ef17a2baa6c04115b1fc0626bf69880c",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "feeding",
+    "subtype": "bottle_formula",
+    "timestamp": "2026-04-06 08:30:00",
+    "end_timestamp": null,
+    "quantity": 30.0,
+    "unit": "ml",
+    "notes": "Foram 20 ml",
+    "metadata": {
+      "duration_min": 10,
+      "formula_brand": "Aptamil 2"
+    },
+    "created_at": "2026-04-07 14:55:54.085921",
+    "updated_at": "2026-04-07 14:55:54.085924"
+  },
+  {
+    "id": "54ef10f214e649e48dfa03e9f357edbb",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "diaper",
+    "subtype": "dirty",
+    "timestamp": "2026-04-07 11:40:00",
+    "end_timestamp": null,
+    "quantity": null,
+    "unit": null,
+    "notes": null,
+    "metadata": {
+      "pee_volume": 2,
+      "poo_volume": 2
+    },
+    "created_at": "2026-04-07 21:51:19.903322",
+    "updated_at": "2026-04-07 21:51:19.903330"
+  },
+  {
+    "id": "17c58231f5ea4ac9bf41e4dc65308fd8",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "diaper",
+    "subtype": "dirty",
+    "timestamp": "2026-04-07 15:15:00",
+    "end_timestamp": null,
+    "quantity": null,
+    "unit": null,
+    "notes": null,
+    "metadata": {
+      "pee_volume": 2,
+      "poo_volume": 2
+    },
+    "created_at": "2026-04-08 02:55:48.793993",
+    "updated_at": "2026-04-08 02:55:48.793997"
+  },
+  {
+    "id": "1071d27b884a45fda1b2cf33de473ac4",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "feeding",
+    "subtype": "bottle_formula",
+    "timestamp": "2026-04-07 08:28:00",
+    "end_timestamp": null,
+    "quantity": 60.0,
+    "unit": "ml",
+    "notes": null,
+    "metadata": {
+      "duration_min": 10,
+      "formula_brand": "Aptamil 2"
+    },
+    "created_at": "2026-04-08 02:56:21.946734",
+    "updated_at": "2026-04-08 02:56:21.946736"
+  },
+  {
+    "id": "e79b74d0c4e14afc90c61a69ffcb98ae",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "feeding",
+    "subtype": "solids",
+    "timestamp": "2026-04-07 08:55:00",
+    "end_timestamp": null,
+    "quantity": 60.0,
+    "unit": "g",
+    "notes": null,
+    "metadata": {
+      "duration_min": 10
+    },
+    "created_at": "2026-04-08 02:56:45.666829",
+    "updated_at": "2026-04-08T13:41:50.943442"
+  },
+  {
+    "id": "57b98dee36984c64b25b3a2a0b861c04",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "feeding",
+    "subtype": "bottle_formula",
+    "timestamp": "2026-04-08 08:30:00",
+    "end_timestamp": null,
+    "quantity": 150.0,
+    "unit": "ml",
+    "notes": "Reclamou um pouco, mas tomou",
+    "metadata": {
+      "duration_min": 10,
+      "formula_brand": "Aptamil 2"
+    },
+    "created_at": "2026-04-08 13:45:06.504359",
+    "updated_at": "2026-04-08T13:45:19.150787"
+  },
+  {
+    "id": "b02e7f4ec32443849517ee922ec6c9df",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "diaper",
+    "subtype": "wet",
+    "timestamp": "2026-04-08 08:20:00",
+    "end_timestamp": null,
+    "quantity": null,
+    "unit": null,
+    "notes": null,
+    "metadata": {
+      "pee_volume": 2,
+      "poo_volume": 2
+    },
+    "created_at": "2026-04-08 13:46:08.670136",
+    "updated_at": "2026-04-08 13:46:08.670140"
+  },
+  {
+    "id": "370a14ed6a4949f1a887ea2317430a78",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "sleep",
+    "subtype": "nap",
+    "timestamp": "2026-04-08 09:25:00",
+    "end_timestamp": "2026-04-08 10:46:00",
+    "quantity": null,
+    "unit": null,
+    "notes": null,
+    "metadata": {
+      "sleep_location": "Ber\u00e7o"
+    },
+    "created_at": "2026-04-08 13:47:23.395883",
+    "updated_at": "2026-04-08T13:47:45.435829"
+  },
+  {
+    "id": "7e82708a78e341b0ac851ced0975372b",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "bath",
+    "subtype": "bath",
+    "timestamp": "2026-04-08 19:00:00",
+    "end_timestamp": null,
+    "quantity": 10.0,
+    "unit": "min",
+    "notes": null,
+    "metadata": {
+      "bath_temperature": "morno",
+      "duration_min": 10
+    },
+    "created_at": "2026-04-08 22:22:50.108630",
+    "updated_at": "2026-04-08 22:22:50.108635"
+  },
+  {
+    "id": "8961b056c0b34811a17817b48100d3ff",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "feeding",
+    "subtype": "solids",
+    "timestamp": "2026-04-07 08:55:00",
+    "end_timestamp": null,
+    "quantity": 120.0,
+    "unit": "g",
+    "notes": null,
+    "metadata": {
+      "duration_min": 10
+    },
+    "created_at": "2026-04-08 22:25:53.764837",
+    "updated_at": "2026-04-08 22:25:53.764842"
+  },
+  {
+    "id": "fd664579d492469ea9e974e2e4840be9",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "health",
+    "subtype": "vitamin",
+    "timestamp": "2026-04-08 21:54:00",
+    "end_timestamp": null,
+    "quantity": null,
+    "unit": null,
+    "notes": "Inala\u00e7\u00e3o (Soro fisiol\u00f3gico)",
+    "metadata": {
+      "health_name": "Inala\u00e7\u00e3o (Soro fisiol\u00f3gico)"
+    },
+    "created_at": "2026-04-09 00:54:56.130387",
+    "updated_at": "2026-04-09 00:54:56.130395"
+  },
+  {
+    "id": "c7d47a72c6fc4da58f6dd133dc81ae38",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "health",
+    "subtype": "vitamin",
+    "timestamp": "2026-04-08 21:54:00",
+    "end_timestamp": null,
+    "quantity": null,
+    "unit": null,
+    "notes": "Inala\u00e7\u00e3o (Soro fisiol\u00f3gico)",
+    "metadata": {
+      "health_name": "Inala\u00e7\u00e3o (Soro fisiol\u00f3gico)"
+    },
+    "created_at": "2026-04-09 00:54:57.518012",
+    "updated_at": "2026-04-09 00:54:57.518015"
+  },
+  {
+    "id": "4263fd9bd8ba4d8fa88f2bc54640340f",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "health",
+    "subtype": "vitamin",
+    "timestamp": "2026-04-08 21:55:00",
+    "end_timestamp": null,
+    "quantity": null,
+    "unit": null,
+    "notes": "Inala\u00e7\u00e3o (Soro fisiol\u00f3gico)",
+    "metadata": {
+      "health_name": "Inala\u00e7\u00e3o (Soro fisiol\u00f3gico)"
+    },
+    "created_at": "2026-04-09 00:55:01.273081",
+    "updated_at": "2026-04-09 00:55:01.274401"
+  },
+  {
+    "id": "5a6afdd527514b11b9e784b8b4c3c41d",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "health",
+    "subtype": "vitamin",
+    "timestamp": "2026-04-08 21:55:00",
+    "end_timestamp": null,
+    "quantity": null,
+    "unit": null,
+    "notes": "Inala\u00e7\u00e3o (Soro fisiol\u00f3gico)",
+    "metadata": {
+      "health_name": "Inala\u00e7\u00e3o (Soro fisiol\u00f3gico)"
+    },
+    "created_at": "2026-04-09 00:55:01.793467",
+    "updated_at": "2026-04-09 00:55:01.793470"
+  },
+  {
+    "id": "72ed62ecd5054688bb2594bea9fab981",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "health",
+    "subtype": "vitamin",
+    "timestamp": "2026-04-08 21:55:00",
+    "end_timestamp": null,
+    "quantity": null,
+    "unit": null,
+    "notes": "Inala\u00e7\u00e3o (Soro fisiol\u00f3gico)",
+    "metadata": {
+      "health_name": "Inala\u00e7\u00e3o (Soro fisiol\u00f3gico)"
+    },
+    "created_at": "2026-04-09 00:55:02.216841",
+    "updated_at": "2026-04-09 00:55:02.216845"
+  },
+  {
+    "id": "df37f140ef984c94b0253e45a80953e3",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "health",
+    "subtype": "vitamin",
+    "timestamp": "2026-04-08 21:55:00",
+    "end_timestamp": null,
+    "quantity": null,
+    "unit": null,
+    "notes": "Inala\u00e7\u00e3o (Soro fisiol\u00f3gico)",
+    "metadata": {
+      "health_name": "Inala\u00e7\u00e3o (Soro fisiol\u00f3gico)"
+    },
+    "created_at": "2026-04-09 00:55:02.633754",
+    "updated_at": "2026-04-09 00:55:02.633756"
+  },
+  {
+    "id": "2c53b2bd2ded4a5bb2df177f06e7dcc5",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "health",
+    "subtype": "vitamin",
+    "timestamp": "2026-04-08 22:03:00",
+    "end_timestamp": null,
+    "quantity": null,
+    "unit": null,
+    "notes": "Vitamina D",
+    "metadata": {
+      "health_name": "Vitamina D"
+    },
+    "created_at": "2026-04-09 01:03:08.831937",
+    "updated_at": "2026-04-09 01:03:08.831940"
+  },
+  {
+    "id": "ca568c565844423693412e2ebaf2a69a",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "health",
+    "subtype": "vitamin",
+    "timestamp": "2026-04-08 22:03:00",
+    "end_timestamp": null,
+    "quantity": null,
+    "unit": null,
+    "notes": "Ferro (Sulfato Ferroso)",
+    "metadata": {
+      "health_name": "Ferro (Sulfato Ferroso)"
+    },
+    "created_at": "2026-04-09 01:03:09.737652",
+    "updated_at": "2026-04-09 01:03:09.737655"
+  },
+  {
+    "id": "67b17a21e37e46ee9dcbf9c6b6762d00",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "health",
+    "subtype": "vitamin",
+    "timestamp": "2026-04-09 00:09:00",
+    "end_timestamp": null,
+    "quantity": null,
+    "unit": null,
+    "notes": "Vitamina D",
+    "metadata": {
+      "health_name": "Vitamina D"
+    },
+    "created_at": "2026-04-09 03:09:06.652970",
+    "updated_at": "2026-04-09 03:09:06.652973"
+  },
+  {
+    "id": "0dad4fced01849fdb624c7d125f34be3",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "health",
+    "subtype": "vitamin",
+    "timestamp": "2026-04-09 00:09:00",
+    "end_timestamp": null,
+    "quantity": null,
+    "unit": null,
+    "notes": "Ferro (Sulfato Ferroso)",
+    "metadata": {
+      "health_name": "Ferro (Sulfato Ferroso)"
+    },
+    "created_at": "2026-04-09 03:09:09.376493",
+    "updated_at": "2026-04-09 03:09:09.376499"
+  },
+  {
+    "id": "3a30f9e1ce2245a3b9a14cbc95ebb098",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "health",
+    "subtype": "medication",
+    "timestamp": "2026-04-09 00:09:00",
+    "end_timestamp": null,
+    "quantity": null,
+    "unit": null,
+    "notes": "Paracet.",
+    "metadata": {
+      "health_name": "Paracet."
+    },
+    "created_at": "2026-04-09 03:09:11.948785",
+    "updated_at": "2026-04-09 03:09:11.948789"
+  },
+  {
+    "id": "00a0a06d8e224da8b8a08d6369133e8d",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "health",
+    "subtype": "medication",
+    "timestamp": "2026-04-09 00:09:00",
+    "end_timestamp": null,
+    "quantity": null,
+    "unit": null,
+    "notes": "Dipirona",
+    "metadata": {
+      "health_name": "Dipirona"
+    },
+    "created_at": "2026-04-09 03:09:13.344007",
+    "updated_at": "2026-04-09 03:09:13.344010"
+  },
+  {
+    "id": "0ddf8fe42976426b9a71c66dac793f8e",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "health",
+    "subtype": "medication",
+    "timestamp": "2026-04-09 00:09:00",
+    "end_timestamp": null,
+    "quantity": null,
+    "unit": null,
+    "notes": "Dipirona",
+    "metadata": {
+      "health_name": "Dipirona"
+    },
+    "created_at": "2026-04-09 03:09:19.057426",
+    "updated_at": "2026-04-09 03:09:19.057433"
+  },
+  {
+    "id": "9bdb03e13baa4e8e8cc378fb5dc88220",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "health",
+    "subtype": "medication",
+    "timestamp": "2026-04-09 00:09:00",
+    "end_timestamp": null,
+    "quantity": null,
+    "unit": null,
+    "notes": "Paracet.",
+    "metadata": {
+      "health_name": "Paracet."
+    },
+    "created_at": "2026-04-09 03:09:19.434311",
+    "updated_at": "2026-04-09 03:09:19.434315"
   }
 ]
