@@ -1,4 +1,5 @@
 """Read-only UI seed data and aggregated bootstrap for app-design."""
+import logging
 from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -12,6 +13,9 @@ from seed_json_store import (
     build_empty_bootstrap_payload,
     load_seed,
 )
+from services.baby_core_service import BabyCoreService
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/ui", tags=["ui-data"])
 
@@ -21,6 +25,20 @@ _SEED_DISABLED_DETAIL = (
 )
 
 
+def _inject_baby_core(payload: Dict[str, Any], repo: BaseRepository) -> None:
+    """Replace static baby_core seed with real computed pillars when a baby exists."""
+    bid = payload.get("baby", {}).get("id")
+    if not bid or not str(bid).strip():
+        return
+    try:
+        svc = BabyCoreService(repo)
+        pillars = svc.compute_pillars(str(bid))
+        if pillars:
+            payload["baby_core"] = {"pillars": pillars}
+    except Exception:
+        logger.debug("baby_core computation skipped", exc_info=True)
+
+
 @router.get("/bootstrap")
 async def ui_bootstrap(
     baby_id: Optional[str] = Query(None, description="Baby id; defaults to first in repo or seed default"),
@@ -28,8 +46,11 @@ async def ui_bootstrap(
 ) -> Dict[str, Any]:
     babies: List[Dict[str, Any]] = repo.get_all("baby")
     if use_ui_seed():
-        return build_bootstrap_payload(babies, baby_id)
-    return build_empty_bootstrap_payload(babies, baby_id)
+        payload = build_bootstrap_payload(babies, baby_id)
+    else:
+        payload = build_empty_bootstrap_payload(babies, baby_id)
+    _inject_baby_core(payload, repo)
+    return payload
 
 
 @router.get("/seed/{name}")
