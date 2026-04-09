@@ -3,7 +3,12 @@
     "0-3 meses",
     "4-6 meses",
     "6-9 meses",
-    "9-12 meses"
+    "9-12 meses",
+    "12-18 meses",
+    "18-24 meses",
+    "2-3 anos",
+    "3-4 anos",
+    "4-5 anos"
   ],
   "initialMilestones": [
     {
@@ -11,157 +16,343 @@
       "title": "Sustenta a cabeca brevemente",
       "description": "Quando de brucos, levanta a cabeca por alguns segundos",
       "ageRange": "0-3 meses",
-      "category": "motor_gross",
-      "status": "observed",
-      "observedDate": "2025-10-15"
+      "category": "motor_gross"
     },
     {
       "id": "m2",
       "title": "Sorri em resposta",
       "description": "Responde com sorriso quando voce sorri",
       "ageRange": "0-3 meses",
-      "category": "social",
-      "status": "observed",
-      "observedDate": "2025-10-20"
+      "category": "social"
     },
     {
       "id": "m3",
       "title": "Segue objetos com os olhos",
       "description": "Acompanha um brinquedo colorido movendo devagar",
       "ageRange": "0-3 meses",
-      "category": "sensory",
-      "status": "observed",
-      "observedDate": "2025-09-25"
+      "category": "sensory"
     },
     {
       "id": "m4",
       "title": "Produz sons (gugu, agu)",
       "description": "Emite sons de vogais em resposta a vozes",
       "ageRange": "0-3 meses",
-      "category": "language",
-      "status": "observed",
-      "observedDate": "2025-11-01"
+      "category": "language"
     },
     {
       "id": "m5",
       "title": "Rola de barriga para cima",
       "description": "Consegue virar de brucos para de costas",
       "ageRange": "4-6 meses",
-      "category": "motor_gross",
-      "status": "observed",
-      "observedDate": "2025-12-20"
+      "category": "motor_gross"
     },
     {
       "id": "m6",
       "title": "Agarra objetos com as duas maos",
       "description": "Pega brinquedos e leva a boca",
       "ageRange": "4-6 meses",
-      "category": "motor_fine",
-      "status": "observed",
-      "observedDate": "2025-12-10"
+      "category": "motor_fine"
     },
     {
       "id": "m7",
       "title": "Senta com apoio",
       "description": "Fica sentado quando apoiado em almofadas",
       "ageRange": "4-6 meses",
-      "category": "motor_gross",
-      "status": "observed",
-      "observedDate": "2026-01-05"
+      "category": "motor_gross"
     },
     {
       "id": "m8",
       "title": "Reconhece rostos familiares",
       "description": "Reage de forma diferente a pessoas conhecidas",
       "ageRange": "4-6 meses",
-      "category": "social",
-      "status": "observed",
-      "observedDate": "2025-12-15"
+      "category": "social"
     },
     {
       "id": "m9",
       "title": "Senta sem apoio",
       "description": "Consegue sentar sozinho de forma estavel",
       "ageRange": "6-9 meses",
-      "category": "motor_gross",
-      "status": "observed",
-      "observedDate": "2026-02-10"
+      "category": "motor_gross"
     },
     {
       "id": "m10",
       "title": "Engatinha",
       "description": "Se movimenta engatinhando para explorar",
       "ageRange": "6-9 meses",
-      "category": "motor_gross",
-      "status": "observed",
-      "observedDate": "2026-03-01"
+      "category": "motor_gross"
     },
     {
       "id": "m11",
       "title": "Puxa para ficar de pe",
       "description": "Se segura em moveis para ficar em pe",
       "ageRange": "6-9 meses",
-      "category": "motor_gross",
-      "status": "emerging",
-      "notes": "Tentando bastante nos ultimos dias"
+      "category": "motor_gross"
     },
     {
       "id": "m12",
       "title": "Transfere objetos entre maos",
       "description": "Passa um brinquedo de uma mao para outra",
       "ageRange": "6-9 meses",
-      "category": "motor_fine",
-      "status": "observed",
-      "observedDate": "2026-02-20"
+      "category": "motor_fine"
     },
     {
       "id": "m13",
       "title": "Balbucia silabas (ba-ba, ma-ma)",
       "description": "Produz sequencias de silabas repetidas",
       "ageRange": "6-9 meses",
-      "category": "language",
-      "status": "emerging"
+      "category": "language"
     },
     {
       "id": "m14",
       "title": "Brinca de cade-achou",
       "description": "Se diverte quando voce esconde e revela o rosto",
       "ageRange": "6-9 meses",
-      "category": "cognitive",
-      "status": "observed",
-      "observedDate": "2026-02-15"
+      "category": "cognitive"
     },
     {
       "id": "m15",
       "title": "Primeiras palavras",
       "description": "Diz 'mama' ou 'papa' com intencao",
       "ageRange": "9-12 meses",
-      "category": "language",
-      "status": "not_yet"
+      "category": "language"
     },
     {
       "id": "m16",
       "title": "Aponta para objetos",
       "description": "Usa o indicador para mostrar o que quer",
       "ageRange": "9-12 meses",
-      "category": "language",
-      "status": "not_yet"
+      "category": "language"
     },
     {
       "id": "m17",
       "title": "Fica de pe sem apoio",
       "description": "Consegue ficar em pe sozinho por alguns segundos",
       "ageRange": "9-12 meses",
-      "category": "motor_gross",
-      "status": "not_yet"
+      "category": "motor_gross"
     },
     {
       "id": "m18",
       "title": "Pinça fina",
       "description": "Pega objetos pequenos entre o polegar e indicador",
       "ageRange": "9-12 meses",
-      "category": "motor_fine",
-      "status": "not_yet"
+      "category": "motor_fine"
+    },
+    {
+      "id": "m19",
+      "title": "Anda segurando nos moveis",
+      "description": "Da passos laterais ou a frente segurando sofa ou mesa",
+      "ageRange": "12-18 meses",
+      "category": "motor_gross"
+    },
+    {
+      "id": "m20",
+      "title": "Empilha dois blocos",
+      "description": "Empilha um cubo sobre outro com intencao",
+      "ageRange": "12-18 meses",
+      "category": "cognitive"
+    },
+    {
+      "id": "m21",
+      "title": "Usa 5 a 10 palavras",
+      "description": "Nomeia pessoas, objetos ou acoes do dia a dia",
+      "ageRange": "12-18 meses",
+      "category": "language"
+    },
+    {
+      "id": "m22",
+      "title": "Imita gestos simples",
+      "description": "Copia tchau, palmas ou beijinho",
+      "ageRange": "12-18 meses",
+      "category": "social"
+    },
+    {
+      "id": "m23",
+      "title": "Come com colher (com ajuda)",
+      "description": "Leva comida a boca com colher, ainda com bastante bagunca",
+      "ageRange": "12-18 meses",
+      "category": "motor_fine"
+    },
+    {
+      "id": "m24",
+      "title": "Procura objeto escondido",
+      "description": "Lembra que algo existe mesmo fora da vista",
+      "ageRange": "12-18 meses",
+      "category": "cognitive"
+    },
+    {
+      "id": "m25",
+      "title": "Anda sozinho",
+      "description": "Caminha sem apoio com passos mais firmes",
+      "ageRange": "18-24 meses",
+      "category": "motor_gross"
+    },
+    {
+      "id": "m26",
+      "title": "Frases de duas palavras",
+      "description": "Junta duas ideias, ex: 'mais leite'",
+      "ageRange": "18-24 meses",
+      "category": "language"
+    },
+    {
+      "id": "m27",
+      "title": "Brinca de faz de conta",
+      "description": "Imita atividades do dia a dia com brinquedos",
+      "ageRange": "18-24 meses",
+      "category": "cognitive"
+    },
+    {
+      "id": "m28",
+      "title": "Mostra emocoes basicas",
+      "description": "Demonstra medo, carinho ou birra de forma mais clara",
+      "ageRange": "18-24 meses",
+      "category": "social"
+    },
+    {
+      "id": "m29",
+      "title": "Sobe escadas engatinhando",
+      "description": "Sobe degraus com supervisao, ainda nao alterna pes",
+      "ageRange": "18-24 meses",
+      "category": "motor_gross"
+    },
+    {
+      "id": "m30",
+      "title": "Corre com mais equilibrio",
+      "description": "Corre sem cair com tanta frequencia",
+      "ageRange": "2-3 anos",
+      "category": "motor_gross"
+    },
+    {
+      "id": "m31",
+      "title": "Desce escadas com ajuda",
+      "description": "Desce segurando corrimao ou mao, um pe por degrau",
+      "ageRange": "2-3 anos",
+      "category": "motor_gross"
+    },
+    {
+      "id": "m32",
+      "title": "Frases curtas completas",
+      "description": "Fala em 3 a 4 palavras com sentido",
+      "ageRange": "2-3 anos",
+      "category": "language"
+    },
+    {
+      "id": "m33",
+      "title": "Brinca perto de outras criancas",
+      "description": "Paralelo: observa e copia, ainda pouco jogo conjunto",
+      "ageRange": "2-3 anos",
+      "category": "social"
+    },
+    {
+      "id": "m34",
+      "title": "Entende instrucoes duplas",
+      "description": "Obedece a dois passos simples, ex: pega e traz",
+      "ageRange": "2-3 anos",
+      "category": "cognitive"
+    },
+    {
+      "id": "m35",
+      "title": "Desenha tracos e circulos",
+      "description": "Rabisca com intencao e tenta fechar um circulo",
+      "ageRange": "2-3 anos",
+      "category": "motor_fine"
+    },
+    {
+      "id": "m36",
+      "title": "Pula com os dois pes",
+      "description": "Salta no lugar com os dois pes juntos",
+      "ageRange": "3-4 anos",
+      "category": "motor_gross"
+    },
+    {
+      "id": "m37",
+      "title": "Conta ate 3 ou nomeia cores",
+      "description": "Comeca nocao de quantidade e cores conhecidas",
+      "ageRange": "3-4 anos",
+      "category": "cognitive"
+    },
+    {
+      "id": "m38",
+      "title": "Veste parte da roupa",
+      "description": "Coloca meia, tenis ou casaco com ajuda minima",
+      "ageRange": "3-4 anos",
+      "category": "motor_fine"
+    },
+    {
+      "id": "m39",
+      "title": "Fala compreensivel para outros",
+      "description": "Estranhos entendem a maior parte do que diz",
+      "ageRange": "3-4 anos",
+      "category": "language"
+    },
+    {
+      "id": "m40",
+      "title": "Espera a vez em brincadeiras",
+      "description": "Tolera regras simples com lembrete",
+      "ageRange": "3-4 anos",
+      "category": "social"
+    },
+    {
+      "id": "m41",
+      "title": "Brinca imaginativa elaborada",
+      "description": "Inventa historias com bonecos ou personagens",
+      "ageRange": "3-4 anos",
+      "category": "cognitive"
+    },
+    {
+      "id": "m42",
+      "title": "Pedala triciclo ou bicicleta com rodinhas",
+      "description": "Coordena pedalar e equilibrio",
+      "ageRange": "4-5 anos",
+      "category": "motor_gross"
+    },
+    {
+      "id": "m43",
+      "title": "Usa tesoura com supervisao",
+      "description": "Recorta linhas grossas com ajuda do adulto",
+      "ageRange": "4-5 anos",
+      "category": "motor_fine"
+    },
+    {
+      "id": "m44",
+      "title": "Conta objetos com significado",
+      "description": "Conta ate 10 com correspondencia um a um",
+      "ageRange": "4-5 anos",
+      "category": "cognitive"
+    },
+    {
+      "id": "m45",
+      "title": "Entende tempo do dia",
+      "description": "Diferencia manha, tarde e noite na rotina",
+      "ageRange": "4-5 anos",
+      "category": "cognitive"
+    },
+    {
+      "id": "m46",
+      "title": "Frases longas e perguntas",
+      "description": "Faz muitos 'por que' e narra experiencias",
+      "ageRange": "4-5 anos",
+      "category": "language"
+    },
+    {
+      "id": "m47",
+      "title": "Coopera e negocia",
+      "description": "Resolve conflitos simples com palavras, com apoio",
+      "ageRange": "4-5 anos",
+      "category": "social"
+    },
+    {
+      "id": "m48",
+      "title": "Salta em um pe brevemente",
+      "description": "Tenta equilibrio em um pe por instantes",
+      "ageRange": "4-5 anos",
+      "category": "motor_gross"
+    },
+    {
+      "id": "m49",
+      "title": "Escreve letras do proprio nome",
+      "description": "Copia algumas letras reconheciveis",
+      "ageRange": "4-5 anos",
+      "category": "motor_fine"
     }
   ]
 }

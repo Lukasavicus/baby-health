@@ -1,4 +1,9 @@
-"""Persist app-design domain lists not modeled as events (growth, milestones, etc.)."""
+"""Persist app-design domain lists not modeled as events (growth, milestones, etc.).
+
+baby_ui_state.milestones: list of {id, status, observedDate?, notes?} — markings only.
+Static catalog: UI seed milestones.initialMilestones.
+baby_ui_state.custom_milestones: optional list of {id, title, description?, ageRange, category}.
+"""
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
@@ -17,6 +22,7 @@ class BabyUiStatePatch(BaseModel):
 
     growth_entries: Optional[List[Any]] = None
     milestones: Optional[List[Any]] = None
+    custom_milestones: Optional[List[Any]] = None
     vitamins: Optional[List[Any]] = None
     vaccines: Optional[List[Any]] = None
     health_events: Optional[List[Any]] = None
