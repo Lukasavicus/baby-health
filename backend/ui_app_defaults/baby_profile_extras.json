@@ -27,23 +27,7 @@
       "color": "bg-baby-lavender/40"
     }
   ],
-  "recentMilestones": [
-    {
-      "title": "Senta sem apoio",
-      "observedAge": "6 meses",
-      "done": true
-    },
-    {
-      "title": "Engatinha",
-      "observedAge": "7 meses",
-      "done": true
-    },
-    {
-      "title": "Puxa para ficar de pé",
-      "observedAge": null,
-      "done": false
-    }
-  ],
+  "recentMilestones": [],
   "healthSummary": {
     "vaccines": {
       "total": 12,
