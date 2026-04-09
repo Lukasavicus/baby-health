@@ -17,6 +17,7 @@ import {
   FileText,
   Baby,
   Database,
+  Clock,
 } from "lucide-react";
 import { TrackerCard } from "../TrackerCard";
 import { getIcon } from "../../iconMap";
@@ -209,7 +210,9 @@ export function MyBabyPage() {
     })();
   };
 
-  const observedCount = recentMilestones.filter((m) => m.done).length;
+  const observedCount = recentMilestones.filter(
+    (m) => (m.status ?? "not_yet") === "observed",
+  ).length;
 
   return (
     <div className="pb-6">
@@ -373,37 +376,52 @@ export function MyBabyPage() {
             sem pressa.
           </p>
           <div className="space-y-2">
-            {recentMilestones.map((m, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div
-                  className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
-                    m.done ? "bg-baby-lavender/40" : "bg-secondary"
-                  }`}
-                >
-                  {m.done ? (
-                    <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-                  ) : (
-                    <div className="w-2.5 h-2.5 rounded-full border-2 border-muted-foreground/25" />
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p
-                    className={`text-sm ${m.done ? "" : "text-muted-foreground"}`}
+            {recentMilestones.map((m, i) => {
+              const st = m.status ?? "not_yet";
+              const isObserved = st === "observed";
+              const isEmerging = st === "emerging";
+              return (
+                <div key={i} className="flex items-center gap-3">
+                  <div
+                    className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ${
+                      isObserved
+                        ? "bg-baby-lavender/40"
+                        : isEmerging
+                          ? "bg-baby-yellow/40"
+                          : "bg-secondary"
+                    }`}
                   >
-                    {m.title}
-                  </p>
-                  {m.done && m.observedAge ? (
-                    <p className="text-[10px] text-muted-foreground">
-                      Observado aos {m.observedAge}
+                    {isObserved ? (
+                      <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                    ) : isEmerging ? (
+                      <Clock className="w-3.5 h-3.5 text-amber-500" />
+                    ) : (
+                      <div className="w-2.5 h-2.5 rounded-full border-2 border-muted-foreground/25" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className={`text-sm ${isObserved || isEmerging ? "" : "text-muted-foreground"}`}
+                    >
+                      {m.title}
                     </p>
-                  ) : (
-                    <p className="text-[10px] text-muted-foreground/50">
-                      Ainda não observado
-                    </p>
-                  )}
+                    {isObserved && m.observedAge ? (
+                      <p className="text-[10px] text-muted-foreground">
+                        Observado aos {m.observedAge}
+                      </p>
+                    ) : isEmerging ? (
+                      <p className="text-[10px] text-muted-foreground">
+                        Começando
+                      </p>
+                    ) : (
+                      <p className="text-[10px] text-muted-foreground/50">
+                        Ainda não observado
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </TrackerCard>
       </div>

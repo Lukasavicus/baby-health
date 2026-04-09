@@ -10,23 +10,42 @@ import {
   ChevronDown,
   ChevronRight,
   Smile,
+  Plus,
+  Trash2,
 } from "lucide-react";
 import { getIcon } from "../../iconMap";
 import { useUIBootstrap } from "../../UIBootstrapContext";
 import { getBabyUiState, putBabyUiState } from "@/api/client";
+import {
+  catalogFromSeed,
+  catalogFromCustomStored,
+  mergeMilestones,
+  progressMapFromMerged,
+  progressMapFromStored,
+  toPersistedCustomCatalog,
+  toPersistedProgress,
+  type MilestoneCatalogRow,
+  type MergedMilestone,
+  type MilestoneStatus,
+} from "../../utils/milestoneMerge";
 
-// --- Types ---
-type MilestoneStatus = "observed" | "emerging" | "not_yet";
+function approximateAgeMonthsFromBirth(birthIso: string | undefined): number {
+  if (!birthIso) return 8;
+  const d = new Date(birthIso);
+  if (Number.isNaN(d.getTime())) return 8;
+  return Math.max(0, Math.floor((Date.now() - d.getTime()) / (1000 * 60 * 60 * 24 * 30.437)));
+}
 
-interface Milestone {
-  id: string;
-  title: string;
-  description: string;
-  ageRange: string; // e.g. "4-6 meses"
-  category: string;
-  status: MilestoneStatus;
-  observedDate?: string;
-  notes?: string;
+function milestoneWindowForMonths(m: number): string {
+  if (m <= 3) return "0-3 meses";
+  if (m <= 6) return "4-6 meses";
+  if (m <= 9) return "6-9 meses";
+  if (m <= 12) return "9-12 meses";
+  if (m <= 18) return "12-18 meses";
+  if (m <= 24) return "18-24 meses";
+  if (m <= 36) return "2-3 anos";
+  if (m <= 48) return "3-4 anos";
+  return "4-5 anos";
 }
 
 interface MilestoneCategory {
@@ -65,39 +84,64 @@ export function MilestonesPage() {
 
   const ageWindows = (data?.milestones?.ageWindows ?? []) as string[];
 
-  const [milestones, setMilestones] = useState<Milestone[]>([]);
+  const catalog = useMemo(
+    () => catalogFromSeed((data?.milestones?.initialMilestones ?? []) as unknown[]),
+    [data?.milestones?.initialMilestones],
+  );
+
+  const ageWindowsKey = ageWindows.join("|");
+
+  const [customCatalog, setCustomCatalog] = useState<MilestoneCatalogRow[]>([]);
+  const [milestones, setMilestones] = useState<MergedMilestone[]>([]);
+  const [filterCat, setFilterCat] = useState<string | null>(null);
+  const [expandedWindows, setExpandedWindows] = useState<Set<string>>(new Set());
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [addDrawerOpen, setAddDrawerOpen] = useState(false);
+  const [editingMilestone, setEditingMilestone] = useState<MergedMilestone | null>(null);
+  const [formStatus, setFormStatus] = useState<MilestoneStatus>("not_yet");
+  const [formDate, setFormDate] = useState("");
+  const [formNotes, setFormNotes] = useState("");
+  const [newTitle, setNewTitle] = useState("");
+  const [newDescription, setNewDescription] = useState("");
+  const [newAgeRange, setNewAgeRange] = useState("");
+  const [newCategory, setNewCategory] = useState("motor_gross");
 
   useEffect(() => {
     if (!data) return;
     if (!canPersist || !babyId) {
-      const m = data.milestones?.initialMilestones as Milestone[] | undefined;
-      if (m?.length) setMilestones(m);
+      setCustomCatalog([]);
+      setMilestones(catalog.length ? mergeMilestones(catalog, new Map()) : []);
       return;
     }
     void getBabyUiState(babyId)
       .then((s) => {
-        const stored = s.milestones as Milestone[] | undefined;
-        if (stored?.length) setMilestones(stored);
-        else {
-          const m = data.milestones?.initialMilestones as Milestone[] | undefined;
-          if (m?.length) setMilestones(m);
-          else setMilestones([]);
-        }
+        const cust = catalogFromCustomStored(s.custom_milestones as unknown[] | undefined);
+        setCustomCatalog(cust);
+        const prog = progressMapFromStored(s.milestones as unknown[] | undefined);
+        const combined = [...catalog, ...cust];
+        setMilestones(combined.length ? mergeMilestones(combined, prog) : []);
       })
       .catch(() => {
-        const m = data.milestones?.initialMilestones as Milestone[] | undefined;
-        if (m?.length) setMilestones(m);
+        setCustomCatalog([]);
+        setMilestones(catalog.length ? mergeMilestones(catalog, new Map()) : []);
       });
-  }, [data, babyId, canPersist]);
-  const [filterCat, setFilterCat] = useState<string | null>(null);
-  const [expandedWindows, setExpandedWindows] = useState<Set<string>>(
-    new Set(["6-9 meses", "9-12 meses"])
-  );
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [editingMilestone, setEditingMilestone] = useState<Milestone | null>(null);
-  const [formStatus, setFormStatus] = useState<MilestoneStatus>("not_yet");
-  const [formDate, setFormDate] = useState("");
-  const [formNotes, setFormNotes] = useState("");
+  }, [data, babyId, canPersist, catalog]);
+
+  useEffect(() => {
+    if (!ageWindows.length || !data?.baby?.birth_date) return;
+    const w = milestoneWindowForMonths(approximateAgeMonthsFromBirth(data.baby.birth_date));
+    if (ageWindows.includes(w)) setExpandedWindows(new Set([w]));
+  }, [babyId, data?.baby?.birth_date, ageWindowsKey]);
+
+  useEffect(() => {
+    if (!addDrawerOpen || !ageWindows.length) return;
+    const w = milestoneWindowForMonths(approximateAgeMonthsFromBirth(data?.baby?.birth_date));
+    setNewTitle("");
+    setNewDescription("");
+    setNewAgeRange(ageWindows.includes(w) ? w : ageWindows[0]);
+    const firstCat = (data?.catalogs?.milestoneCategories as { id: string }[] | undefined)?.[0]?.id;
+    setNewCategory(firstCat && typeof firstCat === "string" ? firstCat : "motor_gross");
+  }, [addDrawerOpen, ageWindowsKey, data?.baby?.birth_date, data?.catalogs?.milestoneCategories]);
 
   const toggleWindow = (w: string) => {
     setExpandedWindows((prev) => {
@@ -112,7 +156,7 @@ export function MilestonesPage() {
     ? milestones.filter((m) => m.category === filterCat)
     : milestones;
 
-  const openEdit = (m: Milestone) => {
+  const openEdit = (m: MergedMilestone) => {
     setEditingMilestone(m);
     setFormStatus(m.status);
     setFormDate(m.observedDate || "");
@@ -125,15 +169,62 @@ export function MilestonesPage() {
     setMilestones((prev) => {
       const next = prev.map((m) =>
         m.id === editingMilestone.id
-          ? { ...m, status: formStatus, observedDate: formDate || undefined, notes: formNotes || undefined }
+          ? {
+              ...m,
+              status: formStatus,
+              observedDate: formStatus === "observed" && formDate ? formDate : undefined,
+              notes: formNotes || undefined,
+            }
           : m,
       );
       if (canPersist && babyId) {
-        void putBabyUiState(babyId, { milestones: next }).catch((e) => console.error(e));
+        void putBabyUiState(babyId, {
+          milestones: toPersistedProgress(next),
+          custom_milestones: toPersistedCustomCatalog(customCatalog),
+        }).catch((e) => console.error(e));
       }
       return next;
     });
     setDrawerOpen(false);
+  };
+
+  const handleSaveNewMilestone = () => {
+    if (!canPersist || !babyId || !newTitle.trim() || !newAgeRange) return;
+    const row: MilestoneCatalogRow = {
+      id: `custom-${Date.now()}`,
+      title: newTitle.trim(),
+      description: newDescription.trim(),
+      ageRange: newAgeRange,
+      category: newCategory,
+      isCustom: true,
+    };
+    const nextCustom = [...customCatalog, row];
+    const prog = progressMapFromMerged(milestones);
+    const merged = mergeMilestones([...catalog, ...nextCustom], prog);
+    setCustomCatalog(nextCustom);
+    setMilestones(merged);
+    setAddDrawerOpen(false);
+    void putBabyUiState(babyId, {
+      custom_milestones: toPersistedCustomCatalog(nextCustom),
+      milestones: toPersistedProgress(merged),
+    }).catch((e) => console.error(e));
+  };
+
+  const handleDeleteCustomMilestone = () => {
+    if (!editingMilestone?.isCustom || !babyId || !canPersist) return;
+    if (!window.confirm("Excluir este marco personalizado? O historico de observacao sera removido.")) return;
+    const id = editingMilestone.id;
+    const nextCustom = customCatalog.filter((c) => c.id !== id);
+    const prog = progressMapFromMerged(milestones);
+    prog.delete(id);
+    const merged = mergeMilestones([...catalog, ...nextCustom], prog);
+    setCustomCatalog(nextCustom);
+    setMilestones(merged);
+    setDrawerOpen(false);
+    void putBabyUiState(babyId, {
+      custom_milestones: toPersistedCustomCatalog(nextCustom),
+      milestones: toPersistedProgress(merged),
+    }).catch((e) => console.error(e));
   };
 
   // Stats
@@ -145,10 +236,20 @@ export function MilestonesPage() {
     <div className="pb-6">
       {/* Header */}
       <div className="px-5 pt-5 pb-2 flex items-center gap-3">
-        <button onClick={() => navigate("/my-baby")} className="p-1">
+        <button type="button" onClick={() => navigate("/my-baby")} className="p-1">
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <h2>Marcos & Conquistas</h2>
+        <h2 className="flex-1 min-w-0">Marcos & Conquistas</h2>
+        {canPersist && babyId && ageWindows.length > 0 ? (
+          <button
+            type="button"
+            onClick={() => setAddDrawerOpen(true)}
+            className="p-2.5 rounded-full bg-primary/15 text-primary shrink-0"
+            aria-label="Adicionar marco"
+          >
+            <Plus className="w-5 h-5" />
+          </button>
+        ) : null}
       </div>
 
       {/* Warm message */}
@@ -280,14 +381,21 @@ export function MilestonesPage() {
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className={`text-sm ${m.status === "not_yet" ? "text-muted-foreground" : ""}`}>
-                            {m.title}
-                          </p>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className={`text-sm ${m.status === "not_yet" ? "text-muted-foreground" : ""}`}>
+                              {m.title}
+                            </p>
+                            {m.isCustom ? (
+                              <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-baby-lavender/40 text-violet-700">
+                                Seu marco
+                              </span>
+                            ) : null}
+                          </div>
                           <p className="text-[10px] text-muted-foreground">{m.description}</p>
                           {m.observedDate && (
                             <p className="text-[10px] text-primary/70 mt-0.5">
                               Observado em{" "}
-                              {new Date(m.observedDate).toLocaleDateString("pt-BR", {
+                              {new Date(`${m.observedDate}T12:00:00`).toLocaleDateString("pt-BR", {
                                 day: "2-digit",
                                 month: "short",
                                 year: "numeric",
@@ -418,7 +526,19 @@ export function MilestonesPage() {
                     />
                   </div>
 
+                  {editingMilestone.isCustom ? (
+                    <button
+                      type="button"
+                      onClick={handleDeleteCustomMilestone}
+                      className="w-full py-3 rounded-2xl border border-destructive/40 text-destructive text-sm flex items-center justify-center gap-2 mb-3 active:scale-[0.98] transition-transform"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Excluir marco
+                    </button>
+                  ) : null}
+
                   <button
+                    type="button"
                     onClick={handleSave}
                     className="w-full py-3.5 rounded-2xl bg-primary text-white text-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
                   >
@@ -427,6 +547,85 @@ export function MilestonesPage() {
                   </button>
                 </>
               )}
+            </div>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
+
+      {/* Add custom milestone */}
+      <Drawer.Root open={addDrawerOpen} onOpenChange={setAddDrawerOpen}>
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-black/30 z-40" />
+          <Drawer.Content
+            className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl max-h-[90vh] mx-auto max-w-md"
+            aria-describedby={undefined}
+          >
+            <Drawer.Title className="sr-only">Novo marco</Drawer.Title>
+            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mt-3 mb-2" />
+            <div className="px-5 pb-8 overflow-y-auto max-h-[calc(90vh-2rem)]">
+              <div className="flex items-center justify-between mb-5">
+                <button type="button" onClick={() => setAddDrawerOpen(false)} className="p-1">
+                  <X className="w-5 h-5" />
+                </button>
+                <h3>Novo marco</h3>
+                <div className="w-5" />
+              </div>
+              <p className="text-xs text-muted-foreground mb-4">
+                Crie um marco além da lista sugerida — útil para objetivos do pediatra ou da família.
+              </p>
+              <label className="text-xs text-muted-foreground mb-1.5 block">Título</label>
+              <input
+                type="text"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                placeholder="Ex: Usa o banheiro sozinho"
+                className="w-full bg-secondary rounded-2xl px-4 py-3 text-sm outline-none mb-4"
+              />
+              <label className="text-xs text-muted-foreground mb-1.5 block">Descrição (opcional)</label>
+              <textarea
+                value={newDescription}
+                onChange={(e) => setNewDescription(e.target.value)}
+                placeholder="Detalhe o que você quer acompanhar..."
+                rows={2}
+                className="w-full bg-secondary rounded-2xl px-4 py-3 text-sm outline-none resize-none mb-4 placeholder:text-muted-foreground/50"
+              />
+              <label className="text-xs text-muted-foreground mb-1.5 block">Faixa etária</label>
+              <select
+                value={newAgeRange}
+                onChange={(e) => setNewAgeRange(e.target.value)}
+                className="w-full bg-secondary rounded-2xl px-4 py-3 text-sm outline-none mb-4"
+              >
+                {ageWindows.map((w) => (
+                  <option key={w} value={w}>
+                    {w}
+                  </option>
+                ))}
+              </select>
+              <label className="text-xs text-muted-foreground mb-1.5 block">Área</label>
+              <select
+                value={newCategory}
+                onChange={(e) => setNewCategory(e.target.value)}
+                className="w-full bg-secondary rounded-2xl px-4 py-3 text-sm outline-none mb-6"
+              >
+                {categories.length > 0 ? (
+                  categories.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.label}
+                    </option>
+                  ))
+                ) : (
+                  <option value="motor_gross">Motor amplo</option>
+                )}
+              </select>
+              <button
+                type="button"
+                onClick={handleSaveNewMilestone}
+                disabled={!newTitle.trim() || !newAgeRange}
+                className="w-full py-3.5 rounded-2xl bg-primary text-white text-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-transform disabled:opacity-50"
+              >
+                <Check className="w-4 h-4" />
+                Adicionar marco
+              </button>
             </div>
           </Drawer.Content>
         </Drawer.Portal>
