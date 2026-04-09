@@ -79,12 +79,16 @@ export interface EventIncomingPayload {
 export async function listEvents(args: {
   baby_id: string;
   date?: string;
+  start_date?: string;
+  end_date?: string;
   event_type?: string;
 }): Promise<ApiEvent[]> {
   const res = await fetch(
     buildApiUrl("/api/events", {
       baby_id: args.baby_id,
       date: args.date,
+      start_date: args.start_date,
+      end_date: args.end_date,
       event_type: args.event_type,
     }),
   );

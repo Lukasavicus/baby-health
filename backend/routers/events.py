@@ -20,7 +20,9 @@ def get_event_service(repo: BaseRepository = Depends(get_repository)) -> EventSe
 @router.get("", response_model=List[EventResponse])
 async def list_events(
     baby_id: str = Query(..., description="Baby ID"),
-    date: Optional[str] = Query(None, description="YYYY-MM-DD format"),
+    date: Optional[str] = Query(None, description="YYYY-MM-DD format (single day)"),
+    start_date: Optional[str] = Query(None, description="Range start YYYY-MM-DD"),
+    end_date: Optional[str] = Query(None, description="Range end YYYY-MM-DD"),
     event_type: Optional[str] = Query(None, description="Event type to filter"),
     caregiver_id: Optional[str] = Query(None, description="Caregiver ID to filter"),
     service: EventService = Depends(get_event_service),
@@ -29,6 +31,8 @@ async def list_events(
     events = service.get_events_for_baby(
         baby_id=baby_id,
         date=date,
+        start_date=start_date,
+        end_date=end_date,
         event_type=event_type,
         caregiver_id=caregiver_id,
     )
