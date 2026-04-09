@@ -19,6 +19,7 @@ import { VaccinesPage } from "./components/pages/VaccinesPage";
 import { VitaminsPage } from "./components/pages/VitaminsPage";
 import { HealthEventsPage } from "./components/pages/HealthEventsPage";
 import { MyDataPage } from "./components/pages/MyDataPage";
+import { TimelineDetailPage } from "./components/pages/TimelineDetailPage";
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +37,7 @@ export const router = createBrowserRouter([
       { path: "my-baby/health/vitamins", Component: VitaminsPage },
       { path: "my-baby/health/events", Component: HealthEventsPage },
       { path: "my-baby/data", Component: MyDataPage },
+      { path: "tracker/timeline", Component: TimelineDetailPage },
       { path: "tracker/feeding", Component: FeedingDetailPage },
       { path: "tracker/hydration", Component: HydrationDetailPage },
       { path: "tracker/sleep", Component: SleepDetailPage },

@@ -1,9 +1,11 @@
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router";
 import {
   Milk, Droplets, Moon, Activity, ChevronDown, ChevronUp, Bath, Pill,
   ClockArrowUp, Pencil, Trash2,
 } from "lucide-react";
 import { DiaperIcon } from "./DiaperIcon";
+import { CaregiverAvatar } from "./CaregiverAvatar";
 import { motion, AnimatePresence } from "motion/react";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -163,6 +165,7 @@ function SwipeableRow({
 }
 
 export function Timeline({ entries, onEdit, onDelete }: TimelineProps) {
+  const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
 
   if (entries.length === 0) {
@@ -191,11 +194,11 @@ export function Timeline({ entries, onEdit, onDelete }: TimelineProps) {
   return (
     <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
       {/* Header */}
-      <button
-        className="flex items-center justify-between w-full"
-        onClick={() => setExpanded(!expanded)}
-      >
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between w-full">
+        <button
+          className="flex items-center gap-3"
+          onClick={() => navigate("/tracker/timeline")}
+        >
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-baby-mint/30 to-baby-lavender/30 flex items-center justify-center">
             <ClockArrowUp className="w-5 h-5 text-foreground/60" />
           </div>
@@ -203,11 +206,14 @@ export function Timeline({ entries, onEdit, onDelete }: TimelineProps) {
             <p className="text-sm text-muted-foreground">Linha do tempo</p>
             <p className="text-[10px] text-muted-foreground/60">{entries.length} registros hoje</p>
           </div>
-        </div>
-        <div className="flex items-center gap-1 text-muted-foreground">
+        </button>
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="p-2 text-muted-foreground"
+        >
           {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-        </div>
-      </button>
+        </button>
+      </div>
 
       {/* Separator */}
       <div className="mt-3 pt-3 border-t border-border/30">
@@ -241,7 +247,7 @@ export function Timeline({ entries, onEdit, onDelete }: TimelineProps) {
                       <p className="text-xs text-muted-foreground mt-0.5 truncate">{entry.notes}</p>
                     )}
                   </div>
-                  <span className="text-[10px] text-muted-foreground mt-1 shrink-0">{entry.caregiver}</span>
+                  <CaregiverAvatar name={entry.caregiver} />
                 </div>
               </SwipeableRow>
             );
