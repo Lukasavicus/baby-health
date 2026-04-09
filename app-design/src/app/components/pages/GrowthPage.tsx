@@ -132,7 +132,7 @@ export function GrowthPage() {
   // Filter entries by time
   const filteredEntries = entries.filter((e) => {
     if (timeFilter === "Tudo") return true;
-    const d = new Date(e.date);
+    const d = new Date(e.date + "T12:00:00");
     const now = new Date();
     const monthsBack = timeFilter === "3m" ? 3 : timeFilter === "6m" ? 6 : 12;
     const cutoff = new Date(now);
@@ -143,7 +143,7 @@ export function GrowthPage() {
   // Calculate baby age in months for each entry (birth: 2025-08-05)
   const birthDate = new Date(2025, 7, 5);
   const chartData = filteredEntries.map((e) => {
-    const d = new Date(e.date);
+    const d = new Date(e.date + "T12:00:00");
     const months = (d.getFullYear() - birthDate.getFullYear()) * 12 + (d.getMonth() - birthDate.getMonth());
     return {
       month: months,
@@ -194,9 +194,11 @@ export function GrowthPage() {
   // Current percentile estimate
   const latestMonth = chartData.length ? chartData[chartData.length - 1].month : 0;
   const latestValue = chartData.length ? chartData[chartData.length - 1].value : 0;
-  const closestBand = bands.reduce((prev, curr) =>
-    Math.abs(curr.month - latestMonth) < Math.abs(prev.month - latestMonth) ? curr : prev
-  );
+  const closestBand = bands.length > 0
+    ? bands.reduce((prev, curr) =>
+        Math.abs(curr.month - latestMonth) < Math.abs(prev.month - latestMonth) ? curr : prev
+      )
+    : { month: 0, p3: 0, p15: 0, p50: 0, p85: 0, p97: 0 };
   const estimatePercentile = () => {
     if (latestValue <= closestBand.p3) return 3;
     if (latestValue <= closestBand.p15) return Math.round(3 + ((latestValue - closestBand.p3) / (closestBand.p15 - closestBand.p3)) * 12);
@@ -415,12 +417,14 @@ export function GrowthPage() {
         <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
           <p className="text-sm text-muted-foreground mb-3">Historico de medicoes</p>
           <div className="space-y-1">
-            {[...filteredEntries].reverse().map((e) => {
-              const d = new Date(e.date);
+            {[...filteredEntries].sort((a, b) => b.date.localeCompare(a.date)).map((e) => {
+              const d = new Date(e.date + "T12:00:00");
               return (
                 <div key={e.id} className="flex items-center gap-3 py-2.5 group">
-                  <span className="text-xs text-muted-foreground w-16 shrink-0">
-                    {d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })}
+                  <span className="text-xs text-muted-foreground w-20 shrink-0">
+                    {d.getFullYear() !== new Date().getFullYear()
+                      ? `${d.getDate().toString().padStart(2, "0")}/${(d.getMonth() + 1).toString().padStart(2, "0")}/${d.getFullYear()}`
+                      : d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })}
                   </span>
                   <div className="flex-1 flex items-center gap-4">
                     <div className="flex items-center gap-1.5">
