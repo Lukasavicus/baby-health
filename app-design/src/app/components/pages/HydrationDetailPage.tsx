@@ -4,8 +4,10 @@ import { Drawer } from "vaul";
 import { ArrowLeft, Droplets, Plus, Pencil, Trash2, X, Check, Minus, GlassWater, CupSoda } from "lucide-react";
 import { EventDateField, clampYmdNotAfterToday, todayYmd } from "../EventDateField";
 import { TimePickerField } from "../TimePickerDialog";
+import { TimePeriodFilter } from "../TimePeriodFilter";
 import { getIcon } from "../../iconMap";
 import { useUIBootstrap } from "../../UIBootstrapContext";
+import { useTimePeriodFilter, dateLabelFromTimestamp } from "../../hooks/useTimePeriodFilter";
 import { createEvent, deleteEvent, listEvents, updateEvent, type ApiEvent } from "@/api/client";
 import {
   apiEventToHydrationEntry,
@@ -19,6 +21,7 @@ import {
 // --- Types ---
 interface HydrationEntry {
   id: string;
+  date?: string;
   time: string;
   amount: number;
   type: "water" | "juice" | "tea" | "other";
@@ -46,6 +49,7 @@ export function HydrationDetailPage() {
     [data?.tracker_logs?.hydration?.weekData],
   );
   const weekLabels = useMemo(() => weekDayLabelsPt(), []);
+  const timePeriod = useTimePeriodFilter();
 
   const [hydApiEvents, setHydApiEvents] = useState<ApiEvent[]>([]);
   const [logs, setLogs] = useState<HydrationEntry[]>([]);
@@ -54,25 +58,29 @@ export function HydrationDetailPage() {
     if (!canPersist || !babyId || !caregiverId) return;
     const evs = await listEvents({ baby_id: babyId, event_type: "hydration" });
     setHydApiEvents(evs);
-    const todayYmd = formatYmd(new Date());
-    const mapped = evs
-      .filter((e) => formatYmd(new Date(e.timestamp)) === todayYmd)
+  }, [babyId, caregiverId, canPersist]);
+
+  useEffect(() => {
+    if (!hydApiEvents.length && !canPersist) return;
+    const mapped = timePeriod
+      .filterEvents(hydApiEvents)
+      .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
       .map((e) => {
         const h = apiEventToHydrationEntry(e);
         const typeLabel =
           drinkTypes.find((t) => t.id === h.type)?.label || h.type;
         return {
           id: h.id,
+          date: dateLabelFromTimestamp(e.timestamp),
           time: h.time,
           amount: h.amount,
           type: h.type as HydrationEntry["type"],
           typeLabel,
           notes: h.notes,
         };
-      })
-      .sort((a, b) => a.time.localeCompare(b.time));
+      });
     setLogs(mapped);
-  }, [babyId, caregiverId, canPersist, drinkTypes]);
+  }, [hydApiEvents, timePeriod.filterEvents, drinkTypes, canPersist]);
 
   useEffect(() => {
     if (!data) return;
@@ -345,17 +353,21 @@ export function HydrationDetailPage() {
         </div>
       </div>
 
-      {/* Today's log — same pattern as feeding */}
+      {/* Filtered log */}
       <div className="px-4">
         <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
-          <p className="text-sm text-muted-foreground mb-3">Registros de hoje</p>
+          <TimePeriodFilter filter={timePeriod} />
+          <p className="text-sm text-muted-foreground mb-3">{timePeriod.title}</p>
           <div className="space-y-1">
             {logs.length === 0 && (
-              <p className="text-xs text-muted-foreground text-center py-6">Nenhum registro ainda. Toque em + para adicionar.</p>
+              <p className="text-xs text-muted-foreground text-center py-6">Nenhum registro neste período.</p>
             )}
             {logs.map((l) => (
               <div key={l.id} className="flex items-start gap-3 py-2.5 group">
-                <span className="text-xs text-muted-foreground w-10 pt-0.5 shrink-0">{l.time}</span>
+                <div className="text-xs text-muted-foreground w-12 pt-0.5 shrink-0">
+                  {timePeriod.period !== "today" && <p className="text-[10px] font-medium">{l.date}</p>}
+                  <p>{l.time}</p>
+                </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="text-sm">{l.typeLabel}</p>
@@ -451,7 +463,14 @@ export function HydrationDetailPage() {
                   >
                     <Minus className="w-4 h-4" />
                   </button>
-                  <span className="text-3xl w-20 text-center">{formAmount}</span>
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    min={0}
+                    value={formAmount}
+                    onChange={(e) => setFormAmount(Math.max(0, Number(e.target.value) || 0))}
+                    className="text-3xl w-20 text-center bg-transparent outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  />
                   <button
                     onClick={() => setFormAmount(formAmount + 10)}
                     className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center active:scale-90 transition-transform"

@@ -421,6 +421,7 @@ export function apiEventToFeedingEntry(
   amount?: string;
   notes?: string;
   food?: null;
+  foodName?: string;
   formulaBrand?: string;
 } {
   const md = ev.metadata as {
@@ -448,6 +449,7 @@ export function apiEventToFeedingEntry(
     amount: type !== "breast" ? `${amt} ${type === "solids" ? "g" : "ml"}` : undefined,
     notes: ev.notes || "",
     food: null,
+    foodName: type === "solids" && md?.food_name ? md.food_name : undefined,
     formulaBrand: type === "formula" ? md?.formula_brand || "" : undefined,
   };
 }

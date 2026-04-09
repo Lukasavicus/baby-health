@@ -25,10 +25,13 @@ export interface GrowthCardSeed {
   color: string;
 }
 
+export type MilestoneTileStatus = "observed" | "emerging" | "not_yet";
+
 export interface RecentMilestoneSeed {
   title: string;
+  /** Preferido; ausência trata como not_yet (bootstrap antigo). */
+  status?: MilestoneTileStatus;
   observedAge: string | null;
-  done: boolean;
 }
 
 export interface HealthSummarySeed {
@@ -101,6 +104,7 @@ export interface VaccineSeed {
 
 export interface VitaminSeed {
   id: string;
+  category?: "vitamin" | "medication";
   name: string;
   dose: string;
   unit: string;

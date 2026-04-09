@@ -4,7 +4,9 @@ import { Drawer } from "vaul";
 import { ArrowLeft, Bath, Thermometer, Plus, Pencil, Trash2, X, Check } from "lucide-react";
 import { EventDateField, clampYmdNotAfterToday, todayYmd } from "../EventDateField";
 import { TimePickerField } from "../TimePickerDialog";
+import { TimePeriodFilter } from "../TimePeriodFilter";
 import { useUIBootstrap } from "../../UIBootstrapContext";
+import { useTimePeriodFilter, dateLabelFromTimestamp } from "../../hooks/useTimePeriodFilter";
 import { createEvent, deleteEvent, listEvents, updateEvent, type ApiEvent } from "@/api/client";
 import {
   apiEventToBathEntry,
@@ -20,6 +22,7 @@ type TempType = "frio" | "morno" | "quente";
 
 interface BathEntry {
   id: string;
+  date?: string;
   time: string;
   temp: TempType;
   tempLabel: string;
@@ -44,6 +47,7 @@ export function BathDetailPage() {
     [data?.tracker_logs?.bath?.weekData],
   );
   const weekLabels = useMemo(() => weekDayLabelsPt(), []);
+  const timePeriod = useTimePeriodFilter();
 
   const [bathApiEvents, setBathApiEvents] = useState<ApiEvent[]>([]);
   const [logs, setLogs] = useState<BathEntry[]>([]);
@@ -52,25 +56,29 @@ export function BathDetailPage() {
     if (!canPersist || !babyId || !caregiverId) return;
     const evs = await listEvents({ baby_id: babyId, event_type: "bath" });
     setBathApiEvents(evs);
-    const todayYmd = formatYmd(new Date());
-    const mapped = evs
-      .filter((e) => formatYmd(new Date(e.timestamp)) === todayYmd)
+  }, [babyId, caregiverId, canPersist]);
+
+  useEffect(() => {
+    if (!bathApiEvents.length && !canPersist) return;
+    const mapped = timePeriod
+      .filterEvents(bathApiEvents)
+      .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
       .map((e) => {
         const b = apiEventToBathEntry(e);
         const tempLabel =
           tempOptions.find((t) => t.id === (b.temp as TempType))?.label || b.temp;
         return {
           id: b.id,
+          date: dateLabelFromTimestamp(e.timestamp),
           time: b.time,
           temp: b.temp as TempType,
           tempLabel,
           duration: b.duration,
           notes: b.notes,
         };
-      })
-      .sort((a, b) => a.time.localeCompare(b.time));
+      });
     setLogs(mapped);
-  }, [babyId, caregiverId, canPersist, tempOptions]);
+  }, [bathApiEvents, timePeriod.filterEvents, tempOptions, canPersist]);
 
   useEffect(() => {
     if (!data) return;
@@ -272,17 +280,21 @@ export function BathDetailPage() {
         </div>
       </div>
 
-      {/* Today's log */}
+      {/* Filtered log */}
       <div className="px-4">
         <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
-          <p className="text-sm text-muted-foreground mb-3">Registros de hoje</p>
+          <TimePeriodFilter filter={timePeriod} />
+          <p className="text-sm text-muted-foreground mb-3">{timePeriod.title}</p>
           <div className="space-y-1">
             {logs.length === 0 && (
-              <p className="text-xs text-muted-foreground text-center py-6">Nenhum registro ainda. Toque em + para adicionar.</p>
+              <p className="text-xs text-muted-foreground text-center py-6">Nenhum registro neste período.</p>
             )}
             {logs.map((l) => (
               <div key={l.id} className="flex items-start gap-3 py-2.5 group">
-                <span className="text-xs text-muted-foreground w-10 pt-1 shrink-0">{l.time}</span>
+                <div className="text-xs text-muted-foreground w-12 pt-1 shrink-0">
+                  {timePeriod.period !== "today" && <p className="text-[10px] font-medium">{l.date}</p>}
+                  <p>{l.time}</p>
+                </div>
                 <div className="w-8 h-8 rounded-full bg-baby-blue/40 flex items-center justify-center shrink-0">
                   <Thermometer className="w-4 h-4 text-foreground/60" />
                 </div>

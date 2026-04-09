@@ -5,7 +5,9 @@ import { ArrowLeft, Plus, Pencil, Trash2, X, Check, Droplet } from "lucide-react
 import { DiaperIcon } from "../DiaperIcon";
 import { EventDateField, clampYmdNotAfterToday, todayYmd } from "../EventDateField";
 import { TimePickerField } from "../TimePickerDialog";
+import { TimePeriodFilter } from "../TimePeriodFilter";
 import { useUIBootstrap } from "../../UIBootstrapContext";
+import { useTimePeriodFilter, dateLabelFromTimestamp } from "../../hooks/useTimePeriodFilter";
 import { createEvent, deleteEvent, listEvents, updateEvent, type ApiEvent } from "@/api/client";
 import {
   apiEventToDiaperEntry,
@@ -22,6 +24,7 @@ type VolumeLevel = 1 | 2 | 3 | 4;
 
 interface DiaperEntry {
   id: string;
+  date?: string;
   time: string;
   type: DiaperType;
   typeLabel: string;
@@ -57,6 +60,7 @@ export function DiaperDetailPage() {
     [data?.tracker_logs?.diaper?.weekData],
   );
   const weekLabels = useMemo(() => weekDayLabelsPt(), []);
+  const timePeriod = useTimePeriodFilter();
 
   const [diaperApiEvents, setDiaperApiEvents] = useState<ApiEvent[]>([]);
   const [logs, setLogs] = useState<DiaperEntry[]>([]);
@@ -65,15 +69,20 @@ export function DiaperDetailPage() {
     if (!canPersist || !babyId || !caregiverId) return;
     const evs = await listEvents({ baby_id: babyId, event_type: "diaper" });
     setDiaperApiEvents(evs);
-    const todayYmd = formatYmd(new Date());
-    const mapped = evs
-      .filter((e) => formatYmd(new Date(e.timestamp)) === todayYmd)
+  }, [babyId, caregiverId, canPersist]);
+
+  useEffect(() => {
+    if (!diaperApiEvents.length && !canPersist) return;
+    const mapped = timePeriod
+      .filterEvents(diaperApiEvents)
+      .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
       .map((e) => {
         const d = apiEventToDiaperEntry(e);
         const typeLabel =
           diaperTypes.find((t) => t.id === (d.type as DiaperType))?.label || d.type;
         return {
           id: d.id,
+          date: dateLabelFromTimestamp(e.timestamp),
           time: d.time,
           type: d.type as DiaperType,
           typeLabel,
@@ -81,10 +90,9 @@ export function DiaperDetailPage() {
           pooVolume: d.pooVolume as VolumeLevel,
           notes: d.notes,
         };
-      })
-      .sort((a, b) => a.time.localeCompare(b.time));
+      });
     setLogs(mapped);
-  }, [babyId, caregiverId, canPersist, diaperTypes]);
+  }, [diaperApiEvents, timePeriod.filterEvents, diaperTypes, canPersist]);
 
   useEffect(() => {
     if (!data) return;
@@ -299,17 +307,21 @@ export function DiaperDetailPage() {
         </div>
       </div>
 
-      {/* Today's log */}
+      {/* Filtered log */}
       <div className="px-4">
         <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
-          <p className="text-sm text-muted-foreground mb-3">Registros de hoje</p>
+          <TimePeriodFilter filter={timePeriod} />
+          <p className="text-sm text-muted-foreground mb-3">{timePeriod.title}</p>
           <div className="space-y-1">
             {logs.length === 0 && (
-              <p className="text-xs text-muted-foreground text-center py-6">Nenhum registro ainda. Toque em + para adicionar.</p>
+              <p className="text-xs text-muted-foreground text-center py-6">Nenhum registro neste período.</p>
             )}
             {logs.map((l) => (
               <div key={l.id} className="flex items-start gap-3 py-2.5 group">
-                <span className="text-xs text-muted-foreground w-10 pt-0.5 shrink-0">{l.time}</span>
+                <div className="text-xs text-muted-foreground w-12 pt-0.5 shrink-0">
+                  {timePeriod.period !== "today" && <p className="text-[10px] font-medium">{l.date}</p>}
+                  <p>{l.time}</p>
+                </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <p className="text-sm">{l.typeLabel}</p>

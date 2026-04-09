@@ -7,7 +7,9 @@ import {
 } from "lucide-react";
 import { EventDateField, clampYmdNotAfterToday, todayYmd } from "../EventDateField";
 import { TimePickerField } from "../TimePickerDialog";
+import { TimePeriodFilter } from "../TimePeriodFilter";
 import { useUIBootstrap } from "../../UIBootstrapContext";
+import { useTimePeriodFilter, dateLabelFromTimestamp } from "../../hooks/useTimePeriodFilter";
 import { createEvent, deleteEvent, listEvents, updateEvent, type ApiEvent } from "@/api/client";
 import {
   apiEventToFeedingEntry,
@@ -31,6 +33,7 @@ interface FoodResult {
 // --- Types ---
 interface FeedingEntry {
   id: string;
+  date?: string;
   time: string;
   type: "breast" | "bottle" | "formula" | "solids";
   typeLabel: string;
@@ -39,6 +42,7 @@ interface FeedingEntry {
   amount?: string;
   notes?: string;
   food?: FoodResult | null;
+  foodName?: string;
   formulaBrand?: string;
 }
 
@@ -79,6 +83,7 @@ export function FeedingDetailPage() {
     [data?.tracker_logs?.feeding?.weekSummary],
   );
   const weekLabels = useMemo(() => weekDayLabelsPt(), []);
+  const timePeriod = useTimePeriodFilter();
 
   const [feedApiEvents, setFeedApiEvents] = useState<ApiEvent[]>([]);
   const [feedings, setFeedings] = useState<FeedingEntry[]>([]);
@@ -87,13 +92,19 @@ export function FeedingDetailPage() {
     if (!canPersist || !babyId || !caregiverId) return;
     const evs = await listEvents({ baby_id: babyId, event_type: "feeding" });
     setFeedApiEvents(evs);
-    const todayYmd = formatYmd(new Date());
-    const mapped = evs
-      .filter((e) => formatYmd(new Date(e.timestamp)) === todayYmd)
-      .map((e) => apiEventToFeedingEntry(e, feedingTypes) as FeedingEntry)
-      .sort((a, b) => a.time.localeCompare(b.time));
+  }, [babyId, caregiverId, canPersist]);
+
+  useEffect(() => {
+    if (!feedApiEvents.length && !canPersist) return;
+    const mapped = timePeriod
+      .filterEvents(feedApiEvents)
+      .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+      .map((e) => ({
+        ...(apiEventToFeedingEntry(e, feedingTypes) as FeedingEntry),
+        date: dateLabelFromTimestamp(e.timestamp),
+      }));
     setFeedings(mapped);
-  }, [babyId, caregiverId, canPersist, feedingTypes]);
+  }, [feedApiEvents, timePeriod.filterEvents, feedingTypes, canPersist]);
 
   useEffect(() => {
     if (!data) return;
@@ -323,9 +334,12 @@ export function FeedingDetailPage() {
       <div className="px-4 mb-4">
         <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
           <p className="text-sm text-muted-foreground mb-4">Refeições na semana</p>
-          <div className="flex items-end justify-between gap-2 h-24">
+          <div className="flex items-end justify-between gap-2 h-28">
             {weekSummary.map((d) => (
               <div key={d.day} className="flex-1 flex flex-col items-center gap-1">
+                {d.count > 0 && (
+                  <span className="text-[10px] text-foreground/60">{d.count}</span>
+                )}
                 <div
                   className="w-full rounded-lg bg-baby-peach/60 transition-all"
                   style={{ height: `${(d.count / maxCount) * 100}%`, minHeight: 8 }}
@@ -337,14 +351,21 @@ export function FeedingDetailPage() {
         </div>
       </div>
 
-      {/* Today's log */}
+      {/* Filtered log */}
       <div className="px-4">
         <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
-          <p className="text-sm text-muted-foreground mb-3">Registros de hoje</p>
+          <TimePeriodFilter filter={timePeriod} />
+          <p className="text-sm text-muted-foreground mb-3">{timePeriod.title}</p>
           <div className="space-y-1">
+            {feedings.length === 0 && (
+              <p className="text-xs text-muted-foreground text-center py-6">Nenhum registro neste período.</p>
+            )}
             {feedings.map((f) => (
               <div key={f.id} className="flex items-start gap-3 py-2.5 group">
-                <span className="text-xs text-muted-foreground w-10 pt-0.5 shrink-0">{f.time}</span>
+                <div className="text-xs text-muted-foreground w-12 pt-0.5 shrink-0">
+                  {timePeriod.period !== "today" && <p className="text-[10px] font-medium">{f.date}</p>}
+                  <p>{f.time}</p>
+                </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="text-sm">{f.typeLabel}</p>
@@ -368,6 +389,11 @@ export function FeedingDetailPage() {
                         <span>G: {f.food.fat}g</span>
                       </div>
                     </div>
+                  )}
+                  {!f.food && f.foodName && (
+                    <span className="text-[10px] bg-baby-peach/20 text-foreground/70 px-2 py-0.5 rounded-full mt-1 inline-block">
+                      {f.foodName}
+                    </span>
                   )}
                 </div>
                 <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -480,7 +506,14 @@ export function FeedingDetailPage() {
                       >
                         <Minus className="w-4 h-4" />
                       </button>
-                      <span className="text-3xl w-16 text-center">{formDuration}</span>
+                      <input
+                        type="number"
+                        inputMode="numeric"
+                        min={1}
+                        value={formDuration}
+                        onChange={(e) => setFormDuration(Math.max(1, Number(e.target.value) || 1))}
+                        className="text-3xl w-16 text-center bg-transparent outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                      />
                       <button
                         onClick={() => setFormDuration(formDuration + 1)}
                         className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center"
@@ -503,7 +536,14 @@ export function FeedingDetailPage() {
                     >
                       <Minus className="w-4 h-4" />
                     </button>
-                    <span className="text-3xl w-20 text-center">{formAmount}</span>
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      min={0}
+                      value={formAmount}
+                      onChange={(e) => setFormAmount(Math.max(0, Number(e.target.value) || 0))}
+                      className="text-3xl w-20 text-center bg-transparent outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                    />
                     <button
                       onClick={() => setFormAmount(formAmount + 30)}
                       className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center"
@@ -556,7 +596,14 @@ export function FeedingDetailPage() {
                       >
                         <Minus className="w-4 h-4" />
                       </button>
-                      <span className="text-3xl w-20 text-center">{formAmount}</span>
+                      <input
+                        type="number"
+                        inputMode="numeric"
+                        min={0}
+                        value={formAmount}
+                        onChange={(e) => setFormAmount(Math.max(0, Number(e.target.value) || 0))}
+                        className="text-3xl w-20 text-center bg-transparent outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                      />
                       <button
                         onClick={() => setFormAmount(formAmount + 10)}
                         className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center"
