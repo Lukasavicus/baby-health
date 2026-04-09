@@ -14,12 +14,25 @@ import {
   Clock,
   Pause,
   Play,
+  Heart,
+  ShieldPlus,
 } from "lucide-react";
 import { useUIBootstrap } from "../../UIBootstrapContext";
 import { getBabyUiState, putBabyUiState } from "@/api/client";
 
+function formatHistoryDate(ymd: string): string {
+  const d = new Date(ymd + "T12:00:00");
+  if (d.getFullYear() !== new Date().getFullYear()) {
+    const dd = d.getDate().toString().padStart(2, "0");
+    const mm = (d.getMonth() + 1).toString().padStart(2, "0");
+    return `${dd}/${mm}/${d.getFullYear()}`;
+  }
+  return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" });
+}
+
 interface VitaminEntry {
   id: string;
+  category?: "vitamin" | "medication";
   name: string;
   dose: string;
   unit: string;
@@ -30,6 +43,17 @@ interface VitaminEntry {
   notes: string;
   history: { date: string; dose: string; notes: string }[];
 }
+
+type HistoryRowVM = {
+  date: string;
+  dose: string;
+  notes: string;
+  name: string;
+  type: string;
+  itemDose: string;
+  parentId: string;
+  historyIndex: number;
+};
 
 export function VitaminsPage() {
   const navigate = useNavigate();
@@ -64,6 +88,7 @@ export function VitaminsPage() {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   // Form
+  const [formCategory, setFormCategory] = useState<"vitamin" | "medication">("vitamin");
   const [formName, setFormName] = useState("");
   const [formDose, setFormDose] = useState("");
   const [formUnit, setFormUnit] = useState("gotas");
@@ -72,12 +97,24 @@ export function VitaminsPage() {
   const [formEnd, setFormEnd] = useState("");
   const [formNotes, setFormNotes] = useState("");
 
-  const activeVitamins = vitamins.filter((v) => v.active);
-  const inactiveVitamins = vitamins.filter((v) => !v.active);
+  const [historyEntryDrawerOpen, setHistoryEntryDrawerOpen] = useState(false);
+  const [editingHistoryRow, setEditingHistoryRow] = useState<{
+    parentId: string;
+    historyIndex: number;
+    name: string;
+  } | null>(null);
+  const [histFormDate, setHistFormDate] = useState("");
+  const [histFormDose, setHistFormDose] = useState("");
+  const [histFormNotes, setHistFormNotes] = useState("");
 
-  const openNew = () => {
+  const activeVitamins = vitamins.filter((v) => v.active && (v.category || "vitamin") === "vitamin");
+  const activeMedications = vitamins.filter((v) => v.active && v.category === "medication");
+  const inactiveItems = vitamins.filter((v) => !v.active);
+
+  const openNew = (cat: "vitamin" | "medication" = "vitamin") => {
     setEditingVitamin(null);
     setDetailVitamin(null);
+    setFormCategory(cat);
     setFormName("");
     setFormDose("");
     setFormUnit("gotas");
@@ -91,6 +128,7 @@ export function VitaminsPage() {
   const openEdit = (v: VitaminEntry) => {
     setEditingVitamin(v);
     setDetailVitamin(null);
+    setFormCategory(v.category || "vitamin");
     setFormName(v.name);
     setFormDose(v.dose);
     setFormUnit(v.unit);
@@ -110,6 +148,7 @@ export function VitaminsPage() {
   const handleSave = () => {
     const entry: VitaminEntry = {
       id: editingVitamin?.id || Date.now().toString(),
+      category: formCategory,
       name: formName,
       dose: formDose,
       unit: formUnit,
@@ -146,8 +185,67 @@ export function VitaminsPage() {
     setDrawerOpen(false);
   };
 
+  const persistVitamins = (next: VitaminEntry[]) => {
+    setVitamins(next);
+    setDetailVitamin((d) => {
+      if (!d) return d;
+      const u = next.find((x) => x.id === d.id);
+      return u ?? d;
+    });
+    if (canPersist && babyId) {
+      void putBabyUiState(babyId, { vitamins: next }).catch((e) => console.error(e));
+    }
+  };
+
+  const openHistoryEntryEdit = (row: HistoryRowVM) => {
+    setEditingHistoryRow({
+      parentId: row.parentId,
+      historyIndex: row.historyIndex,
+      name: row.name,
+    });
+    setHistFormDate(row.date);
+    setHistFormDose(row.dose);
+    setHistFormNotes(row.notes || "");
+    setHistoryEntryDrawerOpen(true);
+  };
+
+  const handleSaveHistoryEntry = () => {
+    if (!editingHistoryRow || !histFormDate.trim() || !histFormDose.trim()) return;
+    const { parentId, historyIndex } = editingHistoryRow;
+    const next = vitamins.map((v) => {
+      if (v.id !== parentId) return v;
+      const nh = [...v.history];
+      if (historyIndex < 0 || historyIndex >= nh.length) return v;
+      nh[historyIndex] = {
+        date: histFormDate.trim(),
+        dose: histFormDose.trim(),
+        notes: histFormNotes.trim(),
+      };
+      return { ...v, history: nh };
+    });
+    persistVitamins(next);
+    setHistoryEntryDrawerOpen(false);
+    setEditingHistoryRow(null);
+  };
+
+  const handleDeleteHistoryEntry = (parentId: string, historyIndex: number) => {
+    if (!window.confirm("Excluir este registro do histórico?")) return;
+    const next = vitamins.map((v) => {
+      if (v.id !== parentId) return v;
+      return { ...v, history: v.history.filter((_, i) => i !== historyIndex) };
+    });
+    persistVitamins(next);
+    if (
+      editingHistoryRow?.parentId === parentId &&
+      editingHistoryRow.historyIndex === historyIndex
+    ) {
+      setHistoryEntryDrawerOpen(false);
+      setEditingHistoryRow(null);
+    }
+  };
+
   const units = ["gotas", "mL", "UI", "mg", "mg/kg", "mcg"];
-  const frequencies = ["1x ao dia", "2x ao dia", "3x ao dia", "Dias alternados", "Semanal"];
+  const frequencies = ["1x ao dia", "2x ao dia", "3x ao dia", "Dias alternados", "Semanal", "Uso livre"];
 
   return (
     <div className="pb-6">
@@ -157,10 +255,10 @@ export function VitaminsPage() {
           <button onClick={() => navigate("/my-baby/health")} className="p-1">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h2>Vitaminas & Suplementos</h2>
+          <h2>Vitaminas & Medicamentos</h2>
         </div>
         <button
-          onClick={openNew}
+          onClick={() => openNew("vitamin")}
           className="bg-primary text-white w-9 h-9 rounded-full flex items-center justify-center active:scale-95 transition-transform"
         >
           <Plus className="w-5 h-5" />
@@ -169,65 +267,98 @@ export function VitaminsPage() {
 
       {/* Active vitamins */}
       <div className="px-4 mb-4">
-        <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1.5">
-          <Play className="w-3 h-3 text-primary" />
-          Em uso ({activeVitamins.length})
-        </p>
-        <div className="space-y-3">
-          {activeVitamins.map((v) => (
-            <button
-              key={v.id}
-              onClick={() => openDetail(v)}
-              className="w-full bg-card rounded-2xl p-4 shadow-sm border border-border/50 flex items-center gap-3.5 active:scale-[0.98] transition-transform"
-            >
-              <div className="w-11 h-11 rounded-2xl bg-baby-peach/30 flex items-center justify-center shrink-0">
-                <Pill className="w-5 h-5 text-amber-500" />
-              </div>
-              <div className="flex-1 text-left min-w-0">
-                <p className="text-sm">{v.name}</p>
-                <p className="text-[10px] text-muted-foreground">
-                  {v.dose} {v.unit} · {v.frequency}
-                </p>
-                <p className="text-[10px] text-muted-foreground/50">
-                  Desde {new Date(v.startDate + "T12:00:00").toLocaleDateString("pt-BR", { month: "short", year: "numeric" })}
-                </p>
-              </div>
-              <div className="flex items-center gap-1.5 shrink-0">
-                <span className="text-[10px] bg-baby-mint/20 text-primary px-2 py-0.5 rounded-full">
-                  Ativo
-                </span>
-                <ChevronRight className="w-4 h-4 text-muted-foreground" />
-              </div>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Inactive vitamins */}
-      {inactiveVitamins.length > 0 && (
-        <div className="px-4 mb-4">
-          <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1.5">
-            <Pause className="w-3 h-3 text-muted-foreground" />
-            Encerrados ({inactiveVitamins.length})
-          </p>
-          <div className="space-y-3">
-            {inactiveVitamins.map((v) => (
+        <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 rounded-full bg-baby-pink/20 flex items-center justify-center">
+              <ShieldPlus className="w-4 h-4 text-pink-400" />
+            </div>
+            <div>
+              <p className="text-sm">Vitaminas</p>
+              <p className="text-[10px] text-muted-foreground">Suplementação nutricional e fortalecimento</p>
+            </div>
+          </div>
+          <div className="space-y-2">
+            {activeVitamins.length === 0 && (
+              <p className="text-xs text-muted-foreground text-center py-3">Nenhuma vitamina cadastrada.</p>
+            )}
+            {activeVitamins.map((v) => (
               <button
                 key={v.id}
                 onClick={() => openDetail(v)}
-                className="w-full bg-card rounded-2xl p-4 shadow-sm border border-border/50 flex items-center gap-3.5 active:scale-[0.98] transition-transform opacity-70"
+                className="w-full bg-baby-pink/10 rounded-2xl p-3 flex items-center gap-3 active:scale-[0.98] transition-transform"
               >
-                <div className="w-11 h-11 rounded-2xl bg-secondary flex items-center justify-center shrink-0">
-                  <Pill className="w-5 h-5 text-muted-foreground" />
+                <div className="flex-1 text-left min-w-0">
+                  <div className="flex items-center justify-between mb-0.5">
+                    <p className="text-sm">{v.name}</p>
+                    <span className="text-[10px] bg-baby-pink/20 text-foreground/70 px-2 py-0.5 rounded-full">{v.frequency}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    <Pill className="w-3 h-3 inline mr-1" />{v.dose} {v.unit}
+                  </p>
                 </div>
+                <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Active medications */}
+      <div className="px-4 mb-4">
+        <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-8 h-8 rounded-full bg-baby-pink/20 flex items-center justify-center">
+              <Heart className="w-4 h-4 text-pink-400" />
+            </div>
+            <div>
+              <p className="text-sm">Medicamentos</p>
+              <p className="text-[10px] text-muted-foreground">Para quando o bebê está doente ou com desconforto</p>
+            </div>
+          </div>
+          <div className="space-y-2">
+            {activeMedications.length === 0 && (
+              <p className="text-xs text-muted-foreground text-center py-3">Nenhum medicamento cadastrado.</p>
+            )}
+            {activeMedications.map((v) => (
+              <button
+                key={v.id}
+                onClick={() => openDetail(v)}
+                className="w-full bg-baby-pink/10 rounded-2xl p-3 flex items-center gap-3 active:scale-[0.98] transition-transform"
+              >
+                <div className="flex-1 text-left min-w-0">
+                  <div className="flex items-center justify-between mb-0.5">
+                    <p className="text-sm">{v.name}</p>
+                    <span className="text-[10px] bg-baby-pink/20 text-foreground/70 px-2 py-0.5 rounded-full">{v.frequency}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    <Pill className="w-3 h-3 inline mr-1" />{v.dose} {v.unit}
+                  </p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Inactive items */}
+      {inactiveItems.length > 0 && (
+        <div className="px-4 mb-4">
+          <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1.5">
+            <Pause className="w-3 h-3 text-muted-foreground" />
+            Encerrados ({inactiveItems.length})
+          </p>
+          <div className="space-y-2">
+            {inactiveItems.map((v) => (
+              <button
+                key={v.id}
+                onClick={() => openDetail(v)}
+                className="w-full bg-card rounded-2xl p-3 shadow-sm border border-border/50 flex items-center gap-3 active:scale-[0.98] transition-transform opacity-70"
+              >
                 <div className="flex-1 text-left min-w-0">
                   <p className="text-sm">{v.name}</p>
                   <p className="text-[10px] text-muted-foreground">
                     {v.dose} {v.unit} · {v.frequency}
-                  </p>
-                  <p className="text-[10px] text-muted-foreground/50">
-                    {new Date(v.startDate + "T12:00:00").toLocaleDateString("pt-BR", { month: "short", year: "numeric" })} -{" "}
-                    {v.endDate ? new Date(v.endDate + "T12:00:00").toLocaleDateString("pt-BR", { month: "short", year: "numeric" }) : ""}
                   </p>
                 </div>
                 <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
@@ -246,7 +377,7 @@ export function VitaminsPage() {
             aria-describedby={undefined}
           >
             <Drawer.Title className="sr-only">
-              {detailVitamin ? detailVitamin.name : editingVitamin ? "Editar" : "Novo"} Suplemento
+              {detailVitamin ? detailVitamin.name : editingVitamin ? "Editar" : "Novo"} {formCategory === "medication" ? "Medicamento" : "Suplemento"}
             </Drawer.Title>
             <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mt-3 mb-2" />
             <div className="px-5 pb-8 overflow-y-auto max-h-[87vh]">
@@ -255,7 +386,7 @@ export function VitaminsPage() {
                   <X className="w-5 h-5" />
                 </button>
                 <h3>
-                  {detailVitamin ? detailVitamin.name : editingVitamin ? "Editar" : "Novo"} Suplemento
+                  {detailVitamin ? detailVitamin.name : `${editingVitamin ? "Editar" : formCategory === "medication" ? "Novo Medicamento" : "Novo Suplemento"}`}
                 </h3>
                 <div className="w-5" />
               </div>
@@ -293,14 +424,43 @@ export function VitaminsPage() {
                     </p>
                     <div className="bg-secondary/30 rounded-2xl p-4 space-y-3">
                       {detailVitamin.history.map((h, i) => (
-                        <div key={i} className="flex items-start gap-3">
+                        <div key={`${detailVitamin.id}-h-${i}-${h.date}`} className="flex items-start gap-2">
                           <span className="text-[10px] text-muted-foreground w-16 shrink-0 pt-0.5">
-                            {new Date(h.date + "T12:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })}
+                            {formatHistoryDate(h.date)}
                           </span>
-                          <div>
+                          <div className="flex-1 min-w-0">
                             <p className="text-xs">{h.dose}</p>
                             {h.notes && <p className="text-[10px] text-muted-foreground">{h.notes}</p>}
                           </div>
+                          {canPersist && babyId ? (
+                            <div className="flex shrink-0 gap-0.5">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  openHistoryEntryEdit({
+                                    ...h,
+                                    parentId: detailVitamin.id,
+                                    historyIndex: i,
+                                    name: detailVitamin.name,
+                                    type: detailVitamin.category || "vitamin",
+                                    itemDose: `${detailVitamin.dose} ${detailVitamin.unit}`,
+                                  })
+                                }
+                                className="p-1.5 rounded-full text-muted-foreground hover:bg-background"
+                                aria-label="Editar"
+                              >
+                                <Pencil className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteHistoryEntry(detailVitamin.id, i)}
+                                className="p-1.5 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                                aria-label="Excluir"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          ) : null}
                         </div>
                       ))}
                     </div>
@@ -336,6 +496,34 @@ export function VitaminsPage() {
               ) : (
                 /* --- Form --- */
                 <div className="space-y-4">
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-2 block">Tipo</label>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => setFormCategory("vitamin")}
+                        className={`flex-1 py-2.5 rounded-2xl text-xs transition-all flex items-center justify-center gap-1.5 ${
+                          formCategory === "vitamin"
+                            ? "bg-baby-mint text-white shadow-sm"
+                            : "bg-secondary text-foreground/60"
+                        }`}
+                      >
+                        <ShieldPlus className="w-3.5 h-3.5" />
+                        Vitamina
+                      </button>
+                      <button
+                        onClick={() => setFormCategory("medication")}
+                        className={`flex-1 py-2.5 rounded-2xl text-xs transition-all flex items-center justify-center gap-1.5 ${
+                          formCategory === "medication"
+                            ? "bg-baby-pink text-white shadow-sm"
+                            : "bg-secondary text-foreground/60"
+                        }`}
+                      >
+                        <Heart className="w-3.5 h-3.5" />
+                        Medicamento
+                      </button>
+                    </div>
+                  </div>
+
                   <div>
                     <label className="text-xs text-muted-foreground mb-2 block">Nome</label>
                     <input
@@ -432,6 +620,81 @@ export function VitaminsPage() {
                   </button>
                 </div>
               )}
+            </div>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
+
+      <Drawer.Root
+        open={historyEntryDrawerOpen}
+        onOpenChange={(o) => {
+          setHistoryEntryDrawerOpen(o);
+          if (!o) setEditingHistoryRow(null);
+        }}
+      >
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-black/30 z-40" />
+          <Drawer.Content
+            className="fixed bottom-0 left-0 right-0 z-[60] bg-card rounded-t-3xl max-h-[85vh] mx-auto max-w-md"
+            aria-describedby={undefined}
+          >
+            <Drawer.Title className="sr-only">Editar registro do histórico</Drawer.Title>
+            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mt-3 mb-2" />
+            <div className="px-5 pb-8">
+              <div className="flex items-center justify-between mb-5">
+                <button type="button" onClick={() => setHistoryEntryDrawerOpen(false)} className="p-1">
+                  <X className="w-5 h-5" />
+                </button>
+                <h3 className="text-sm font-medium truncate max-w-[200px]">
+                  {editingHistoryRow?.name ?? "Histórico"}
+                </h3>
+                <div className="w-5" />
+              </div>
+              <p className="text-xs text-muted-foreground mb-4">
+                Ajuste data, dose anotada e observações deste registro.
+              </p>
+              <label className="text-xs text-muted-foreground mb-1.5 block">Data</label>
+              <input
+                type="date"
+                value={histFormDate}
+                onChange={(e) => setHistFormDate(e.target.value)}
+                className="w-full bg-secondary rounded-2xl px-4 py-3 text-sm outline-none mb-4"
+              />
+              <label className="text-xs text-muted-foreground mb-1.5 block">Dose / registro</label>
+              <input
+                value={histFormDose}
+                onChange={(e) => setHistFormDose(e.target.value)}
+                placeholder="Ex: 400 UI"
+                className="w-full bg-secondary rounded-2xl px-4 py-3 text-sm outline-none mb-4 placeholder:text-muted-foreground/50"
+              />
+              <label className="text-xs text-muted-foreground mb-1.5 block">Observações</label>
+              <textarea
+                value={histFormNotes}
+                onChange={(e) => setHistFormNotes(e.target.value)}
+                rows={2}
+                className="w-full bg-secondary rounded-2xl px-4 py-3 text-sm outline-none resize-none mb-4"
+              />
+              {editingHistoryRow ? (
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleDeleteHistoryEntry(editingHistoryRow.parentId, editingHistoryRow.historyIndex)
+                  }
+                  className="w-full py-3 rounded-2xl border border-destructive/30 text-destructive text-sm mb-3 flex items-center justify-center gap-2"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Excluir este registro
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={handleSaveHistoryEntry}
+                disabled={!histFormDate.trim() || !histFormDose.trim()}
+                className="w-full py-3.5 rounded-2xl bg-primary text-white text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                <Check className="w-4 h-4" />
+                Salvar
+              </button>
             </div>
           </Drawer.Content>
         </Drawer.Portal>

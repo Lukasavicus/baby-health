@@ -28,6 +28,8 @@ import { useUIBootstrap } from "../../UIBootstrapContext";
 import {
   createEvent,
   deleteEvent,
+  getBabyUiState,
+  putBabyUiState,
   listEvents,
   updateEvent,
   type ApiEvent,
@@ -253,6 +255,27 @@ export function TodayPage() {
         const payload = logSheetEntryToIncoming(entry, babyId, caregiverId, day);
         await createEvent(payload);
         await reloadTodayTimeline();
+
+        if (entry.type === "health" && entry.healthName) {
+          try {
+            const state = await getBabyUiState(babyId);
+            const vitamins = (state.vitamins ?? []) as {
+              id: string; name: string; dose: string; unit: string;
+              history: { date: string; dose: string; notes: string }[];
+              [k: string]: unknown;
+            }[];
+            const match = vitamins.find((v) => v.name === entry.healthName);
+            if (match) {
+              match.history = [
+                ...(match.history || []),
+                { date: day, dose: `${match.dose} ${match.unit}`, notes: String(entry.time || "") },
+              ];
+              await putBabyUiState(babyId, { vitamins });
+            }
+          } catch {
+            // history update is best-effort
+          }
+        }
       } catch (e) {
         console.error(e);
       }
@@ -602,7 +625,7 @@ export function TodayPage() {
                           healthName: v.label,
                         });
                       }}
-                      className="bg-baby-pink/20 text-foreground/70 py-2 px-3 rounded-xl text-xs active:scale-95 transition-transform text-left"
+                      className="bg-baby-pink/20 text-foreground/70 py-2 px-3 rounded-xl text-xs active:scale-95 transition-transform text-left truncate"
                     >
                       {v.label}
                     </button>
@@ -644,7 +667,7 @@ export function TodayPage() {
                           healthName: m.label,
                         });
                       }}
-                      className="bg-baby-pink/20 text-foreground/70 py-2 px-3 rounded-xl text-xs active:scale-95 transition-transform text-left"
+                      className="bg-baby-pink/20 text-foreground/70 py-2 px-3 rounded-xl text-xs active:scale-95 transition-transform text-left truncate"
                     >
                       {m.label}
                     </button>
