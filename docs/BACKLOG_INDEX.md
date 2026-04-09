@@ -1,0 +1,134 @@
+# BabyHealth — Backlog Index
+
+> Hierarquia completa: **11 Epics → 34 Features → 43 Stories → 148 Tasks**
+
+---
+
+## EP-01 — Fundação do Produto `P0`
+
+| Feature | Stories | Tasks | Priority |
+|---------|---------|-------|----------|
+| [FE-01.1 — Arquitetura de Informação](features/FE-01.1-arquitetura-de-informacao.md) | [US-01.1.1](stories/US-01.1.1-navegacao-clara.md), [US-01.1.2](stories/US-01.1.2-nomes-abas-coerentes.md) | [TK-01.1.1](tasks/TK-01.1.1-mapa-navegacao.md), [TK-01.1.2](tasks/TK-01.1.2-acao-global-registrar.md), [TK-01.1.3](tasks/TK-01.1.3-hierarquia-home-detalhe-bottom-sheet.md), [TK-01.1.4](tasks/TK-01.1.4-navegacao-mobile-first.md) | P0 |
+| [FE-01.2 — Design System Visual](features/FE-01.2-design-system-visual.md) | [US-01.2.1](stories/US-01.2.1-interface-bonita-suave.md), [US-01.2.2](stories/US-01.2.2-inspiracao-samsung-health.md) | [TK-01.2.1](tasks/TK-01.2.1-paleta-pastel.md), [TK-01.2.2](tasks/TK-01.2.2-tipografia-escala-espacamento.md), [TK-01.2.3](tasks/TK-01.2.3-linguagem-icones.md), [TK-01.2.4](tasks/TK-01.2.4-padroes-componentes.md), [TK-01.2.5](tasks/TK-01.2.5-estados-visuais.md) | P0 |
+| [FE-01.3 — Shell do Aplicativo](features/FE-01.3-shell-do-aplicativo.md) | [US-01.3.1](stories/US-01.3.1-app-estrutura-pronta.md) | [TK-01.3.1](tasks/TK-01.3.1-layout-base-mobile-first.md), [TK-01.3.2](tasks/TK-01.3.2-bottom-navigation.md), [TK-01.3.3](tasks/TK-01.3.3-header-global.md), [TK-01.3.4](tasks/TK-01.3.4-floating-action-registrar.md), [TK-01.3.5](tasks/TK-01.3.5-transicoes-entre-telas.md) | P0 |
+
+---
+
+## EP-02 — Modelo de Dados e Motor de Logs `P0`
+
+| Feature | Stories | Tasks | Priority |
+|---------|---------|-------|----------|
+| [FE-02.1 — Entidade Genérica de Evento](features/FE-02.1-entidade-generica-evento.md) | [US-02.1.1](stories/US-02.1.1-registros-consistentes.md), [US-02.1.2](stories/US-02.1.2-timeline-unificada.md) | [TK-02.1.1](tasks/TK-02.1.1-schema-generico-evento.md), [TK-02.1.2](tasks/TK-02.1.2-campos-base.md), [TK-02.1.3](tasks/TK-02.1.3-normalizacao-categoria.md), [TK-02.1.4](tasks/TK-02.1.4-utilitario-ordenacao-tempo.md) | P0 |
+| [FE-02.2 — Persistência Local](features/FE-02.2-persistencia-local.md) | [US-02.2.1](stories/US-02.2.1-registros-salvos.md) | [TK-02.2.1](tasks/TK-02.2.1-estrategia-persistencia.md), [TK-02.2.2](tasks/TK-02.2.2-camada-leitura-escrita.md), [TK-02.2.3](tasks/TK-02.2.3-seed-data-demo.md), [TK-02.2.4](tasks/TK-02.2.4-versionamento-dados.md) | P0 |
+| [FE-02.3 — Quick Log Engine](features/FE-02.3-quick-log-engine.md) | [US-02.3.1](stories/US-02.3.1-registrar-poucos-toques.md), [US-02.3.2](stories/US-02.3.2-atualizar-home-timeline.md) | [TK-02.3.1](tasks/TK-02.3.1-dispatcher-generico-logs.md), [TK-02.3.2](tasks/TK-02.3.2-atualizar-timeline-insert.md), [TK-02.3.3](tasks/TK-02.3.3-atualizar-cards-resumo.md), [TK-02.3.4](tasks/TK-02.3.4-presets-rapidos.md), [TK-02.3.5](tasks/TK-02.3.5-botao-log-manual.md) | P0 |
+
+---
+
+## EP-03 — Home "Hoje" `P0`
+
+| Feature | Stories | Tasks | Priority |
+|---------|---------|-------|----------|
+| [FE-03.1 — Hero Card do Dia](features/FE-03.1-hero-card-do-dia.md) | [US-03.1.1](stories/US-03.1.1-estado-geral-bebe.md) | [TK-03.1.1](tasks/TK-03.1.1-metricas-hero-card.md), [TK-03.1.2](tasks/TK-03.1.2-resumo-textual-dia.md), [TK-03.1.3](tasks/TK-03.1.3-status-badge.md), [TK-03.1.4](tasks/TK-03.1.4-visual-principal-card.md) | P0 |
+| [FE-03.2 — Cards dos Trackers](features/FE-03.2-cards-trackers-obrigatorios.md) | [US-03.2.1](stories/US-03.2.1-acompanhar-trackers.md) | [TK-03.2.1](tasks/TK-03.2.1-card-alimentacao.md) .. [TK-03.2.6](tasks/TK-03.2.6-card-atividades.md) | P0 |
+| [FE-03.3 — Linha do Tempo](features/FE-03.3-linha-do-tempo-do-dia.md) | [US-03.3.1](stories/US-03.3.1-timeline-cronologica.md) | [TK-03.3.1](tasks/TK-03.3.1-lista-cronologica-reversa.md) .. [TK-03.3.4](tasks/TK-03.3.4-filtro-por-tipo.md) | P0 |
+| [FE-03.4 — Registro Inline](features/FE-03.4-registro-inline.md) | [US-03.4.1](stories/US-03.4.1-registrar-direto-card.md) | [TK-03.4.1](tasks/TK-03.4.1-cta-inline-por-card.md) .. [TK-03.4.4](tasks/TK-03.4.4-feedback-visual-sucesso.md) | P0 |
+
+---
+
+## EP-04 — Alimentação e Hidratação `P0`
+
+| Feature | Stories | Tasks | Priority |
+|---------|---------|-------|----------|
+| [FE-04.1 — Mamadeira/Leite](features/FE-04.1-mamadeira-leite.md) | [US-04.1.1](stories/US-04.1.1-registrar-mamadeira.md), [US-04.1.2](stories/US-04.1.2-ultima-mamada.md) | [TK-04.1.1](tasks/TK-04.1.1-tipos-mamadeira.md) .. [TK-04.1.5](tasks/TK-04.1.5-total-diario.md) | P0 |
+| [FE-04.2 — Amamentação](features/FE-04.2-amamentacao-basica-avancada.md) | [US-04.2.1](stories/US-04.2.1-modo-simples-amamentacao.md), [US-04.2.2](stories/US-04.2.2-modo-avancado-amamentacao.md) | [TK-04.2.1](tasks/TK-04.2.1-modo-basico.md) .. [TK-04.2.7](tasks/TK-04.2.7-sessoes-compostas.md) | P0 |
+| [FE-04.3 — Sólidos/Papinhas](features/FE-04.3-solidos-papinhas-refeicoes.md) | [US-04.3.1](stories/US-04.3.1-registrar-solidos.md), [US-04.3.2](stories/US-04.3.2-primeira-exposicao.md) | [TK-04.3.1](tasks/TK-04.3.1-tipos-solidos.md) .. [TK-04.3.6](tasks/TK-04.3.6-reacao-alergia.md) | P0 |
+| [FE-04.4 — Hidratação](features/FE-04.4-hidratacao.md) | [US-04.4.1](stories/US-04.4.1-registrar-hidratacao.md) | [TK-04.4.1](tasks/TK-04.4.1-presets-volume.md) .. [TK-04.4.5](tasks/TK-04.4.5-progresso-visual.md) | P0 |
+
+---
+
+## EP-05 — Sono e Tempo Acordado `P0`
+
+| Feature | Stories | Tasks | Priority |
+|---------|---------|-------|----------|
+| [FE-05.1 — Registro de Sono](features/FE-05.1-registro-de-sono.md) | [US-05.1.1](stories/US-05.1.1-iniciar-encerrar-sono.md) | [TK-05.1.1](tasks/TK-05.1.1-tipos-sono.md) .. [TK-05.1.5](tasks/TK-05.1.5-edicao-posterior.md) | P0 |
+| [FE-05.2 — Tempo Acordado](features/FE-05.2-tempo-acordado.md) | [US-05.2.1](stories/US-05.2.1-tempo-acordado.md) | [TK-05.2.1](tasks/TK-05.2.1-calcular-awake-window.md) .. [TK-05.2.4](tasks/TK-05.2.4-comportamento-sem-dados.md) | P0 |
+| [FE-05.3 — Resumo Diário de Sono](features/FE-05.3-resumo-diario-sono.md) | [US-05.3.1](stories/US-05.3.1-resumo-diario-sono.md) | [TK-05.3.1](tasks/TK-05.3.1-somar-sono-diurno.md) .. [TK-05.3.4](tasks/TK-05.3.4-padrao-basico-home.md) | P0 |
+
+---
+
+## EP-06 — Fraldas e Atividades `P0`
+
+| Feature | Stories | Tasks | Priority |
+|---------|---------|-------|----------|
+| [FE-06.1 — Fraldas](features/FE-06.1-fraldas.md) | [US-06.1.1](stories/US-06.1.1-registrar-fralda.md) | [TK-06.1.1](tasks/TK-06.1.1-tipos-fralda.md) .. [TK-06.1.4](tasks/TK-06.1.4-total-diario-fraldas.md) | P0 |
+| [FE-06.2 — Atividades](features/FE-06.2-atividades.md) | [US-06.2.1](stories/US-06.2.1-registrar-atividades.md) | [TK-06.2.1](tasks/TK-06.2.1-catalogo-atividades.md) .. [TK-06.2.4](tasks/TK-06.2.4-total-dia-atividade.md) | P0 |
+| [FE-06.3 — Resumo de Atividades](features/FE-06.3-resumo-atividades.md) | [US-06.3.1](stories/US-06.3.1-estimulos-dia.md) | [TK-06.3.1](tasks/TK-06.3.1-card-atividades.md) .. [TK-06.3.4](tasks/TK-06.3.4-ultima-atividade.md) | P0 |
+
+---
+
+## EP-07 — Cuidadores `P0`
+
+| Feature | Stories | Tasks | Priority |
+|---------|---------|-------|----------|
+| [FE-07.1 — Identidade de Cuidador](features/FE-07.1-identidade-de-cuidador.md) | [US-07.1.1](stories/US-07.1.1-saber-quem-registrou.md), [US-07.1.2](stories/US-07.1.2-saber-quem-esta-usando.md) | [TK-07.1.1](tasks/TK-07.1.1-modelar-entidade-cuidador.md) .. [TK-07.1.4](tasks/TK-07.1.4-associar-cuidador-log.md) | P0 |
+| [FE-07.2 — Feed Compartilhado](features/FE-07.2-feed-compartilhado.md) | [US-07.2.1](stories/US-07.2.1-feed-comum.md) | [TK-07.2.1](tasks/TK-07.2.1-tela-cuidadores.md) .. [TK-07.2.4](tasks/TK-07.2.4-ultimos-registros-pessoa.md) | P0 |
+| [FE-07.3 — Filtro por Cuidador](features/FE-07.3-filtro-por-cuidador.md) | [US-07.3.1](stories/US-07.3.1-filtrar-por-pessoa.md) | [TK-07.3.1](tasks/TK-07.3.1-chips-filtro.md) .. [TK-07.3.3](tasks/TK-07.3.3-clear-filter.md) | P1 |
+
+---
+
+## EP-08 — Relatórios e Insights `P0/P1`
+
+| Feature | Stories | Tasks | Priority |
+|---------|---------|-------|----------|
+| [FE-08.1 — Resumo Diário](features/FE-08.1-resumo-diario.md) | [US-08.1.1](stories/US-08.1.1-leitura-rapida-dia.md) | [TK-08.1.1](tasks/TK-08.1.1-kpis-resumo-diario.md) .. [TK-08.1.4](tasks/TK-08.1.4-comparativo-dias-anteriores.md) | P0 |
+| [FE-08.2 — Relatório Semanal](features/FE-08.2-relatorio-semanal.md) | [US-08.2.1](stories/US-08.2.1-relatorio-semanal-elegante.md) | [TK-08.2.1](tasks/TK-08.2.1-layout-relatorio-semanal.md) .. [TK-08.2.4](tasks/TK-08.2.4-destaques-positivos-quedas.md) | P0 |
+| [FE-08.3 — Insights Automáticos](features/FE-08.3-insights-automaticos.md) | [US-08.3.1](stories/US-08.3.1-insights-legiveis.md) | [TK-08.3.1](tasks/TK-08.3.1-regras-simples-insight.md) .. [TK-08.3.5](tasks/TK-08.3.5-exibir-insights-cards.md) | P1 |
+
+---
+
+## EP-09 — Rotinas e Conteúdo `P1`
+
+| Feature | Stories | Tasks | Priority |
+|---------|---------|-------|----------|
+| [FE-09.1 — Biblioteca de Conteúdo](features/FE-09.1-biblioteca-de-conteudo.md) | [US-09.1.1](stories/US-09.1.1-acessar-conteudo-util.md) | [TK-09.1.1](tasks/TK-09.1.1-tela-rotinas.md) .. [TK-09.1.4](tasks/TK-09.1.4-organizar-conteudo-tema-idade.md) | P1 |
+| [FE-09.2 — Rotinas Guiadas](features/FE-09.2-rotinas-guiadas.md) | [US-09.2.1](stories/US-09.2.1-seguir-rotinas-guiadas.md) | [TK-09.2.1](tasks/TK-09.2.1-modelo-rotina-guiada.md) .. [TK-09.2.5](tasks/TK-09.2.5-exibir-passo-a-passo.md) | P1 |
+| [FE-09.3 — Curadoria Externa](features/FE-09.3-curadoria-externa.md) | [US-09.3.1](stories/US-09.3.1-acessar-conteudos-externos.md) | [TK-09.3.1](tasks/TK-09.3.1-fontes-externas.md) .. [TK-09.3.3](tasks/TK-09.3.3-aviso-saida-app.md) | P2 |
+
+---
+
+## EP-10 — Meu Bebê e Crescimento `P1`
+
+| Feature | Stories | Tasks | Priority |
+|---------|---------|-------|----------|
+| [FE-10.1 — Perfil do Bebê](features/FE-10.1-perfil-do-bebe.md) | [US-10.1.1](stories/US-10.1.1-area-propria-bebe.md) | [TK-10.1.1](tasks/TK-10.1.1-perfil-base.md) .. [TK-10.1.4](tasks/TK-10.1.4-modulos-ativos.md) | P1 |
+| [FE-10.2 — Crescimento](features/FE-10.2-crescimento.md) | [US-10.2.1](stories/US-10.2.1-registrar-peso-altura-cc.md) | [TK-10.2.1](tasks/TK-10.2.1-formulario-medidas.md) .. [TK-10.2.4](tasks/TK-10.2.4-ultima-medicao-destaque.md) | P1 |
+| [FE-10.3 — Observações e Marcos](features/FE-10.3-observacoes-e-marcos.md) | [US-10.3.1](stories/US-10.3.1-registrar-marcos-observacoes.md) | [TK-10.3.1](tasks/TK-10.3.1-entidade-observacao.md) .. [TK-10.3.3](tasks/TK-10.3.3-associar-observacao-data.md) | P2 |
+
+---
+
+## EP-11 — Saúde, Vitaminas e Remédios `P1`
+
+| Feature | Stories | Tasks | Priority |
+|---------|---------|-------|----------|
+| [FE-11.1 — Vitaminas e Remédios](features/FE-11.1-vitaminas-e-remedios.md) | [US-11.1.1](stories/US-11.1.1-registrar-vitamina-remedio.md), [US-11.1.2](stories/US-11.1.2-confirmacao-administracao.md) | [TK-11.1.1](tasks/TK-11.1.1-schema-medicacao.md) .. [TK-11.1.4](tasks/TK-11.1.4-confirmacao-administracao.md) | P1 |
+| [FE-11.2 — Histórico de Saúde Leve](features/FE-11.2-historico-saude-leve.md) | [US-11.2.1](stories/US-11.2.1-registrar-eventos-saude.md) | [TK-11.2.1](tasks/TK-11.2.1-tipo-temperatura.md) .. [TK-11.2.4](tasks/TK-11.2.4-exibir-historico.md) | P2 |
+
+---
+
+## Resumo Quantitativo
+
+| Nível | Quantidade |
+|-------|-----------|
+| Epics | 11 |
+| Features | 34 |
+| User Stories | 43 |
+| Tasks | 148 |
+| **Total de arquivos** | **225** |
+
+### Por Prioridade
+
+| Prioridade | Features | Descrição |
+|------------|----------|-----------|
+| **P0** | 25 | MVP Core (EP-01 a EP-08) |
+| **P1** | 7 | Post-MVP (EP-09 a EP-11 + filtro cuidadores + insights) |
+| **P2** | 2 | Futuro (curadoria externa, observações, saúde leve) |
