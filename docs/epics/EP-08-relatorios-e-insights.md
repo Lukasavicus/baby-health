@@ -219,6 +219,53 @@ Entregar a camada "bonita e insightful" no estilo Samsung Health, transformando 
 
 ---
 
+### FE-08.4 — Baby Core Score Dinâmico (P0, depends on FE-08.1)
+**Objective:** Compute Baby Core wellness tile from real event data instead of static seed.
+
+#### User Stories
+- **US-08.4.1** — Como cuidador, eu quero que o tile Baby Core reflita os dados reais do meu bebê hoje.
+  - Acceptance Criteria:
+    - Baby Core tile shows scores computed from actual events of the day
+    - 4 pillars: Alimentação, Sono, Hidratação/Eliminação, Desenvolvimento
+    - Scores use age-appropriate reference ranges (AAP/WHO guidelines)
+    - Trend arrows compare today vs. yesterday
+    - Detail text describes actual values (e.g., "4 refeições — padrão consistente")
+    - When no events exist, shows "Sem dados" with score 0
+
+#### Tasks
+- **TK-08.4.1** — Criar tabela de metas por faixa etária (age_guidelines.py) ✅
+  - Deliverable: Reference ranges by age band (0-3m, 4-6m, 7-9m, 10-12m, 13-18m, 19-36m)
+  - Metrics: feeding_count, sleep_hours, diaper_count, activity_min, hydration_ml
+  - Owner: Backend Engineer
+  - Effort: 2 hours
+  - Status: **Done**
+
+- **TK-08.4.2** — Criar serviço baby_core_service.py com lógica de scoring ✅
+  - Deliverable: BabyCoreService.compute_pillars(baby_id) → 4 pillar dicts
+  - Logic: score 0-100 based on value vs. age range; trend from yesterday comparison
+  - Owner: Backend Engineer
+  - Effort: 4 hours
+  - Status: **Done**
+
+- **TK-08.4.3** — Adicionar activity_minutes ao daily_summary do event_service ✅
+  - Deliverable: New field in get_daily_summary output
+  - Owner: Backend Engineer
+  - Effort: 1 hour
+  - Status: **Done**
+
+- **TK-08.4.4** — Integrar cálculo real no bootstrap payload ✅
+  - Deliverable: ui_data router injects computed pillars into baby_core key
+  - Owner: Backend Engineer
+  - Effort: 1 hour
+  - Status: **Done**
+
+- **TK-08.4.5** — Testes unitários para scoring e guidelines
+  - Deliverable: Tests for age_guidelines.py and baby_core_service.py
+  - Owner: Backend Engineer
+  - Effort: 2 hours
+
+---
+
 ## Daily Summary Content
 
 ### Hero Card (EP-03)
