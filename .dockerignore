@@ -47,8 +47,11 @@ wheels/
 .env.development
 .env.production
 
-# Data files
-backend/data/*.json
+# Data files (exclude loose root-level JSON except users.json)
+backend/data/babies.json
+backend/data/caregivers.json
+backend/data/events.json
+backend/data/medications.json
 
 # Testing
 .pytest_cache
