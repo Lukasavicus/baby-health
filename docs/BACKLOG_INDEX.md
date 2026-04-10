@@ -128,20 +128,32 @@
 
 ---
 
+## EP-13 — Melhoria Contínua e Refatoração `P1`
+
+| Feature | Stories | Tasks | Priority |
+|---------|---------|-------|----------|
+| [FE-13.1 — Limpeza de Código Morto](features/FE-13.1-limpeza-codigo-morto.md) | [US-13.1.1](stories/US-13.1.1-codebase-limpo.md) | [TK-13.1.1](tasks/TK-13.1.1-remover-ui-nao-usados.md), [TK-13.1.2](tasks/TK-13.1.2-resolver-activity-v1-v2.md), [TK-13.1.3](tasks/TK-13.1.3-centralizar-constantes.md) | P1 |
+| [FE-13.2 — Componentes Reutilizáveis](features/FE-13.2-componentes-reutilizaveis.md) | [US-13.2.1](stories/US-13.2.1-componentes-compartilhados.md) | [TK-13.2.1](tasks/TK-13.2.1-week-bar-chart.md), [TK-13.2.2](tasks/TK-13.2.2-tracker-drawer.md), [TK-13.2.3](tasks/TK-13.2.3-event-log-list.md) | P1 |
+| [FE-13.3 — Hooks Compartilhados](features/FE-13.3-hooks-compartilhados.md) | [US-13.3.1](stories/US-13.3.1-hook-tracker-events.md) | [TK-13.3.1](tasks/TK-13.3.1-use-tracker-events.md) | P1 |
+| [FE-13.4 — Quebra de Arquivos Grandes](features/FE-13.4-quebra-arquivos-grandes.md) | [US-13.4.1](stories/US-13.4.1-arquivos-menores.md) | [TK-13.4.1](tasks/TK-13.4.1-quebrar-event-mappers.md), [TK-13.4.2](tasks/TK-13.4.2-quebrar-logsheet.md), [TK-13.4.3](tasks/TK-13.4.3-quebrar-today-page.md), [TK-13.4.4](tasks/TK-13.4.4-quebrar-feeding-detail.md) | P1 |
+| [FE-13.5 — Tipagem e Higiene](features/FE-13.5-tipagem-e-higiene.md) | [US-13.5.1](stories/US-13.5.1-tipos-concretos.md) | [TK-13.5.1](tasks/TK-13.5.1-substituir-any-tipos.md) | P1 |
+
+---
+
 ## Resumo Quantitativo
 
 | Nível | Quantidade |
 |-------|-----------|
-| Epics | 12 |
-| Features | 40 |
-| User Stories | 49 |
-| Tasks | 180 |
-| **Total de arquivos** | **270** |
+| Epics | 13 |
+| Features | 45 |
+| User Stories | 54 |
+| Tasks | 192 |
+| **Total de arquivos** | **291** |
 
 ### Por Prioridade
 
 | Prioridade | Features | Descrição |
 |------------|----------|-----------|
 | **P0** | 31 | MVP Core (EP-01 a EP-08, EP-12) |
-| **P1** | 7 | Post-MVP (EP-09 a EP-11 + filtro cuidadores + insights) |
+| **P1** | 12 | Post-MVP (EP-09 a EP-11 + filtro cuidadores + insights + EP-13 refatoração) |
 | **P2** | 2 | Futuro (curadoria externa, observações, saúde leve) |
