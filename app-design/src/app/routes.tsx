@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 import { Layout } from "./components/Layout";
 import { TodayPage } from "./components/pages/TodayPage";
 import { CaregiversPage } from "./components/pages/CaregiversPage";
@@ -20,11 +20,18 @@ import { VitaminsPage } from "./components/pages/VitaminsPage";
 import { HealthEventsPage } from "./components/pages/HealthEventsPage";
 import { MyDataPage } from "./components/pages/MyDataPage";
 import { TimelineDetailPage } from "./components/pages/TimelineDetailPage";
+import { LoginPage } from "./components/pages/LoginPage";
+import { ProtectedRoute } from "./ProtectedRoute";
 
 export const router = createBrowserRouter([
+  { path: "/login", Component: LoginPage },
   {
     path: "/",
-    Component: Layout,
+    element: (
+      <ProtectedRoute>
+        <Layout />
+      </ProtectedRoute>
+    ),
     children: [
       { index: true, Component: TodayPage },
       { path: "caregivers", Component: CaregiversPage },
@@ -48,4 +55,5 @@ export const router = createBrowserRouter([
       { path: "tracker/health", Component: HealthDetailPage },
     ],
   },
+  { path: "*", element: <Navigate to="/" replace /> },
 ]);

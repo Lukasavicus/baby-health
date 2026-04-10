@@ -6,6 +6,12 @@ function apiOrigin(): string {
 }
 
 export const CAREGIVER_STORAGE_KEY = "babyhealth_caregiver_id";
+const TOKEN_KEY = "babyhealth_token";
+
+function authHeaders(): Record<string, string> {
+  const token = localStorage.getItem(TOKEN_KEY);
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
 /** Build absolute or same-origin path with optional query params. */
 export function buildApiUrl(
@@ -27,6 +33,10 @@ export function buildApiUrl(
 }
 
 async function parseJsonResponse<T>(res: Response): Promise<T> {
+  if (res.status === 401) {
+    localStorage.removeItem(TOKEN_KEY);
+    throw new Error("Session expired");
+  }
   if (!res.ok) {
     const t = await res.text().catch(() => "");
     throw new Error(`${res.status}: ${t || res.statusText}`);
@@ -43,7 +53,7 @@ export interface ApiCaregiver {
 }
 
 export async function listCaregivers(): Promise<ApiCaregiver[]> {
-  const res = await fetch(buildApiUrl("/api/caregivers"));
+  const res = await fetch(buildApiUrl("/api/caregivers"), { headers: authHeaders() });
   return parseJsonResponse<ApiCaregiver[]>(res);
 }
 
@@ -91,6 +101,7 @@ export async function listEvents(args: {
       end_date: args.end_date,
       event_type: args.event_type,
     }),
+    { headers: authHeaders() },
   );
   return parseJsonResponse<ApiEvent[]>(res);
 }
@@ -98,7 +109,7 @@ export async function listEvents(args: {
 export async function createEvent(body: EventIncomingPayload): Promise<ApiEvent> {
   const res = await fetch(buildApiUrl("/api/events"), {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...authHeaders() },
     body: JSON.stringify({
       ...body,
       subtype: body.subtype ?? "",
@@ -113,14 +124,14 @@ export async function updateEvent(
 ): Promise<ApiEvent> {
   const res = await fetch(buildApiUrl(`/api/events/${id}`), {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...authHeaders() },
     body: JSON.stringify(patch),
   });
   return parseJsonResponse<ApiEvent>(res);
 }
 
 export async function deleteEvent(id: string): Promise<void> {
-  const res = await fetch(buildApiUrl(`/api/events/${id}`), { method: "DELETE" });
+  const res = await fetch(buildApiUrl(`/api/events/${id}`), { method: "DELETE", headers: authHeaders() });
   if (!res.ok) {
     const t = await res.text().catch(() => "");
     throw new Error(`${res.status}: ${t || res.statusText}`);
@@ -128,7 +139,7 @@ export async function deleteEvent(id: string): Promise<void> {
 }
 
 export async function getBabyUiState(babyId: string): Promise<Record<string, unknown>> {
-  const res = await fetch(buildApiUrl(`/api/ui/baby-state/${encodeURIComponent(babyId)}`));
+  const res = await fetch(buildApiUrl(`/api/ui/baby-state/${encodeURIComponent(babyId)}`), { headers: authHeaders() });
   return parseJsonResponse<Record<string, unknown>>(res);
 }
 
@@ -138,7 +149,7 @@ export async function putBabyUiState(
 ): Promise<Record<string, unknown>> {
   const res = await fetch(buildApiUrl(`/api/ui/baby-state/${encodeURIComponent(babyId)}`), {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...authHeaders() },
     body: JSON.stringify(patch),
   });
   return parseJsonResponse<Record<string, unknown>>(res);
@@ -168,6 +179,7 @@ export async function uploadProfileImage(file: File): Promise<{ url: string }> {
   fd.append("file", file);
   const res = await fetch(buildApiUrl("/api/media/upload"), {
     method: "POST",
+    headers: authHeaders(),
     body: fd,
   });
   if (!res.ok) {
@@ -183,7 +195,7 @@ export async function updateBaby(
 ): Promise<unknown> {
   const res = await fetch(buildApiUrl(`/api/babies/${id}`), {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...authHeaders() },
     body: JSON.stringify(body),
   });
   return parseJsonResponse(res);
@@ -201,7 +213,7 @@ export function bootstrapUrl(babyId?: string): string {
 
 export async function fetchUIBootstrap(babyId?: string): Promise<UIBootstrapPayload> {
   const url = bootstrapUrl(babyId);
-  const res = await fetch(url);
+  const res = await fetch(url, { headers: authHeaders() });
   if (!res.ok) {
     const text = await res.text().catch(() => "");
     throw new Error(`Bootstrap failed ${res.status}: ${text || res.statusText}`);

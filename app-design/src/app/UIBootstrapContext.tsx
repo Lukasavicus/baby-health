@@ -14,6 +14,7 @@ import {
   type ApiCaregiver,
 } from "@/api/client";
 import type { UIBootstrapPayload } from "@/api/types";
+import { useAuth } from "./AuthContext";
 
 interface UIBootstrapState {
   data: UIBootstrapPayload | null;
@@ -54,6 +55,8 @@ export function UIBootstrapProvider({
     }
   }, []);
 
+  const { logout, user: authUser, isAuthenticated } = useAuth();
+
   const refetch = useCallback(async (bid?: string) => {
     setLoading(true);
     setError(null);
@@ -65,17 +68,26 @@ export function UIBootstrapProvider({
         rawId != null && String(rawId).trim() !== "" ? String(rawId).trim() : null,
       );
     } catch (e) {
-      setError(e instanceof Error ? e : new Error(String(e)));
+      const msg = e instanceof Error ? e.message : String(e);
+      if (msg.includes("401") || msg.includes("Session expired")) {
+        logout();
+        return;
+      }
+      setError(e instanceof Error ? e : new Error(msg));
       setData(null);
       setBabyId(null);
     } finally {
       setLoading(false);
     }
-  }, [initialBabyId]);
+  }, [initialBabyId, logout]);
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      setLoading(false);
+      return;
+    }
     void refetch(initialBabyId);
-  }, [initialBabyId, refetch]);
+  }, [initialBabyId, refetch, isAuthenticated]);
 
   useEffect(() => {
     if (!babyId) {
@@ -87,25 +99,31 @@ export function UIBootstrapProvider({
       try {
         const list = await listCaregivers();
         setCaregivers(list);
-        let stored: string | null = null;
-        try {
-          stored = localStorage.getItem(CAREGIVER_STORAGE_KEY);
-        } catch {
-          stored = null;
-        }
-        if (stored && list.some((c) => c.id === stored)) {
-          setCaregiverIdState(stored);
-        } else if (list[0]) {
-          setCaregiverIdState(list[0].id);
+
+        const tokenCgId = authUser?.caregiver_id;
+        if (tokenCgId && list.some((c) => c.id === tokenCgId)) {
+          setCaregiverIdState(tokenCgId);
         } else {
-          setCaregiverIdState(null);
+          let stored: string | null = null;
+          try {
+            stored = localStorage.getItem(CAREGIVER_STORAGE_KEY);
+          } catch {
+            stored = null;
+          }
+          if (stored && list.some((c) => c.id === stored)) {
+            setCaregiverIdState(stored);
+          } else if (list[0]) {
+            setCaregiverIdState(list[0].id);
+          } else {
+            setCaregiverIdState(null);
+          }
         }
       } catch {
         setCaregivers([]);
         setCaregiverIdState(null);
       }
     })();
-  }, [babyId]);
+  }, [babyId, authUser?.caregiver_id]);
 
   const canPersist = Boolean(babyId && caregiverId);
 

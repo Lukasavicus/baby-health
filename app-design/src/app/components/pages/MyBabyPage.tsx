@@ -18,10 +18,12 @@ import {
   Baby,
   Database,
   Clock,
+  LogOut,
 } from "lucide-react";
 import { TrackerCard } from "../TrackerCard";
 import { getIcon } from "../../iconMap";
 import { useUIBootstrap } from "../../UIBootstrapContext";
+import { useAuth } from "../../AuthContext";
 import { toast } from "sonner";
 import { resolveMediaSrc, updateBaby, uploadProfileImage } from "@/api/client";
 
@@ -71,6 +73,7 @@ function calculateAge(birthDate: Date): string {
 export function MyBabyPage() {
   const navigate = useNavigate();
   const { data, babyId, refetch } = useUIBootstrap();
+  const { logout, user } = useAuth();
   const growthData = useMemo(() => {
     const raw = data?.profile_extras?.growthCards ?? [];
     return raw.map((g: { label: string; value: string; unit: string; percentile: number; icon: string; color: string }) => ({
@@ -529,6 +532,26 @@ export function MyBabyPage() {
           </div>
           <ChevronRight className="w-4 h-4 text-muted-foreground" />
         </div>
+      </div>
+
+      {/* Logout */}
+      <div className="px-4 mb-6">
+        <button
+          onClick={() => { logout(); navigate("/login"); }}
+          className="w-full rounded-3xl border border-red-200 bg-red-50/60 p-4 flex items-center gap-4 active:scale-[0.98] transition-transform"
+        >
+          <div className="w-11 h-11 rounded-2xl bg-red-100/80 flex items-center justify-center shrink-0">
+            <LogOut className="w-5 h-5 text-red-500" />
+          </div>
+          <div className="flex-1 text-left">
+            <p className="text-sm font-medium text-red-600">Sair</p>
+            {user && (
+              <p className="text-[10px] text-red-400">
+                Conectado como {user.display_name}
+              </p>
+            )}
+          </div>
+        </button>
       </div>
 
       {/* --- Edit Profile Drawer --- */}
