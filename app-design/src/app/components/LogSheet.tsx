@@ -138,17 +138,16 @@ export function LogSheet({ open, onOpenChange, onLog, initialCategory = null, in
       setNotes("");
       // Apply initialSubType for feeding
       if (initialCategory === "feeding" && initialSubType) {
-        // Map quick-action ids to feedType ids
-        const feedMap: Record<string, { type: string; side: string }> = {
-          breast_l: { type: "breast", side: "Esquerdo" },
-          breast_r: { type: "breast", side: "Direito" },
-          bottle: { type: "bottle", side: "" },
-          solids: { type: "solids", side: "" },
+        const feedMap: Record<string, { type: string; side: string; brand: string }> = {
+          breast: { type: "breast", side: "", brand: "" },
+          formula: { type: "formula", side: "", brand: "Mamadeira" },
+          solids: { type: "solids", side: "", brand: "" },
         };
         const mapped = feedMap[initialSubType];
         if (mapped) {
           setFeedType(mapped.type);
           setFeedSide(mapped.side);
+          setFeedFormula(mapped.brand);
         } else {
           setFeedType(initialSubType);
           setFeedSide("");
@@ -315,8 +314,8 @@ export function LogSheet({ open, onOpenChange, onLog, initialCategory = null, in
                 </div>
               </>
             )}
-            {/* Bottle / Formula: Quantity */}
-            {(feedType === "bottle" || feedType === "formula") && (
+            {/* Formula: Quantity */}
+            {feedType === "formula" && (
               <div className="mb-4">
                 <p className="text-sm text-muted-foreground mb-2">Quantidade (ml)</p>
                 <div className="flex items-center gap-4 justify-center">

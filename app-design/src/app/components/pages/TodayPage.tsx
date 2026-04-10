@@ -8,8 +8,6 @@ import {
   Syringe,
   ShieldPlus,
   Heart,
-  Hand,
-  CupSoda,
   UtensilsCrossed,
   Clock,
   Check,
@@ -18,6 +16,7 @@ import {
   Droplets,
   Moon,
 } from "lucide-react";
+import { toast } from "sonner";
 import { TrackerCard } from "../TrackerCard";
 import { AwakeWindow } from "../AwakeWindow";
 import { Timeline, type TimelineEntry } from "../Timeline";
@@ -248,6 +247,11 @@ export function TodayPage() {
     setLogOpen(true);
   };
 
+  const logTypeLabels: Record<string, string> = {
+    feeding: "Alimentação", hydration: "Hidratação", sleep: "Sono",
+    diaper: "Fralda", activity: "Atividade", bath: "Banho", health: "Saúde",
+  };
+
   const handleLog = async (entry: Record<string, unknown>) => {
     if (canPersist && babyId && caregiverId) {
       try {
@@ -255,6 +259,7 @@ export function TodayPage() {
         const payload = logSheetEntryToIncoming(entry, babyId, caregiverId, day);
         await createEvent(payload);
         await reloadTodayTimeline();
+        toast.success(`${logTypeLabels[entry.type as string] ?? "Registro"} salvo`);
 
         if (entry.type === "health" && entry.healthName) {
           try {
@@ -294,6 +299,7 @@ export function TodayPage() {
     ]);
     if (entry.type === "hydration")
       setWater(water + Number(entry.quantity || 60));
+    toast.success(`${logTypeLabels[entry.type as string] ?? "Registro"} salvo`);
   };
 
   const handleToggleSleep = () => {
@@ -438,29 +444,20 @@ export function TodayPage() {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                handleQuickFeeding("breast_l");
+                handleQuickFeeding("breast");
               }}
               className="flex-1 bg-baby-peach/30 text-foreground/70 py-2 rounded-xl text-xs active:scale-95 transition-transform flex items-center justify-center gap-1"
             >
-              <Hand className="w-3 h-3 inline mr-1" />Esq
+              <Milk className="w-3 h-3 inline mr-1" />Amamentação
             </button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                handleQuickFeeding("breast_r");
+                handleQuickFeeding("formula");
               }}
               className="flex-1 bg-baby-peach/30 text-foreground/70 py-2 rounded-xl text-xs active:scale-95 transition-transform flex items-center justify-center gap-1"
             >
-              <Hand className="w-3 h-3 inline mr-1" />Dir
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleQuickFeeding("bottle");
-              }}
-              className="flex-1 bg-baby-peach/30 text-foreground/70 py-2 rounded-xl text-xs active:scale-95 transition-transform flex items-center justify-center gap-1"
-            >
-              <CupSoda className="w-3 h-3 inline mr-1" />Mamad.
+              <Milk className="w-3 h-3 inline mr-1" />Mamadeira
             </button>
             <button
               onClick={(e) => {

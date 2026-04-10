@@ -2,9 +2,10 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router";
 import { Drawer } from "vaul";
 import {
-  ArrowLeft, Milk, Apple, CupSoda, Plus, Pencil, Trash2, X, Check,
-  Search, Loader2, Minus, FlaskConical, Clock,
+  ArrowLeft, Milk, Apple, Plus, Pencil, Trash2, X, Check,
+  Search, Loader2, Minus, FlaskConical, Clock, Icon,
 } from "lucide-react";
+import { bottleBaby } from "@lucide/lab";
 import { EventDateField, clampYmdNotAfterToday, todayYmd } from "../EventDateField";
 import { TimePickerField } from "../TimePickerDialog";
 import { TimePeriodFilter } from "../TimePeriodFilter";
@@ -35,7 +36,7 @@ interface FeedingEntry {
   id: string;
   date?: string;
   time: string;
-  type: "breast" | "bottle" | "formula" | "solids";
+  type: "breast" | "formula" | "solids";
   typeLabel: string;
   side?: string;
   duration?: string;
@@ -51,16 +52,6 @@ export function FeedingDetailPage() {
   const { data, babyId, caregiverId, canPersist } = useUIBootstrap();
 
   const foodDB = useMemo(() => (data?.food_catalog?.foods ?? []) as FoodResult[], [data]);
-
-  const searchFoods = useCallback(
-    async (query: string): Promise<FoodResult[]> => {
-      await new Promise((r) => setTimeout(r, 600));
-      if (!query.trim()) return [];
-      const q = query.toLowerCase();
-      return foodDB.filter((f) => f.name.toLowerCase().includes(q));
-    },
-    [foodDB],
-  );
 
   const formulaBrands = useMemo(
     () => (data?.catalogs?.formulaBrands ?? []) as string[],
@@ -127,13 +118,36 @@ export function FeedingDetailPage() {
     return seedWeekSummary;
   }, [canPersist, feedApiEvents, weekLabels, seedWeekSummary]);
 
-  const maxCount = weekSummary.length ? Math.max(...weekSummary.map((d) => d.count), 1) : 1;
+  const [filterType, setFilterType] = useState<"all" | "breast" | "formula" | "solids">("all");
+
+  const filteredWeekSummary = useMemo(() => {
+    if (filterType === "all") return weekSummary;
+    if (!canPersist || feedApiEvents.length === 0) return weekSummary;
+    const subtypeMap: Record<string, string[]> = {
+      breast: ["breast"],
+      formula: ["bottle_breastmilk", "bottle_formula", "bottle"],
+      solids: ["solids"],
+    };
+    const allowed = subtypeMap[filterType] || [];
+    const filtered = feedApiEvents.filter((ev) => allowed.includes(ev.subtype || ""));
+    return weekCountsByDayForType(filtered, weekLabels, new Date(), "feeding");
+  }, [filterType, weekSummary, canPersist, feedApiEvents, weekLabels]);
+
+  const filteredFeedings = useMemo(() => {
+    if (filterType === "all") return feedings;
+    return feedings.filter((f) => f.type === filterType);
+  }, [filterType, feedings]);
+
+  const rawMax = filteredWeekSummary.length ? Math.max(...filteredWeekSummary.map((d) => d.count), 1) : 1;
+  const gridStep = rawMax <= 5 ? 1 : rawMax <= 15 ? 2 : 5;
+  const adjustedMax = Math.ceil(rawMax / gridStep) * gridStep || gridStep;
+  const gridLines = Array.from({ length: Math.floor(adjustedMax / gridStep) }, (_, i) => (i + 1) * gridStep);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState<FeedingEntry | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   // Form state
-  const [formType, setFormType] = useState<FeedingEntry["type"]>("breast");
+  const [formType, setFormType] = useState<"breast" | "formula" | "solids">("breast");
   const [formTime, setFormTime] = useState("");
   const [formSide, setFormSide] = useState("");
   const [formDuration, setFormDuration] = useState(10);
@@ -148,9 +162,79 @@ export function FeedingDetailPage() {
   const [foodResults, setFoodResults] = useState<FoodResult[]>([]);
   const [foodSearching, setFoodSearching] = useState(false);
 
+  // Custom food
+  const CUSTOM_FOODS_KEY = "babyhealth_custom_foods";
+  const [showCustomFood, setShowCustomFood] = useState(false);
+  const [customName, setCustomName] = useState("");
+  const [customCal, setCustomCal] = useState(0);
+  const [customProtein, setCustomProtein] = useState(0);
+  const [customCarbs, setCustomCarbs] = useState(0);
+  const [customFat, setCustomFat] = useState(0);
+  const [customFiber, setCustomFiber] = useState(0);
+  const [customUnit, setCustomUnit] = useState<"g" | "portion">("g");
+  const [customGramsPerPortion, setCustomGramsPerPortion] = useState(100);
+
+  const customFoods = useMemo<FoodResult[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem(CUSTOM_FOODS_KEY) || "[]");
+    } catch { return []; }
+  }, [showCustomFood]);
+
+  const allFoodDB = useMemo(() => [...foodDB, ...customFoods], [foodDB, customFoods]);
+
+  const searchFoods = useCallback(
+    async (query: string): Promise<FoodResult[]> => {
+      await new Promise((r) => setTimeout(r, 600));
+      if (!query.trim()) return [];
+      const q = query.toLowerCase();
+      return allFoodDB.filter((f) => f.name.toLowerCase().includes(q));
+    },
+    [allFoodDB],
+  );
+
   const nowTime = () => {
     const n = new Date();
     return `${n.getHours().toString().padStart(2, "0")}:${n.getMinutes().toString().padStart(2, "0")}`;
+  };
+
+  const resetCustomFood = () => {
+    setShowCustomFood(false);
+    setCustomName("");
+    setCustomCal(0);
+    setCustomProtein(0);
+    setCustomCarbs(0);
+    setCustomFat(0);
+    setCustomFiber(0);
+    setCustomUnit("g");
+    setCustomGramsPerPortion(100);
+  };
+
+  const saveCustomFood = () => {
+    const newFood: FoodResult = {
+      id: `custom_${Date.now()}`,
+      name: customName || foodQuery,
+      calories: customUnit === "portion" && customGramsPerPortion > 0
+        ? Math.round((customCal / customGramsPerPortion) * 100)
+        : customCal,
+      protein: customUnit === "portion" && customGramsPerPortion > 0
+        ? Math.round(((customProtein / customGramsPerPortion) * 100) * 10) / 10
+        : customProtein,
+      carbs: customUnit === "portion" && customGramsPerPortion > 0
+        ? Math.round(((customCarbs / customGramsPerPortion) * 100) * 10) / 10
+        : customCarbs,
+      fat: customUnit === "portion" && customGramsPerPortion > 0
+        ? Math.round(((customFat / customGramsPerPortion) * 100) * 10) / 10
+        : customFat,
+      fiber: customUnit === "portion" && customGramsPerPortion > 0
+        ? Math.round(((customFiber / customGramsPerPortion) * 100) * 10) / 10
+        : customFiber,
+    };
+    const existing: FoodResult[] = JSON.parse(localStorage.getItem(CUSTOM_FOODS_KEY) || "[]");
+    localStorage.setItem(CUSTOM_FOODS_KEY, JSON.stringify([...existing, newFood]));
+    setFormFood(newFood);
+    setFoodQuery(newFood.name);
+    setFoodResults([]);
+    resetCustomFood();
   };
 
   const openNew = () => {
@@ -162,10 +246,11 @@ export function FeedingDetailPage() {
     setFormAmount(120);
     setFormNotes("");
     setFormFood(null);
-    setFormFormula("");
+    setFormFormula("Mamadeira");
     setFoodQuery("");
     setFoodResults([]);
     setFormDateYmd(todayYmd());
+    resetCustomFood();
     setDrawerOpen(true);
   };
 
@@ -278,10 +363,10 @@ export function FeedingDetailPage() {
     setFoodSearching(false);
   };
 
-  const breastCount = feedings.filter((f) => f.type === "breast" || f.type === "bottle").length;
+  const breastCount = feedings.filter((f) => f.type === "breast").length;
   const solidsCount = feedings.filter((f) => f.type === "solids").length;
   const totalMl = feedings
-    .filter((f) => f.type === "bottle" || f.type === "formula")
+    .filter((f) => f.type === "formula")
     .reduce((acc, f) => acc + parseInt(f.amount || "0"), 0);
 
   return (
@@ -301,31 +386,40 @@ export function FeedingDetailPage() {
         </button>
       </div>
 
-      {/* Summary */}
+      {/* Summary (clickable filters) */}
       <div className="px-4 mb-4">
         <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
           <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="w-10 h-10 rounded-full bg-baby-peach/40 flex items-center justify-center mx-auto mb-2">
-                <Milk className="w-5 h-5 text-foreground/60" />
+            <button
+              onClick={() => setFilterType(filterType === "breast" ? "all" : "breast")}
+              className={`transition-all ${filterType !== "all" && filterType !== "breast" ? "opacity-40" : ""}`}
+            >
+              <div className={`w-10 h-10 rounded-full bg-baby-peach/40 flex items-center justify-center mx-auto mb-2 transition-all ${filterType === "breast" ? "ring-2 ring-baby-peach scale-110" : ""}`}>
+                <Icon iconNode={bottleBaby} className="w-5 h-5 text-foreground/60" />
               </div>
               <p className="text-2xl">{breastCount}x</p>
               <p className="text-[10px] text-muted-foreground">leite</p>
-            </div>
-            <div>
-              <div className="w-10 h-10 rounded-full bg-baby-mint/40 flex items-center justify-center mx-auto mb-2">
+            </button>
+            <button
+              onClick={() => setFilterType(filterType === "solids" ? "all" : "solids")}
+              className={`transition-all ${filterType !== "all" && filterType !== "solids" ? "opacity-40" : ""}`}
+            >
+              <div className={`w-10 h-10 rounded-full bg-baby-mint/40 flex items-center justify-center mx-auto mb-2 transition-all ${filterType === "solids" ? "ring-2 ring-baby-mint scale-110" : ""}`}>
                 <Apple className="w-5 h-5 text-foreground/60" />
               </div>
               <p className="text-2xl">{solidsCount}x</p>
               <p className="text-[10px] text-muted-foreground">sólidos</p>
-            </div>
-            <div>
-              <div className="w-10 h-10 rounded-full bg-baby-blue/40 flex items-center justify-center mx-auto mb-2">
-                <CupSoda className="w-5 h-5 text-foreground/60" />
+            </button>
+            <button
+              onClick={() => setFilterType(filterType === "formula" ? "all" : "formula")}
+              className={`transition-all ${filterType !== "all" && filterType !== "formula" ? "opacity-40" : ""}`}
+            >
+              <div className={`w-10 h-10 rounded-full bg-baby-blue/40 flex items-center justify-center mx-auto mb-2 transition-all ${filterType === "formula" ? "ring-2 ring-baby-blue scale-110" : ""}`}>
+                <Milk className="w-5 h-5 text-foreground/60" />
               </div>
               <p className="text-2xl">{totalMl}</p>
               <p className="text-[10px] text-muted-foreground">ml total</p>
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -334,19 +428,47 @@ export function FeedingDetailPage() {
       <div className="px-4 mb-4">
         <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
           <p className="text-sm text-muted-foreground mb-4">Refeições na semana</p>
-          <div className="flex items-end justify-between gap-2 h-28">
-            {weekSummary.map((d) => (
-              <div key={d.day} className="flex-1 flex flex-col items-center gap-1">
-                {d.count > 0 && (
-                  <span className="text-[10px] text-foreground/60">{d.count}</span>
-                )}
-                <div
-                  className="w-full rounded-lg bg-baby-peach/60 transition-all"
-                  style={{ height: `${(d.count / maxCount) * 100}%`, minHeight: 8 }}
-                />
-                <span className="text-[10px] text-muted-foreground">{d.day}</span>
+          <div className="flex">
+            {/* Y-axis labels */}
+            <div className="flex flex-col justify-between h-40 pr-2 pb-5">
+              {[...gridLines].reverse().map((val) => (
+                <span key={val} className="text-[9px] text-muted-foreground leading-none">{val}</span>
+              ))}
+              <span className="text-[9px] text-muted-foreground leading-none">0</span>
+            </div>
+            {/* Chart area */}
+            <div className="flex-1 relative h-40">
+              {/* Background + gridlines */}
+              <div className="absolute inset-0 bottom-5 rounded-lg bg-secondary/20">
+                {gridLines.map((val) => (
+                  <div
+                    key={val}
+                    className="absolute w-full border-t border-dashed border-border/40"
+                    style={{ bottom: `${(val / adjustedMax) * 100}%` }}
+                  />
+                ))}
               </div>
-            ))}
+              {/* Bars + day labels */}
+              <div className="relative flex items-end justify-between gap-2 h-full pb-5">
+                {filteredWeekSummary.map((d) => (
+                  <div key={d.day} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                    {d.count > 0 && (
+                      <span className="text-[10px] text-foreground/60">{d.count}</span>
+                    )}
+                    <div
+                      className="w-full rounded-lg bg-baby-peach/60 transition-all"
+                      style={{ height: `${(d.count / adjustedMax) * 100}%`, minHeight: d.count > 0 ? 8 : 4 }}
+                    />
+                  </div>
+                ))}
+              </div>
+              {/* Day labels */}
+              <div className="flex justify-between absolute bottom-0 w-full">
+                {filteredWeekSummary.map((d) => (
+                  <span key={`label-${d.day}`} className="flex-1 text-center text-[10px] text-muted-foreground">{d.day}</span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -357,10 +479,10 @@ export function FeedingDetailPage() {
           <TimePeriodFilter filter={timePeriod} />
           <p className="text-sm text-muted-foreground mb-3">{timePeriod.title}</p>
           <div className="space-y-1">
-            {feedings.length === 0 && (
+            {filteredFeedings.length === 0 && (
               <p className="text-xs text-muted-foreground text-center py-6">Nenhum registro neste período.</p>
             )}
-            {feedings.map((f) => (
+            {filteredFeedings.map((f) => (
               <div key={f.id} className="flex items-start gap-3 py-2.5 group">
                 <div className="text-xs text-muted-foreground w-12 pt-0.5 shrink-0">
                   {timePeriod.period !== "today" && <p className="text-[10px] font-medium">{f.date}</p>}
@@ -525,8 +647,8 @@ export function FeedingDetailPage() {
                 </>
               )}
 
-              {/* Bottle / Formula quantity */}
-              {(formType === "bottle" || formType === "formula") && (
+              {/* Formula quantity */}
+              {formType === "formula" && (
                 <div className="mb-4">
                   <p className="text-sm text-muted-foreground mb-2">Quantidade (ml)</p>
                   <div className="flex items-center gap-4 justify-center">
@@ -660,6 +782,88 @@ export function FeedingDetailPage() {
                       </div>
                     )}
 
+                    {/* No results -- offer custom food */}
+                    {foodResults.length === 0 && foodQuery.length >= 2 && !foodSearching && !formFood && !showCustomFood && (
+                      <button
+                        onClick={() => { setShowCustomFood(true); setCustomName(foodQuery); }}
+                        className="mt-2 w-full text-left p-3 bg-baby-peach/10 border border-baby-peach/20 rounded-xl text-sm transition-colors hover:bg-baby-peach/20"
+                      >
+                        <Plus className="w-3.5 h-3.5 inline mr-1.5 text-foreground/60" />
+                        Criar &quot;{foodQuery}&quot; como alimento personalizado
+                      </button>
+                    )}
+
+                    {/* Custom food form */}
+                    {showCustomFood && (
+                      <div className="mt-3 bg-baby-peach/10 border border-baby-peach/20 rounded-2xl p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-medium">Novo alimento</p>
+                          <button onClick={resetCustomFood} className="text-xs text-muted-foreground">✕</button>
+                        </div>
+                        <input
+                          type="text"
+                          value={customName}
+                          onChange={(e) => setCustomName(e.target.value)}
+                          placeholder="Nome do alimento"
+                          className="w-full bg-secondary rounded-xl p-2.5 text-sm outline-none"
+                        />
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => setCustomUnit("g")}
+                            className={`flex-1 py-2 rounded-full text-xs transition-colors ${customUnit === "g" ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}
+                          >
+                            Por 100g
+                          </button>
+                          <button
+                            onClick={() => setCustomUnit("portion")}
+                            className={`flex-1 py-2 rounded-full text-xs transition-colors ${customUnit === "portion" ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}
+                          >
+                            Por porção
+                          </button>
+                        </div>
+                        {customUnit === "portion" && (
+                          <div>
+                            <p className="text-[10px] text-muted-foreground mb-1">Gramas por porção</p>
+                            <input
+                              type="number" inputMode="numeric" min={1} value={customGramsPerPortion}
+                              onChange={(e) => setCustomGramsPerPortion(Math.max(1, Number(e.target.value) || 1))}
+                              className="w-full bg-secondary rounded-xl p-2.5 text-sm outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                            />
+                          </div>
+                        )}
+                        <div className="grid grid-cols-5 gap-2">
+                          {([
+                            { label: "kcal", val: customCal, set: setCustomCal },
+                            { label: "Proteína", val: customProtein, set: setCustomProtein },
+                            { label: "Carbs", val: customCarbs, set: setCustomCarbs },
+                            { label: "Gordura", val: customFat, set: setCustomFat },
+                            { label: "Fibra", val: customFiber, set: setCustomFiber },
+                          ] as const).map((m) => (
+                            <div key={m.label}>
+                              <p className="text-[9px] text-muted-foreground mb-1 text-center">{m.label}</p>
+                              <input
+                                type="number" inputMode="decimal" min={0}
+                                value={m.val || ""}
+                                onChange={(e) => m.set(Math.max(0, Number(e.target.value) || 0))}
+                                className="w-full bg-secondary rounded-lg p-1.5 text-xs text-center outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-[10px] text-muted-foreground text-center">
+                          {customUnit === "g" ? "Valores por 100g" : `Valores por porção (${customGramsPerPortion}g) — serão convertidos para 100g`}
+                        </p>
+                        <button
+                          onClick={saveCustomFood}
+                          disabled={!customName.trim()}
+                          className="w-full bg-primary text-primary-foreground py-2.5 rounded-xl text-sm flex items-center justify-center gap-1.5 active:scale-[0.98] transition-transform disabled:opacity-50"
+                        >
+                          <Check className="w-4 h-4" />
+                          Salvar alimento
+                        </button>
+                      </div>
+                    )}
+
                     {/* Selected food nutrition card */}
                     {formFood && (
                       <div className="mt-3 bg-baby-peach/10 border border-baby-peach/20 rounded-2xl p-3">
@@ -695,7 +899,7 @@ export function FeedingDetailPage() {
                           </div>
                         </div>
                         <p className="text-[10px] text-muted-foreground mt-2 text-center">
-                          Dados via FatSecret API · valores por 100g
+                          {formFood.id.startsWith("custom_") ? "Alimento personalizado" : "Dados via FatSecret API"} · valores por 100g
                         </p>
                       </div>
                     )}

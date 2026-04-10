@@ -414,7 +414,7 @@ export function apiEventToFeedingEntry(
 ): {
   id: string;
   time: string;
-  type: "breast" | "bottle" | "formula" | "solids";
+  type: "breast" | "formula" | "solids";
   typeLabel: string;
   side?: string;
   duration?: string;
@@ -430,10 +430,13 @@ export function apiEventToFeedingEntry(
     duration_min?: number;
     food_name?: string;
   };
-  let type: "breast" | "bottle" | "formula" | "solids" = "breast";
+  let type: "breast" | "formula" | "solids" = "breast";
   if (ev.subtype === "solids") type = "solids";
-  else if (ev.subtype === "bottle_breastmilk") type = "bottle";
-  else if (ev.subtype === "bottle_formula") type = "formula";
+  else if (ev.subtype === "bottle_breastmilk" || ev.subtype === "bottle_formula" || ev.subtype === "bottle") type = "formula";
+
+  const brand = type === "formula"
+    ? (md?.formula_brand || (ev.subtype === "bottle_breastmilk" ? "Mamadeira" : ""))
+    : undefined;
 
   const typeLabel = feedingTypes.find((f) => f.id === type)?.label || "";
   const durMin = md?.duration_min ?? 10;
@@ -450,7 +453,7 @@ export function apiEventToFeedingEntry(
     notes: ev.notes || "",
     food: null,
     foodName: type === "solids" && md?.food_name ? md.food_name : undefined,
-    formulaBrand: type === "formula" ? md?.formula_brand || "" : undefined,
+    formulaBrand: brand,
   };
 }
 
@@ -486,7 +489,7 @@ export function feedingEntryToIncoming(
       notes: e.notes || undefined,
     };
   }
-  if (e.type === "bottle" || e.type === "formula") {
+  if (e.type === "formula") {
     return {
       baby_id: babyId,
       caregiver_id: caregiverId,

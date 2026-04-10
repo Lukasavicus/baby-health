@@ -49,10 +49,6 @@
       "label": "Amamentação"
     },
     {
-      "id": "bottle",
-      "label": "Mamadeira"
-    },
-    {
       "id": "formula",
       "label": "Fórmula"
     },
@@ -62,6 +58,7 @@
     }
   ],
   "formulaBrands": [
+    "Mamadeira",
     "NAN 1",
     "NAN 2",
     "Aptamil 1",
