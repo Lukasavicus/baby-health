@@ -62,9 +62,9 @@ app.include_router(baby_ui_state.router)
 app.include_router(media.router)
 
 
-@app.get("/")
-async def root():
-    """Root endpoint"""
+@app.get("/api")
+async def api_root():
+    """API info endpoint"""
     return {
         "name": settings.app_name,
         "version": settings.app_version,
