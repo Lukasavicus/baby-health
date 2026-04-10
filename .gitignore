@@ -23,6 +23,7 @@ npm-debug.log*
 
 # Data (local runtime; versioned UI defaults live in backend/ui_app_defaults/)
 backend/data/*.json
+!backend/data/users.json
 !backend/data/.gitkeep
 !backend/ui_app_defaults/**/*.json
 # Uploaded profile images (keep folder placeholders only)
