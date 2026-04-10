@@ -113,9 +113,10 @@ export function HydrationDetailPage() {
   const [formNotes, setFormNotes] = useState("");
   const [formDateYmd, setFormDateYmd] = useState(() => todayYmd());
 
+  const [filterType, setFilterType] = useState<"all" | "water" | "other">("all");
+
   const goal = 500;
   const todayTotal = logs.reduce((a, b) => a + b.amount, 0);
-  const maxMl = weekData.length ? Math.max(...weekData.map((d) => d.ml), 1) : 1;
   const progressPct = Math.min((todayTotal / goal) * 100, 100);
 
   const circleR = 50;
@@ -123,6 +124,26 @@ export function HydrationDetailPage() {
 
   const waterCount = logs.filter((l) => l.type === "water").length;
   const juiceCount = logs.filter((l) => l.type === "juice" || l.type === "tea" || l.type === "other").length;
+
+  const filteredWeekData = useMemo(() => {
+    if (filterType === "all") return weekData;
+    if (!canPersist || hydApiEvents.length === 0) return weekData;
+    const filtered = filterType === "water"
+      ? hydApiEvents.filter((e) => (e.subtype ?? "water") === "water")
+      : hydApiEvents.filter((e) => (e.subtype ?? "water") !== "water");
+    return weekMlByDay(filtered, weekLabels, new Date());
+  }, [filterType, weekData, canPersist, hydApiEvents, weekLabels]);
+
+  const filteredLogs = useMemo(() => {
+    if (filterType === "all") return logs;
+    if (filterType === "water") return logs.filter((l) => l.type === "water");
+    return logs.filter((l) => l.type !== "water");
+  }, [filterType, logs]);
+
+  const chartMax = filteredWeekData.length ? Math.max(...filteredWeekData.map((d) => d.ml), 1) : 1;
+  const gridStep = chartMax <= 100 ? 50 : chartMax <= 300 ? 50 : chartMax <= 600 ? 100 : 200;
+  const adjustedMax = Math.max(Math.ceil(chartMax / gridStep) * gridStep, gridStep);
+  const gridLines = Array.from({ length: Math.floor(adjustedMax / gridStep) }, (_, i) => (i + 1) * gridStep);
 
   const nowTime = () => {
     const n = new Date();
@@ -225,11 +246,6 @@ export function HydrationDetailPage() {
     })();
   };
 
-  // Smart quick amounts
-  const lastThree = logs.slice(-3);
-  const avgRaw = lastThree.length > 0 ? lastThree.reduce((s, l) => s + l.amount, 0) / lastThree.length : 60;
-  const smartAmount = Math.max(30, Math.round(avgRaw / 30) * 30);
-
   return (
     <div className="pb-6">
       {/* Header — same pattern as feeding */}
@@ -252,27 +268,27 @@ export function HydrationDetailPage() {
       <div className="px-4 mb-4">
         <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
           <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="w-10 h-10 rounded-full bg-baby-blue/30 flex items-center justify-center mx-auto mb-2">
+            <button onClick={() => setFilterType("all")}>
+              <div className={`w-10 h-10 rounded-full bg-baby-blue/30 flex items-center justify-center mx-auto mb-2 transition-all ${filterType !== "all" ? "opacity-40" : ""}`}>
                 <Droplets className="w-5 h-5 text-baby-blue" />
               </div>
               <p className="text-2xl">{todayTotal}</p>
               <p className="text-[10px] text-muted-foreground">ml total</p>
-            </div>
-            <div>
-              <div className="w-10 h-10 rounded-full bg-baby-mint/30 flex items-center justify-center mx-auto mb-2">
+            </button>
+            <button onClick={() => setFilterType(filterType === "water" ? "all" : "water")}>
+              <div className={`w-10 h-10 rounded-full bg-baby-mint/30 flex items-center justify-center mx-auto mb-2 transition-all ${filterType === "water" ? "ring-2 ring-baby-blue scale-110" : filterType !== "all" ? "opacity-40" : ""}`}>
                 <GlassWater className="w-5 h-5 text-foreground/60" />
               </div>
               <p className="text-2xl">{waterCount}x</p>
               <p className="text-[10px] text-muted-foreground">água</p>
-            </div>
-            <div>
-              <div className="w-10 h-10 rounded-full bg-baby-peach/30 flex items-center justify-center mx-auto mb-2">
+            </button>
+            <button onClick={() => setFilterType(filterType === "other" ? "all" : "other")}>
+              <div className={`w-10 h-10 rounded-full bg-baby-peach/30 flex items-center justify-center mx-auto mb-2 transition-all ${filterType === "other" ? "ring-2 ring-baby-blue scale-110" : filterType !== "all" ? "opacity-40" : ""}`}>
                 <CupSoda className="w-5 h-5 text-foreground/60" />
               </div>
               <p className="text-2xl">{juiceCount}x</p>
               <p className="text-[10px] text-muted-foreground">outros</p>
-            </div>
+            </button>
           </div>
 
           {/* Progress ring */}
@@ -296,42 +312,6 @@ export function HydrationDetailPage() {
             </div>
           </div>
 
-          {/* Quick add — 3 smart options */}
-          <div className="flex gap-2 mt-4 pt-4 border-t border-border/30">
-            <button
-              onClick={() => {
-                const newEntry: HydrationEntry = {
-                  id: Date.now().toString(), time: nowTime(), amount: smartAmount,
-                  type: "water", typeLabel: "Água", notes: "",
-                };
-                setLogs([newEntry, ...logs].sort((a, b) => a.time.localeCompare(b.time)));
-              }}
-              className="flex-1 bg-baby-blue/20 text-foreground/70 py-3 rounded-2xl text-xs active:scale-95 transition-transform flex flex-col items-center gap-0.5"
-            >
-              <span className="text-base">+{smartAmount} ml</span>
-              <span className="text-[10px] text-muted-foreground">Habitual</span>
-            </button>
-            <button
-              onClick={() => {
-                const newEntry: HydrationEntry = {
-                  id: Date.now().toString(), time: nowTime(), amount: smartAmount + 30,
-                  type: "water", typeLabel: "Água", notes: "",
-                };
-                setLogs([newEntry, ...logs].sort((a, b) => a.time.localeCompare(b.time)));
-              }}
-              className="flex-1 bg-baby-blue/20 text-foreground/70 py-3 rounded-2xl text-xs active:scale-95 transition-transform flex flex-col items-center gap-0.5"
-            >
-              <span className="text-base">+{smartAmount + 30} ml</span>
-              <span className="text-[10px] text-muted-foreground">Um pouco mais</span>
-            </button>
-            <button
-              onClick={openNew}
-              className="flex-1 bg-baby-blue/10 text-foreground/70 py-3 rounded-2xl text-xs active:scale-95 transition-transform flex flex-col items-center gap-0.5 border border-baby-blue/20 border-dashed"
-            >
-              <Plus className="w-4 h-4 text-baby-blue" />
-              <span className="text-[10px] text-muted-foreground">Manual</span>
-            </button>
-          </div>
         </div>
       </div>
 
@@ -339,16 +319,42 @@ export function HydrationDetailPage() {
       <div className="px-4 mb-4">
         <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
           <p className="text-sm text-muted-foreground mb-4">Hidratação na semana</p>
-          <div className="flex items-end justify-between gap-2 h-24">
-            {weekData.map((d) => (
-              <div key={d.day} className="flex-1 flex flex-col items-center gap-1">
-                <div
-                  className="w-full rounded-lg bg-baby-blue/60 transition-all"
-                  style={{ height: `${(d.ml / maxMl) * 100}%`, minHeight: 8 }}
-                />
-                <span className="text-[10px] text-muted-foreground">{d.day}</span>
+          <div className="flex gap-1">
+            <div className="flex flex-col justify-between h-40 pr-1 text-[9px] text-muted-foreground w-8 shrink-0 pb-5">
+              {[...gridLines].reverse().map((v) => (
+                <span key={v} className="leading-none text-right">{v}</span>
+              ))}
+              <span className="leading-none text-right">0</span>
+            </div>
+            <div className="flex-1 relative h-40">
+              <div className="absolute inset-0 bottom-5 rounded-lg bg-secondary/20">
+                {gridLines.map((v) => (
+                  <div
+                    key={v}
+                    className="absolute w-full border-t border-dashed border-border/40"
+                    style={{ bottom: `${(v / adjustedMax) * 100}%` }}
+                  />
+                ))}
               </div>
-            ))}
+              <div className="relative flex items-end justify-between gap-2 h-full pb-5">
+                {filteredWeekData.map((d) => (
+                  <div key={d.day} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                    {d.ml > 0 && (
+                      <span className="text-[10px] text-foreground/60">{d.ml}</span>
+                    )}
+                    <div
+                      className="w-full rounded-lg bg-baby-blue/60 transition-all"
+                      style={{ height: `${(d.ml / adjustedMax) * 100}%`, minHeight: d.ml > 0 ? 8 : 4 }}
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-between absolute bottom-0 w-full">
+                {filteredWeekData.map((d) => (
+                  <span key={`label-${d.day}`} className="flex-1 text-center text-[10px] text-muted-foreground">{d.day}</span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -359,10 +365,10 @@ export function HydrationDetailPage() {
           <TimePeriodFilter filter={timePeriod} />
           <p className="text-sm text-muted-foreground mb-3">{timePeriod.title}</p>
           <div className="space-y-1">
-            {logs.length === 0 && (
+            {filteredLogs.length === 0 && (
               <p className="text-xs text-muted-foreground text-center py-6">Nenhum registro neste período.</p>
             )}
-            {logs.map((l) => (
+            {filteredLogs.map((l) => (
               <div key={l.id} className="flex items-start gap-3 py-2.5 group">
                 <div className="text-xs text-muted-foreground w-12 pt-0.5 shrink-0">
                   {timePeriod.period !== "today" && <p className="text-[10px] font-medium">{l.date}</p>}

@@ -122,11 +122,29 @@ export function SleepDetailPage() {
   const [formNotes, setFormNotes] = useState("");
   const [formDateYmd, setFormDateYmd] = useState(() => todayYmd());
 
+  const [filterType, setFilterType] = useState<"all" | "night" | "nap">("all");
+
   // Computed summaries
   const nightMin = logs.filter((l) => l.type === "night").reduce((s, l) => s + calcDurationMin(l.start, l.end), 0);
   const napMin = logs.filter((l) => l.type === "nap").reduce((s, l) => s + calcDurationMin(l.start, l.end), 0);
   const totalMin = nightMin + napMin;
-  const maxH = weekData.length ? Math.max(...weekData.map((d) => d.hours), 0.1) : 1;
+
+  const filteredWeekData = useMemo(() => {
+    if (filterType === "all") return weekData;
+    if (!canPersist || sleepApiEvents.length === 0) return weekData;
+    const filtered = sleepApiEvents.filter((e) => e.subtype === filterType);
+    return weekHoursByDay(filtered, weekLabels, new Date());
+  }, [filterType, weekData, canPersist, sleepApiEvents, weekLabels]);
+
+  const filteredLogs = useMemo(() => {
+    if (filterType === "all") return logs;
+    return logs.filter((l) => l.type === filterType);
+  }, [filterType, logs]);
+
+  const chartMax = filteredWeekData.length ? Math.max(...filteredWeekData.map((d) => d.hours), 0.1) : 1;
+  const gridStep = chartMax <= 4 ? 1 : chartMax <= 8 ? 2 : chartMax <= 16 ? 4 : 6;
+  const adjustedMax = Math.max(Math.ceil(chartMax / gridStep) * gridStep, gridStep);
+  const gridLines = Array.from({ length: Math.floor(adjustedMax / gridStep) }, (_, i) => (i + 1) * gridStep);
 
   const nowTime = () => {
     const n = new Date();
@@ -254,16 +272,22 @@ export function SleepDetailPage() {
       <div className="px-4 mb-4">
         <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-baby-lavender/20 rounded-2xl p-4 text-center">
+            <button
+              onClick={() => setFilterType(filterType === "night" ? "all" : "night")}
+              className={`bg-baby-lavender/20 rounded-2xl p-4 text-center transition-all ${filterType === "night" ? "ring-2 ring-baby-lavender scale-[1.03]" : filterType !== "all" ? "opacity-40" : ""}`}
+            >
               <Moon className="w-5 h-5 text-baby-lavender mx-auto mb-2" />
               <p className="text-2xl">{formatDuration(nightMin)}</p>
               <p className="text-[10px] text-muted-foreground">sono noturno</p>
-            </div>
-            <div className="bg-baby-blue/20 rounded-2xl p-4 text-center">
+            </button>
+            <button
+              onClick={() => setFilterType(filterType === "nap" ? "all" : "nap")}
+              className={`bg-baby-blue/20 rounded-2xl p-4 text-center transition-all ${filterType === "nap" ? "ring-2 ring-baby-blue scale-[1.03]" : filterType !== "all" ? "opacity-40" : ""}`}
+            >
               <Sun className="w-5 h-5 text-baby-blue mx-auto mb-2" />
               <p className="text-2xl">{formatDuration(napMin)}</p>
               <p className="text-[10px] text-muted-foreground">cochilos</p>
-            </div>
+            </button>
           </div>
           <div className="mt-4 bg-secondary/50 rounded-xl p-3 text-center">
             <p className="text-sm">Total: <span className="text-baby-lavender">{formatDuration(totalMin)}</span></p>
@@ -276,16 +300,42 @@ export function SleepDetailPage() {
       <div className="px-4 mb-4">
         <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
           <p className="text-sm text-muted-foreground mb-4">Sono na semana (horas)</p>
-          <div className="flex items-end justify-between gap-2 h-24">
-            {weekData.map((d) => (
-              <div key={d.day} className="flex-1 flex flex-col items-center gap-1">
-                <div
-                  className="w-full rounded-lg bg-baby-lavender/60 transition-all"
-                  style={{ height: `${(d.hours / maxH) * 100}%`, minHeight: 8 }}
-                />
-                <span className="text-[10px] text-muted-foreground">{d.day}</span>
+          <div className="flex gap-1">
+            <div className="flex flex-col justify-between h-40 pr-1 text-[9px] text-muted-foreground w-8 shrink-0 pb-5">
+              {[...gridLines].reverse().map((v) => (
+                <span key={v} className="leading-none text-right">{v}h</span>
+              ))}
+              <span className="leading-none text-right">0</span>
+            </div>
+            <div className="flex-1 relative h-40">
+              <div className="absolute inset-0 bottom-5 rounded-lg bg-secondary/20">
+                {gridLines.map((v) => (
+                  <div
+                    key={v}
+                    className="absolute w-full border-t border-dashed border-border/40"
+                    style={{ bottom: `${(v / adjustedMax) * 100}%` }}
+                  />
+                ))}
               </div>
-            ))}
+              <div className="relative flex items-end justify-between gap-2 h-full pb-5">
+                {filteredWeekData.map((d) => (
+                  <div key={d.day} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                    {d.hours > 0 && (
+                      <span className="text-[10px] text-foreground/60">{Math.round(d.hours * 10) / 10}</span>
+                    )}
+                    <div
+                      className="w-full rounded-lg bg-baby-lavender/60 transition-all"
+                      style={{ height: `${(d.hours / adjustedMax) * 100}%`, minHeight: d.hours > 0 ? 8 : 4 }}
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-between absolute bottom-0 w-full">
+                {filteredWeekData.map((d) => (
+                  <span key={`label-${d.day}`} className="flex-1 text-center text-[10px] text-muted-foreground">{d.day}</span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -296,10 +346,10 @@ export function SleepDetailPage() {
           <TimePeriodFilter filter={timePeriod} />
           <p className="text-sm text-muted-foreground mb-3">{timePeriod.title}</p>
           <div className="space-y-1">
-            {logs.length === 0 && (
+            {filteredLogs.length === 0 && (
               <p className="text-xs text-muted-foreground text-center py-6">Nenhum registro neste período.</p>
             )}
-            {logs.map((l) => {
+            {filteredLogs.map((l) => {
               const dur = calcDurationMin(l.start, l.end);
               return (
                 <div key={l.id} className="flex items-start gap-3 py-2.5 group">
