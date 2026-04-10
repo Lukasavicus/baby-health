@@ -1,17 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { Drawer } from "vaul";
 import {
   ArrowLeft,
   Download,
   Trash2,
-  X,
   AlertTriangle,
   CheckCircle2,
   Database,
   FileDown,
   ShieldAlert,
 } from "lucide-react";
+import { TrackerDrawer } from "../TrackerDrawer";
 
 export function MyDataPage() {
   const navigate = useNavigate();
@@ -155,24 +154,7 @@ export function MyDataPage() {
       </div>
 
       {/* Delete Confirmation Drawer */}
-      <Drawer.Root open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-black/30 z-40" />
-          <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl max-h-[85vh] mx-auto max-w-md"
-            aria-describedby={undefined}
-          >
-            <Drawer.Title className="sr-only">Confirmar exclusão</Drawer.Title>
-            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mt-3 mb-2" />
-            <div className="px-5 pb-8">
-              <div className="flex items-center justify-between mb-5">
-                <button onClick={() => setDeleteOpen(false)} className="p-1">
-                  <X className="w-5 h-5" />
-                </button>
-                <h3>Confirmar exclusão</h3>
-                <div className="w-5" />
-              </div>
-
+      <TrackerDrawer open={deleteOpen} onOpenChange={setDeleteOpen} title="Confirmar exclusão">
               <div className="flex justify-center mb-5">
                 <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center">
                   <AlertTriangle className="w-8 h-8 text-destructive" />
@@ -212,10 +194,7 @@ export function MyDataPage() {
                 <Trash2 className="w-4 h-4" />
                 Apagar permanentemente
               </button>
-            </div>
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root>
+      </TrackerDrawer>
     </div>
   );
 }

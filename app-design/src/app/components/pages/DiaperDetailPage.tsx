@@ -1,11 +1,12 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router";
-import { Drawer } from "vaul";
-import { ArrowLeft, Plus, Pencil, Trash2, X, Check, Droplet } from "lucide-react";
+import { ArrowLeft, Plus, Check, Droplet } from "lucide-react";
+import { TrackerDrawer } from "../TrackerDrawer";
 import { DiaperIcon } from "../DiaperIcon";
 import { EventDateField, clampYmdNotAfterToday, todayYmd } from "../EventDateField";
 import { TimePickerField } from "../TimePickerDialog";
-import { TimePeriodFilter } from "../TimePeriodFilter";
+import { TrackerLogSection } from "../TrackerLogSection";
+import { WeekBarChart } from "../WeekBarChart";
 import { useUIBootstrap } from "../../UIBootstrapContext";
 import { useTimePeriodFilter, dateLabelFromTimestamp } from "../../hooks/useTimePeriodFilter";
 import { createEvent, deleteEvent, listEvents, updateEvent, type ApiEvent } from "@/api/client";
@@ -18,20 +19,7 @@ import {
   weekDiaperWetDirtyByDay,
 } from "@/api/eventMappers";
 
-// --- Types ---
-type DiaperType = "pee" | "poo" | "mixed";
-type VolumeLevel = 1 | 2 | 3 | 4;
-
-interface DiaperEntry {
-  id: string;
-  date?: string;
-  time: string;
-  type: DiaperType;
-  typeLabel: string;
-  peeVolume: VolumeLevel;
-  pooVolume: VolumeLevel;
-  notes: string;
-}
+import type { DiaperEntry, DiaperType, VolumeLevel } from "@/types/trackers";
 
 export function DiaperDetailPage() {
   const navigate = useNavigate();
@@ -116,8 +104,6 @@ export function DiaperDetailPage() {
   }, [canPersist, diaperApiEvents, weekLabels, seedWeekData]);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState<DiaperEntry | null>(null);
-  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-
   // Form state
   const [formType, setFormType] = useState<DiaperType>("pee");
   const [formTime, setFormTime] = useState("");
@@ -130,7 +116,6 @@ export function DiaperDetailPage() {
   const peeCount = logs.filter((l) => l.type === "pee" || l.type === "mixed").length;
   const pooCount = logs.filter((l) => l.type === "poo" || l.type === "mixed").length;
   const totalCount = logs.length;
-  const maxD = weekData.length ? Math.max(...weekData.map((d) => d.wet + d.dirty), 1) : 1;
 
   const nowTime = () => {
     const n = new Date();
@@ -228,7 +213,6 @@ export function DiaperDetailPage() {
         } else {
           setLogs(logs.filter((l) => l.id !== id));
         }
-        setDeleteConfirm(null);
       } catch (e) {
         console.error(e);
       }
@@ -281,114 +265,51 @@ export function DiaperDetailPage() {
 
       {/* Week chart */}
       <div className="px-4 mb-4">
-        <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
-          <p className="text-sm text-muted-foreground mb-1">Fraldas na semana</p>
-          <div className="flex items-center gap-4 mb-4">
-            <div className="flex items-center gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-baby-blue" />
-              <span className="text-[10px] text-muted-foreground">Xixi</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-amber-300" />
-              <span className="text-[10px] text-muted-foreground">Cocô</span>
-            </div>
-          </div>
-          <div className="flex items-end justify-between gap-2 h-24">
-            {weekData.map((d) => (
-              <div key={d.day} className="flex-1 flex flex-col items-center gap-1">
-                <div className="w-full flex flex-col gap-0.5" style={{ height: `${((d.wet + d.dirty) / maxD) * 100}%`, minHeight: 8 }}>
-                  <div className="flex-1 rounded-t-lg bg-baby-blue/60" style={{ flex: d.wet }} />
-                  {d.dirty > 0 && <div className="rounded-b-lg bg-amber-300/80" style={{ flex: d.dirty }} />}
-                </div>
-                <span className="text-[10px] text-muted-foreground">{d.day}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+        <WeekBarChart
+          title="Fraldas na semana"
+          data={weekData.map((d) => ({ day: d.day, value: d.wet + d.dirty }))}
+          color="bg-baby-yellow/60"
+          valueScale="count"
+          formatValue={(v) => String(Math.round(v))}
+        />
       </div>
 
       {/* Filtered log */}
-      <div className="px-4">
-        <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
-          <TimePeriodFilter filter={timePeriod} />
-          <p className="text-sm text-muted-foreground mb-3">{timePeriod.title}</p>
-          <div className="space-y-1">
-            {logs.length === 0 && (
-              <p className="text-xs text-muted-foreground text-center py-6">Nenhum registro neste período.</p>
-            )}
-            {logs.map((l) => (
-              <div key={l.id} className="flex items-start gap-3 py-2.5 group">
-                <div className="text-xs text-muted-foreground w-12 pt-0.5 shrink-0">
-                  {timePeriod.period !== "today" && <p className="text-[10px] font-medium">{l.date}</p>}
-                  <p>{l.time}</p>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <p className="text-sm">{l.typeLabel}</p>
-                    {(l.type === "pee" || l.type === "mixed") && (
-                      <span className={`text-[10px] px-2 py-1 rounded-full inline-flex items-center gap-1.5 ${volumeColors[String(l.peeVolume)]}`}>
-                        <Droplet className="w-2.5 h-2.5" />
-                        <VolumeDots level={l.peeVolume} active />
-                      </span>
-                    )}
-                    {(l.type === "poo" || l.type === "mixed") && (
-                      <span className={`text-[10px] px-2 py-1 rounded-full inline-flex items-center gap-1.5 ${pooVolumeColors[String(l.pooVolume)]}`}>
-                        <PooIcon className="w-2.5 h-2.5" />
-                        <VolumeDots level={l.pooVolume} active />
-                      </span>
-                    )}
-                  </div>
-                  {l.notes && <p className="text-xs text-muted-foreground mt-0.5">{l.notes}</p>}
-                </div>
-                <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button
-                    onClick={() => openEdit(l)}
-                    className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center"
-                  >
-                    <Pencil className="w-3 h-3 text-muted-foreground" />
-                  </button>
-                  {deleteConfirm === l.id ? (
-                    <button
-                      onClick={() => handleDelete(l.id)}
-                      className="w-7 h-7 rounded-full bg-destructive/20 flex items-center justify-center"
-                    >
-                      <Check className="w-3 h-3 text-destructive" />
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => setDeleteConfirm(l.id)}
-                      className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center"
-                    >
-                      <Trash2 className="w-3 h-3 text-muted-foreground" />
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <TrackerLogSection
+        filter={timePeriod}
+        items={logs}
+        timeAccessor={(l) => ({ date: l.date, time: l.time })}
+        onEdit={openEdit}
+        onDelete={handleDelete}
+        renderItem={(l) => (
+          <>
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="text-sm">{l.typeLabel}</p>
+              {(l.type === "pee" || l.type === "mixed") && (
+                <span className={`text-[10px] px-2 py-1 rounded-full inline-flex items-center gap-1.5 ${volumeColors[String(l.peeVolume)]}`}>
+                  <Droplet className="w-2.5 h-2.5" />
+                  <VolumeDots level={l.peeVolume} active />
+                </span>
+              )}
+              {(l.type === "poo" || l.type === "mixed") && (
+                <span className={`text-[10px] px-2 py-1 rounded-full inline-flex items-center gap-1.5 ${pooVolumeColors[String(l.pooVolume)]}`}>
+                  <PooIcon className="w-2.5 h-2.5" />
+                  <VolumeDots level={l.pooVolume} active />
+                </span>
+              )}
+            </div>
+            {l.notes && <p className="text-xs text-muted-foreground mt-0.5">{l.notes}</p>}
+          </>
+        )}
+      />
 
       {/* Add/Edit Drawer */}
-      <Drawer.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-black/30 z-40" />
-          <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl max-h-[90vh] mx-auto max-w-md"
-            aria-describedby={undefined}
-          >
-            <Drawer.Title className="sr-only">{editingEntry ? "Editar" : "Novo"} Registro de Fralda</Drawer.Title>
-            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mt-3 mb-2" />
-            <div className="px-5 pb-8 overflow-y-auto max-h-[85vh]">
-              <div className="flex items-center justify-between mb-5">
-                <button onClick={() => setDrawerOpen(false)} className="p-1">
-                  <X className="w-5 h-5" />
-                </button>
-                <h3>{editingEntry ? "Editar" : "Nova"} Fralda</h3>
-                <div className="w-5" />
-              </div>
-
-              <EventDateField value={formDateYmd} onChange={setFormDateYmd} />
+      <TrackerDrawer
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        title={`${editingEntry ? "Editar" : "Nova"} Fralda`}
+      >
+        <EventDateField value={formDateYmd} onChange={setFormDateYmd} />
 
               {/* Horário */}
               <div className="mb-5">
@@ -488,10 +409,7 @@ export function DiaperDetailPage() {
                 <Check className="w-4 h-4" />
                 {editingEntry ? "Salvar Alterações" : "Registrar"}
               </button>
-            </div>
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root>
+      </TrackerDrawer>
     </div>
   );
 }

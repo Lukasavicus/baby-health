@@ -1,10 +1,12 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router";
-import { Drawer } from "vaul";
-import { ArrowLeft, Plus, Pencil, Trash2, X, Check, Baby, Armchair, Moon, Sun } from "lucide-react";
+import { ArrowLeft, Plus, Check, Moon, Sun } from "lucide-react";
+import { TrackerDrawer } from "../TrackerDrawer";
+import { calcDurationMin, formatDuration } from "../../utils/time";
 import { EventDateField, clampYmdNotAfterToday, todayYmd } from "../EventDateField";
 import { TimePickerField } from "../TimePickerDialog";
-import { TimePeriodFilter } from "../TimePeriodFilter";
+import { TrackerLogSection } from "../TrackerLogSection";
+import { WeekBarChart } from "../WeekBarChart";
 import { getIcon } from "../../iconMap";
 import { useUIBootstrap } from "../../UIBootstrapContext";
 import { useTimePeriodFilter, dateLabelFromTimestamp } from "../../hooks/useTimePeriodFilter";
@@ -18,33 +20,7 @@ import {
   weekHoursByDay,
 } from "@/api/eventMappers";
 
-// --- Types ---
-interface SleepEntry {
-  id: string;
-  date?: string;
-  type: "night" | "nap";
-  typeLabel: string;
-  start: string;
-  end: string;
-  location: string;
-  notes: string;
-}
-
-function calcDurationMin(start: string, end: string): number {
-  const [sh, sm] = start.split(":").map(Number);
-  const [eh, em] = end.split(":").map(Number);
-  let diff = (eh * 60 + em) - (sh * 60 + sm);
-  if (diff <= 0) diff += 24 * 60; // overnight
-  return diff;
-}
-
-function formatDuration(min: number): string {
-  const h = Math.floor(min / 60);
-  const m = min % 60;
-  if (h === 0) return `${m}min`;
-  if (m === 0) return `${h}h`;
-  return `${h}h${m.toString().padStart(2, "0")}`;
-}
+import type { SleepEntry } from "@/types/trackers";
 
 export function SleepDetailPage() {
   const navigate = useNavigate();
@@ -112,8 +88,6 @@ export function SleepDetailPage() {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState<SleepEntry | null>(null);
-  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-
   // Form state
   const [formType, setFormType] = useState<SleepEntry["type"]>("nap");
   const [formStart, setFormStart] = useState("");
@@ -129,22 +103,10 @@ export function SleepDetailPage() {
   const napMin = logs.filter((l) => l.type === "nap").reduce((s, l) => s + calcDurationMin(l.start, l.end), 0);
   const totalMin = nightMin + napMin;
 
-  const filteredWeekData = useMemo(() => {
-    if (filterType === "all") return weekData;
-    if (!canPersist || sleepApiEvents.length === 0) return weekData;
-    const filtered = sleepApiEvents.filter((e) => e.subtype === filterType);
-    return weekHoursByDay(filtered, weekLabels, new Date());
-  }, [filterType, weekData, canPersist, sleepApiEvents, weekLabels]);
-
   const filteredLogs = useMemo(() => {
     if (filterType === "all") return logs;
     return logs.filter((l) => l.type === filterType);
   }, [filterType, logs]);
-
-  const chartMax = filteredWeekData.length ? Math.max(...filteredWeekData.map((d) => d.hours), 0.1) : 1;
-  const gridStep = chartMax <= 4 ? 1 : chartMax <= 8 ? 2 : chartMax <= 16 ? 4 : 6;
-  const adjustedMax = Math.max(Math.ceil(chartMax / gridStep) * gridStep, gridStep);
-  const gridLines = Array.from({ length: Math.floor(adjustedMax / gridStep) }, (_, i) => (i + 1) * gridStep);
 
   const nowTime = () => {
     const n = new Date();
@@ -243,7 +205,6 @@ export function SleepDetailPage() {
         } else {
           setLogs(logs.filter((l) => l.id !== id));
         }
-        setDeleteConfirm(null);
       } catch (e) {
         console.error(e);
       }
@@ -298,129 +259,50 @@ export function SleepDetailPage() {
 
       {/* Week chart */}
       <div className="px-4 mb-4">
-        <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
-          <p className="text-sm text-muted-foreground mb-4">Sono na semana (horas)</p>
-          <div className="flex gap-1">
-            <div className="flex flex-col justify-between h-40 pr-1 text-[9px] text-muted-foreground w-8 shrink-0 pb-5">
-              {[...gridLines].reverse().map((v) => (
-                <span key={v} className="leading-none text-right">{v}h</span>
-              ))}
-              <span className="leading-none text-right">0</span>
-            </div>
-            <div className="flex-1 relative h-40">
-              <div className="absolute inset-0 bottom-5 rounded-lg bg-secondary/20">
-                {gridLines.map((v) => (
-                  <div
-                    key={v}
-                    className="absolute w-full border-t border-dashed border-border/40"
-                    style={{ bottom: `${(v / adjustedMax) * 100}%` }}
-                  />
-                ))}
-              </div>
-              <div className="relative flex items-end justify-between gap-2 h-full pb-5">
-                {filteredWeekData.map((d) => (
-                  <div key={d.day} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
-                    {d.hours > 0 && (
-                      <span className="text-[10px] text-foreground/60">{Math.round(d.hours * 10) / 10}</span>
-                    )}
-                    <div
-                      className="w-full rounded-lg bg-baby-lavender/60 transition-all"
-                      style={{ height: `${(d.hours / adjustedMax) * 100}%`, minHeight: d.hours > 0 ? 8 : 4 }}
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="flex justify-between absolute bottom-0 w-full">
-                {filteredWeekData.map((d) => (
-                  <span key={`label-${d.day}`} className="flex-1 text-center text-[10px] text-muted-foreground">{d.day}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+        <WeekBarChart
+          title="Sono na semana (horas)"
+          data={weekData.map((d) => ({ day: d.day, value: d.hours }))}
+          color="bg-baby-lavender/60"
+          valueScale="hours"
+          formatValue={(v) => `${v.toFixed(1)} h`}
+        />
       </div>
 
       {/* Filtered log */}
-      <div className="px-4">
-        <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
-          <TimePeriodFilter filter={timePeriod} />
-          <p className="text-sm text-muted-foreground mb-3">{timePeriod.title}</p>
-          <div className="space-y-1">
-            {filteredLogs.length === 0 && (
-              <p className="text-xs text-muted-foreground text-center py-6">Nenhum registro neste período.</p>
-            )}
-            {filteredLogs.map((l) => {
-              const dur = calcDurationMin(l.start, l.end);
-              return (
-                <div key={l.id} className="flex items-start gap-3 py-2.5 group">
-                  <div className="text-xs text-muted-foreground w-12 pt-0.5 shrink-0">
-                    {timePeriod.period !== "today" && <p className="text-[10px] font-medium">{l.date}</p>}
-                    <p>{l.start}</p>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm">{l.typeLabel}</p>
-                      <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
-                        l.type === "night" ? "bg-baby-lavender/20 text-baby-lavender" : "bg-baby-blue/20 text-baby-blue"
-                      }`}>
-                        {formatDuration(dur)}
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {l.start} – {l.end} · {l.location}
-                    </p>
-                    {l.notes && <p className="text-xs text-muted-foreground mt-0.5">{l.notes}</p>}
-                  </div>
-                  <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                      onClick={() => openEdit(l)}
-                      className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center"
-                    >
-                      <Pencil className="w-3 h-3 text-muted-foreground" />
-                    </button>
-                    {deleteConfirm === l.id ? (
-                      <button
-                        onClick={() => handleDelete(l.id)}
-                        className="w-7 h-7 rounded-full bg-destructive/20 flex items-center justify-center"
-                      >
-                        <Check className="w-3 h-3 text-destructive" />
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => setDeleteConfirm(l.id)}
-                        className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center"
-                      >
-                        <Trash2 className="w-3 h-3 text-muted-foreground" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
+      <TrackerLogSection
+        filter={timePeriod}
+        items={filteredLogs}
+        timeAccessor={(l) => ({ date: l.date, time: l.start })}
+        onEdit={openEdit}
+        onDelete={handleDelete}
+        renderItem={(l) => {
+          const dur = calcDurationMin(l.start, l.end);
+          return (
+            <>
+              <div className="flex items-center gap-2">
+                <p className="text-sm">{l.typeLabel}</p>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                  l.type === "night" ? "bg-baby-lavender/20 text-baby-lavender" : "bg-baby-blue/20 text-baby-blue"
+                }`}>
+                  {formatDuration(dur)}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {l.start} – {l.end} · {l.location}
+              </p>
+              {l.notes && <p className="text-xs text-muted-foreground mt-0.5">{l.notes}</p>}
+            </>
+          );
+        }}
+      />
 
       {/* Add/Edit Drawer */}
-      <Drawer.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-black/30 z-40" />
-          <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl max-h-[90vh] mx-auto max-w-md"
-            aria-describedby={undefined}
-          >
-            <Drawer.Title className="sr-only">{editingEntry ? "Editar" : "Novo"} Registro de Sono</Drawer.Title>
-            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mt-3 mb-2" />
-            <div className="px-5 pb-8 overflow-y-auto max-h-[85vh]">
-              <div className="flex items-center justify-between mb-5">
-                <button onClick={() => setDrawerOpen(false)} className="p-1">
-                  <X className="w-5 h-5" />
-                </button>
-                <h3>{editingEntry ? "Editar" : "Novo"} Registro</h3>
-                <div className="w-5" />
-              </div>
-
-              <EventDateField value={formDateYmd} onChange={setFormDateYmd} />
+      <TrackerDrawer
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        title={`${editingEntry ? "Editar" : "Novo"} Registro`}
+      >
+        <EventDateField value={formDateYmd} onChange={setFormDateYmd} />
 
               {/* Tipo */}
               <div className="mb-5">
@@ -503,10 +385,7 @@ export function SleepDetailPage() {
                 <Check className="w-4 h-4" />
                 {editingEntry ? "Salvar Alterações" : "Registrar"}
               </button>
-            </div>
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root>
+      </TrackerDrawer>
     </div>
   );
 }

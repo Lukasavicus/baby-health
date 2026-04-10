@@ -1,10 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router";
-import { Drawer } from "vaul";
 import {
   ArrowLeft,
   Sparkles,
-  X,
   Check,
   Clock,
   ChevronDown,
@@ -28,6 +26,7 @@ import {
   type MergedMilestone,
   type MilestoneStatus,
 } from "../../utils/milestoneMerge";
+import { TrackerDrawer } from "../TrackerDrawer";
 
 function approximateAgeMonthsFromBirth(birthIso: string | undefined): number {
   if (!birthIso) return 8;
@@ -429,24 +428,7 @@ export function MilestonesPage() {
       </div>
 
       {/* Edit Drawer */}
-      <Drawer.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-black/30 z-40" />
-          <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl max-h-[85vh] mx-auto max-w-md"
-            aria-describedby={undefined}
-          >
-            <Drawer.Title className="sr-only">Atualizar Marco</Drawer.Title>
-            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mt-3 mb-2" />
-            <div className="px-5 pb-8">
-              <div className="flex items-center justify-between mb-5">
-                <button onClick={() => setDrawerOpen(false)} className="p-1">
-                  <X className="w-5 h-5" />
-                </button>
-                <h3>Registrar observacao</h3>
-                <div className="w-5" />
-              </div>
-
+      <TrackerDrawer open={drawerOpen} onOpenChange={setDrawerOpen} title="Registrar observacao">
               {editingMilestone && (
                 <>
                   {/* Milestone info */}
@@ -547,29 +529,10 @@ export function MilestonesPage() {
                   </button>
                 </>
               )}
-            </div>
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root>
+      </TrackerDrawer>
 
       {/* Add custom milestone */}
-      <Drawer.Root open={addDrawerOpen} onOpenChange={setAddDrawerOpen}>
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-black/30 z-40" />
-          <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl max-h-[90vh] mx-auto max-w-md"
-            aria-describedby={undefined}
-          >
-            <Drawer.Title className="sr-only">Novo marco</Drawer.Title>
-            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mt-3 mb-2" />
-            <div className="px-5 pb-8 overflow-y-auto max-h-[calc(90vh-2rem)]">
-              <div className="flex items-center justify-between mb-5">
-                <button type="button" onClick={() => setAddDrawerOpen(false)} className="p-1">
-                  <X className="w-5 h-5" />
-                </button>
-                <h3>Novo marco</h3>
-                <div className="w-5" />
-              </div>
+      <TrackerDrawer open={addDrawerOpen} onOpenChange={setAddDrawerOpen} title="Novo marco">
               <p className="text-xs text-muted-foreground mb-4">
                 Crie um marco além da lista sugerida — útil para objetivos do pediatra ou da família.
               </p>
@@ -626,10 +589,7 @@ export function MilestonesPage() {
                 <Check className="w-4 h-4" />
                 Adicionar marco
               </button>
-            </div>
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root>
+      </TrackerDrawer>
     </div>
   );
 }

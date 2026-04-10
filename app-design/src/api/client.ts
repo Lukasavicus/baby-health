@@ -1,12 +1,12 @@
 import type { UIBootstrapPayload } from "./types";
+import { TOKEN_KEY, CAREGIVER_STORAGE_KEY } from "./constants";
+
+export { CAREGIVER_STORAGE_KEY };
 
 function apiOrigin(): string {
   const raw = import.meta.env.VITE_API_BASE_URL as string | undefined;
   return (raw ?? "").replace(/\/$/, "");
 }
-
-export const CAREGIVER_STORAGE_KEY = "babyhealth_caregiver_id";
-const TOKEN_KEY = "babyhealth_token";
 
 function authHeaders(): Record<string, string> {
   const token = localStorage.getItem(TOKEN_KEY);

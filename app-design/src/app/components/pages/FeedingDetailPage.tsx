@@ -1,14 +1,10 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router";
-import { Drawer } from "vaul";
-import {
-  ArrowLeft, Milk, Apple, Plus, Pencil, Trash2, X, Check,
-  Search, Loader2, Minus, FlaskConical, Clock, Icon,
-} from "lucide-react";
-import { bottleBaby } from "@lucide/lab";
-import { EventDateField, clampYmdNotAfterToday, todayYmd } from "../EventDateField";
-import { TimePickerField } from "../TimePickerDialog";
-import { TimePeriodFilter } from "../TimePeriodFilter";
+import { ArrowLeft, Plus } from "lucide-react";
+import { todayYmd } from "../EventDateField";
+import { TrackerLogSection } from "../TrackerLogSection";
+import { WeekBarChart } from "../WeekBarChart";
+import { TrackerDrawer } from "../TrackerDrawer";
 import { useUIBootstrap } from "../../UIBootstrapContext";
 import { useTimePeriodFilter, dateLabelFromTimestamp } from "../../hooks/useTimePeriodFilter";
 import { createEvent, deleteEvent, listEvents, updateEvent, type ApiEvent } from "@/api/client";
@@ -20,32 +16,14 @@ import {
   weekCountsByDayForType,
   weekDayLabelsPt,
 } from "@/api/eventMappers";
-
-interface FoodResult {
-  id: string;
-  name: string;
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-  fiber: number;
-}
-
-// --- Types ---
-interface FeedingEntry {
-  id: string;
-  date?: string;
-  time: string;
-  type: "breast" | "formula" | "solids";
-  typeLabel: string;
-  side?: string;
-  duration?: string;
-  amount?: string;
-  notes?: string;
-  food?: FoodResult | null;
-  foodName?: string;
-  formulaBrand?: string;
-}
+import { FeedingSummaryCards } from "./FeedingSummaryCards";
+import { FeedingForm } from "./FeedingForm";
+import type {
+  FoodResult,
+  FeedingEntry,
+  FeedingFormData,
+  FeedingFilterType,
+} from "./feeding.types";
 
 export function FeedingDetailPage() {
   const navigate = useNavigate();
@@ -76,6 +54,7 @@ export function FeedingDetailPage() {
   const weekLabels = useMemo(() => weekDayLabelsPt(), []);
   const timePeriod = useTimePeriodFilter();
 
+  // --- API / local events state ---
   const [feedApiEvents, setFeedApiEvents] = useState<ApiEvent[]>([]);
   const [feedings, setFeedings] = useState<FeedingEntry[]>([]);
 
@@ -111,6 +90,7 @@ export function FeedingDetailPage() {
     else setFeedings([]);
   }, [data, canPersist, babyId, caregiverId, refreshFromApi]);
 
+  // --- Week chart data ---
   const weekSummary = useMemo(() => {
     if (canPersist && feedApiEvents.length > 0) {
       return weekCountsByDayForType(feedApiEvents, weekLabels, new Date(), "feeding");
@@ -118,7 +98,7 @@ export function FeedingDetailPage() {
     return seedWeekSummary;
   }, [canPersist, feedApiEvents, weekLabels, seedWeekSummary]);
 
-  const [filterType, setFilterType] = useState<"all" | "breast" | "formula" | "solids">("all");
+  const [filterType, setFilterType] = useState<FeedingFilterType>("all");
 
   const filteredWeekSummary = useMemo(() => {
     if (filterType === "all") return weekSummary;
@@ -138,119 +118,15 @@ export function FeedingDetailPage() {
     return feedings.filter((f) => f.type === filterType);
   }, [filterType, feedings]);
 
-  const rawMax = filteredWeekSummary.length ? Math.max(...filteredWeekSummary.map((d) => d.count), 1) : 1;
-  const gridStep = rawMax <= 5 ? 1 : rawMax <= 15 ? 2 : 5;
-  const adjustedMax = Math.ceil(rawMax / gridStep) * gridStep || gridStep;
-  const gridLines = Array.from({ length: Math.floor(adjustedMax / gridStep) }, (_, i) => (i + 1) * gridStep);
+  // --- Drawer state ---
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerKey, setDrawerKey] = useState(0);
   const [editingEntry, setEditingEntry] = useState<FeedingEntry | null>(null);
-  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-
-  // Form state
-  const [formType, setFormType] = useState<"breast" | "formula" | "solids">("breast");
-  const [formTime, setFormTime] = useState("");
-  const [formSide, setFormSide] = useState("");
-  const [formDuration, setFormDuration] = useState(10);
-  const [formAmount, setFormAmount] = useState(120);
-  const [formNotes, setFormNotes] = useState("");
-  const [formFood, setFormFood] = useState<FoodResult | null>(null);
-  const [formFormula, setFormFormula] = useState("");
-  const [formDateYmd, setFormDateYmd] = useState(() => todayYmd());
-
-  // Food search
-  const [foodQuery, setFoodQuery] = useState("");
-  const [foodResults, setFoodResults] = useState<FoodResult[]>([]);
-  const [foodSearching, setFoodSearching] = useState(false);
-
-  // Custom food
-  const CUSTOM_FOODS_KEY = "babyhealth_custom_foods";
-  const [showCustomFood, setShowCustomFood] = useState(false);
-  const [customName, setCustomName] = useState("");
-  const [customCal, setCustomCal] = useState(0);
-  const [customProtein, setCustomProtein] = useState(0);
-  const [customCarbs, setCustomCarbs] = useState(0);
-  const [customFat, setCustomFat] = useState(0);
-  const [customFiber, setCustomFiber] = useState(0);
-  const [customUnit, setCustomUnit] = useState<"g" | "portion">("g");
-  const [customGramsPerPortion, setCustomGramsPerPortion] = useState(100);
-
-  const customFoods = useMemo<FoodResult[]>(() => {
-    try {
-      return JSON.parse(localStorage.getItem(CUSTOM_FOODS_KEY) || "[]");
-    } catch { return []; }
-  }, [showCustomFood]);
-
-  const allFoodDB = useMemo(() => [...foodDB, ...customFoods], [foodDB, customFoods]);
-
-  const searchFoods = useCallback(
-    async (query: string): Promise<FoodResult[]> => {
-      await new Promise((r) => setTimeout(r, 600));
-      if (!query.trim()) return [];
-      const q = query.toLowerCase();
-      return allFoodDB.filter((f) => f.name.toLowerCase().includes(q));
-    },
-    [allFoodDB],
-  );
-
-  const nowTime = () => {
-    const n = new Date();
-    return `${n.getHours().toString().padStart(2, "0")}:${n.getMinutes().toString().padStart(2, "0")}`;
-  };
-
-  const resetCustomFood = () => {
-    setShowCustomFood(false);
-    setCustomName("");
-    setCustomCal(0);
-    setCustomProtein(0);
-    setCustomCarbs(0);
-    setCustomFat(0);
-    setCustomFiber(0);
-    setCustomUnit("g");
-    setCustomGramsPerPortion(100);
-  };
-
-  const saveCustomFood = () => {
-    const newFood: FoodResult = {
-      id: `custom_${Date.now()}`,
-      name: customName || foodQuery,
-      calories: customUnit === "portion" && customGramsPerPortion > 0
-        ? Math.round((customCal / customGramsPerPortion) * 100)
-        : customCal,
-      protein: customUnit === "portion" && customGramsPerPortion > 0
-        ? Math.round(((customProtein / customGramsPerPortion) * 100) * 10) / 10
-        : customProtein,
-      carbs: customUnit === "portion" && customGramsPerPortion > 0
-        ? Math.round(((customCarbs / customGramsPerPortion) * 100) * 10) / 10
-        : customCarbs,
-      fat: customUnit === "portion" && customGramsPerPortion > 0
-        ? Math.round(((customFat / customGramsPerPortion) * 100) * 10) / 10
-        : customFat,
-      fiber: customUnit === "portion" && customGramsPerPortion > 0
-        ? Math.round(((customFiber / customGramsPerPortion) * 100) * 10) / 10
-        : customFiber,
-    };
-    const existing: FoodResult[] = JSON.parse(localStorage.getItem(CUSTOM_FOODS_KEY) || "[]");
-    localStorage.setItem(CUSTOM_FOODS_KEY, JSON.stringify([...existing, newFood]));
-    setFormFood(newFood);
-    setFoodQuery(newFood.name);
-    setFoodResults([]);
-    resetCustomFood();
-  };
-
+  const [initialDate, setInitialDate] = useState(() => todayYmd());
   const openNew = () => {
     setEditingEntry(null);
-    setFormType("breast");
-    setFormTime(nowTime());
-    setFormSide("");
-    setFormDuration(10);
-    setFormAmount(120);
-    setFormNotes("");
-    setFormFood(null);
-    setFormFormula("Mamadeira");
-    setFoodQuery("");
-    setFoodResults([]);
-    setFormDateYmd(todayYmd());
-    resetCustomFood();
+    setInitialDate(todayYmd());
+    setDrawerKey((k) => k + 1);
     setDrawerOpen(true);
   };
 
@@ -261,41 +137,31 @@ export function FeedingDetailPage() {
       const ev = feedApiEvents.find((e) => e.id === entry.id);
       if (ev) dateYmd = formatYmd(new Date(ev.timestamp));
     }
-    setFormDateYmd(dateYmd);
-    setFormType(entry.type);
-    setFormTime(entry.time);
-    setFormSide(entry.side || "");
-    setFormDuration(parseInt(entry.duration || "10"));
-    setFormAmount(parseInt(entry.amount || "120"));
-    setFormNotes(entry.notes || "");
-    setFormFood(entry.food || null);
-    setFormFormula(entry.formulaBrand || "");
-    setFoodQuery(entry.food?.name || "");
-    setFoodResults([]);
+    setInitialDate(dateYmd);
+    setDrawerKey((k) => k + 1);
     setDrawerOpen(true);
   };
 
-  const handleSave = () => {
-    const typeLabel = feedingTypes.find((f) => f.id === formType)?.label || "";
-    const dayYmd = clampYmdNotAfterToday(formDateYmd);
+  const handleSave = (formData: FeedingFormData) => {
+    const typeLabel = feedingTypes.find((f) => f.id === formData.type)?.label || "";
 
     void (async () => {
       try {
         if (canPersist && babyId && caregiverId) {
           const incoming = feedingEntryToIncoming(
             {
-              type: formType,
-              time: formTime,
-              side: formSide,
-              duration: formDuration,
-              amount: formAmount,
-              formula: formFormula,
-              notes: formNotes,
-              foodName: formFood?.name ?? null,
+              type: formData.type,
+              time: formData.time,
+              side: formData.side,
+              duration: formData.duration,
+              amount: formData.amount,
+              formula: formData.formula,
+              notes: formData.notes,
+              foodName: formData.food?.name ?? null,
             },
             babyId,
             caregiverId,
-            dayYmd,
+            formData.dateYmd,
           );
           if (editingEntry && isApiEventId(editingEntry.id)) {
             await updateEvent(editingEntry.id, {
@@ -316,15 +182,17 @@ export function FeedingDetailPage() {
 
         const entry: FeedingEntry = {
           id: editingEntry?.id || Date.now().toString(),
-          time: formTime,
-          type: formType,
+          time: formData.time,
+          type: formData.type,
           typeLabel,
-          side: formType === "breast" ? formSide : undefined,
-          duration: formType === "breast" ? `${formDuration} min` : undefined,
-          amount: formType !== "breast" ? `${formAmount} ${formType === "solids" ? "g" : "ml"}` : undefined,
-          notes: formNotes,
-          food: formType === "solids" ? formFood : null,
-          formulaBrand: formType === "formula" ? formFormula : undefined,
+          side: formData.type === "breast" ? formData.side : undefined,
+          duration: formData.type === "breast" ? `${formData.duration} min` : undefined,
+          amount: formData.type !== "breast"
+            ? `${formData.amount} ${formData.type === "solids" ? "g" : "ml"}`
+            : undefined,
+          notes: formData.notes,
+          food: formData.type === "solids" ? formData.food : null,
+          formulaBrand: formData.type === "formula" ? formData.formula : undefined,
         };
         if (editingEntry) {
           setFeedings(feedings.map((f) => (f.id === entry.id ? entry : f)));
@@ -347,20 +215,10 @@ export function FeedingDetailPage() {
         } else {
           setFeedings(feedings.filter((f) => f.id !== id));
         }
-        setDeleteConfirm(null);
       } catch (e) {
         console.error(e);
       }
     })();
-  };
-
-  const handleFoodSearch = async (q: string) => {
-    setFoodQuery(q);
-    if (q.length < 2) { setFoodResults([]); return; }
-    setFoodSearching(true);
-    const results = await searchFoods(q);
-    setFoodResults(results);
-    setFoodSearching(false);
   };
 
   const breastCount = feedings.filter((f) => f.type === "breast").length;
@@ -386,549 +244,79 @@ export function FeedingDetailPage() {
         </button>
       </div>
 
-      {/* Summary (clickable filters) */}
+      <FeedingSummaryCards
+        breastCount={breastCount}
+        solidsCount={solidsCount}
+        totalMl={totalMl}
+        filterType={filterType}
+        onFilterChange={setFilterType}
+      />
+
       <div className="px-4 mb-4">
-        <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <button
-              onClick={() => setFilterType(filterType === "breast" ? "all" : "breast")}
-              className={`transition-all ${filterType !== "all" && filterType !== "breast" ? "opacity-40" : ""}`}
-            >
-              <div className={`w-10 h-10 rounded-full bg-baby-peach/40 flex items-center justify-center mx-auto mb-2 transition-all ${filterType === "breast" ? "ring-2 ring-baby-peach scale-110" : ""}`}>
-                <Icon iconNode={bottleBaby} className="w-5 h-5 text-foreground/60" />
-              </div>
-              <p className="text-2xl">{breastCount}x</p>
-              <p className="text-[10px] text-muted-foreground">leite</p>
-            </button>
-            <button
-              onClick={() => setFilterType(filterType === "solids" ? "all" : "solids")}
-              className={`transition-all ${filterType !== "all" && filterType !== "solids" ? "opacity-40" : ""}`}
-            >
-              <div className={`w-10 h-10 rounded-full bg-baby-mint/40 flex items-center justify-center mx-auto mb-2 transition-all ${filterType === "solids" ? "ring-2 ring-baby-mint scale-110" : ""}`}>
-                <Apple className="w-5 h-5 text-foreground/60" />
-              </div>
-              <p className="text-2xl">{solidsCount}x</p>
-              <p className="text-[10px] text-muted-foreground">sólidos</p>
-            </button>
-            <button
-              onClick={() => setFilterType(filterType === "formula" ? "all" : "formula")}
-              className={`transition-all ${filterType !== "all" && filterType !== "formula" ? "opacity-40" : ""}`}
-            >
-              <div className={`w-10 h-10 rounded-full bg-baby-blue/40 flex items-center justify-center mx-auto mb-2 transition-all ${filterType === "formula" ? "ring-2 ring-baby-blue scale-110" : ""}`}>
-                <Milk className="w-5 h-5 text-foreground/60" />
-              </div>
-              <p className="text-2xl">{totalMl}</p>
-              <p className="text-[10px] text-muted-foreground">ml total</p>
-            </button>
-          </div>
-        </div>
+        <WeekBarChart
+          title="Refeições na semana"
+          data={filteredWeekSummary.map((d) => ({ day: d.day, value: d.count }))}
+          color="bg-baby-peach/60"
+          valueScale="count"
+          formatValue={(v) => String(Math.round(v))}
+        />
       </div>
 
-      {/* Week chart */}
-      <div className="px-4 mb-4">
-        <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
-          <p className="text-sm text-muted-foreground mb-4">Refeições na semana</p>
-          <div className="flex">
-            {/* Y-axis labels */}
-            <div className="flex flex-col justify-between h-40 pr-2 pb-5">
-              {[...gridLines].reverse().map((val) => (
-                <span key={val} className="text-[9px] text-muted-foreground leading-none">{val}</span>
-              ))}
-              <span className="text-[9px] text-muted-foreground leading-none">0</span>
+      <TrackerLogSection
+        filter={timePeriod}
+        items={filteredFeedings}
+        timeAccessor={(f) => ({ date: f.date, time: f.time })}
+        onEdit={openEdit}
+        onDelete={handleDelete}
+        renderItem={(f) => (
+          <>
+            <div className="flex items-center gap-2">
+              <p className="text-sm">{f.typeLabel}</p>
+              {f.formulaBrand && (
+                <span className="text-[10px] bg-baby-lavender/30 px-1.5 py-0.5 rounded-full">{f.formulaBrand}</span>
+              )}
             </div>
-            {/* Chart area */}
-            <div className="flex-1 relative h-40">
-              {/* Background + gridlines */}
-              <div className="absolute inset-0 bottom-5 rounded-lg bg-secondary/20">
-                {gridLines.map((val) => (
-                  <div
-                    key={val}
-                    className="absolute w-full border-t border-dashed border-border/40"
-                    style={{ bottom: `${(val / adjustedMax) * 100}%` }}
-                  />
-                ))}
-              </div>
-              {/* Bars + day labels */}
-              <div className="relative flex items-end justify-between gap-2 h-full pb-5">
-                {filteredWeekSummary.map((d) => (
-                  <div key={d.day} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
-                    {d.count > 0 && (
-                      <span className="text-[10px] text-foreground/60">{d.count}</span>
-                    )}
-                    <div
-                      className="w-full rounded-lg bg-baby-peach/60 transition-all"
-                      style={{ height: `${(d.count / adjustedMax) * 100}%`, minHeight: d.count > 0 ? 8 : 4 }}
-                    />
-                  </div>
-                ))}
-              </div>
-              {/* Day labels */}
-              <div className="flex justify-between absolute bottom-0 w-full">
-                {filteredWeekSummary.map((d) => (
-                  <span key={`label-${d.day}`} className="flex-1 text-center text-[10px] text-muted-foreground">{d.day}</span>
-                ))}
-              </div>
+            <div className="flex flex-wrap gap-2 mt-0.5">
+              {f.side && <span className="text-xs text-muted-foreground">Lado: {f.side}</span>}
+              {f.duration && <span className="text-xs text-muted-foreground">· {f.duration}</span>}
+              {f.amount && <span className="text-xs text-muted-foreground">· {f.amount}</span>}
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Filtered log */}
-      <div className="px-4">
-        <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
-          <TimePeriodFilter filter={timePeriod} />
-          <p className="text-sm text-muted-foreground mb-3">{timePeriod.title}</p>
-          <div className="space-y-1">
-            {filteredFeedings.length === 0 && (
-              <p className="text-xs text-muted-foreground text-center py-6">Nenhum registro neste período.</p>
+            {f.notes && <p className="text-xs text-muted-foreground mt-0.5">{f.notes}</p>}
+            {f.food && (
+              <div className="bg-baby-peach/10 rounded-xl p-2 mt-1.5">
+                <p className="text-[10px] text-muted-foreground mb-1">{f.food.name}</p>
+                <div className="flex gap-3 text-[10px] text-muted-foreground">
+                  <span>{f.food.calories} kcal</span>
+                  <span>P: {f.food.protein}g</span>
+                  <span>C: {f.food.carbs}g</span>
+                  <span>G: {f.food.fat}g</span>
+                </div>
+              </div>
             )}
-            {filteredFeedings.map((f) => (
-              <div key={f.id} className="flex items-start gap-3 py-2.5 group">
-                <div className="text-xs text-muted-foreground w-12 pt-0.5 shrink-0">
-                  {timePeriod.period !== "today" && <p className="text-[10px] font-medium">{f.date}</p>}
-                  <p>{f.time}</p>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm">{f.typeLabel}</p>
-                    {f.formulaBrand && (
-                      <span className="text-[10px] bg-baby-lavender/30 px-1.5 py-0.5 rounded-full">{f.formulaBrand}</span>
-                    )}
-                  </div>
-                  <div className="flex flex-wrap gap-2 mt-0.5">
-                    {f.side && <span className="text-xs text-muted-foreground">Lado: {f.side}</span>}
-                    {f.duration && <span className="text-xs text-muted-foreground">· {f.duration}</span>}
-                    {f.amount && <span className="text-xs text-muted-foreground">· {f.amount}</span>}
-                  </div>
-                  {f.notes && <p className="text-xs text-muted-foreground mt-0.5">{f.notes}</p>}
-                  {f.food && (
-                    <div className="bg-baby-peach/10 rounded-xl p-2 mt-1.5">
-                      <p className="text-[10px] text-muted-foreground mb-1">{f.food.name}</p>
-                      <div className="flex gap-3 text-[10px] text-muted-foreground">
-                        <span>{f.food.calories} kcal</span>
-                        <span>P: {f.food.protein}g</span>
-                        <span>C: {f.food.carbs}g</span>
-                        <span>G: {f.food.fat}g</span>
-                      </div>
-                    </div>
-                  )}
-                  {!f.food && f.foodName && (
-                    <span className="text-[10px] bg-baby-peach/20 text-foreground/70 px-2 py-0.5 rounded-full mt-1 inline-block">
-                      {f.foodName}
-                    </span>
-                  )}
-                </div>
-                <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button
-                    onClick={() => openEdit(f)}
-                    className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center"
-                  >
-                    <Pencil className="w-3 h-3 text-muted-foreground" />
-                  </button>
-                  {deleteConfirm === f.id ? (
-                    <button
-                      onClick={() => handleDelete(f.id)}
-                      className="w-7 h-7 rounded-full bg-destructive/20 flex items-center justify-center"
-                    >
-                      <Check className="w-3 h-3 text-destructive" />
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => setDeleteConfirm(f.id)}
-                      className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center"
-                    >
-                      <Trash2 className="w-3 h-3 text-muted-foreground" />
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+            {!f.food && f.foodName && (
+              <span className="text-[10px] bg-baby-peach/20 text-foreground/70 px-2 py-0.5 rounded-full mt-1 inline-block">
+                {f.foodName}
+              </span>
+            )}
+          </>
+        )}
+      />
 
-      {/* Add/Edit Drawer */}
-      <Drawer.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-black/30 z-40" />
-          <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl max-h-[90vh] mx-auto max-w-md"
-            aria-describedby={undefined}
-          >
-            <Drawer.Title className="sr-only">{editingEntry ? "Editar" : "Nova"} Alimentação</Drawer.Title>
-            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mt-3 mb-2" />
-            <div className="px-5 pb-8 overflow-y-auto max-h-[85vh]">
-              <div className="flex items-center justify-between mb-5">
-                <button onClick={() => setDrawerOpen(false)} className="p-1">
-                  <X className="w-5 h-5" />
-                </button>
-                <h3>{editingEntry ? "Editar" : "Nova"} Alimentação</h3>
-                <div className="w-5" />
-              </div>
-
-              <EventDateField value={formDateYmd} onChange={setFormDateYmd} />
-
-              {/* Time */}
-              <div className="mb-4">
-                <p className="text-sm text-muted-foreground mb-1.5">Horário</p>
-                <TimePickerField
-                  value={formTime}
-                  onChange={(time) => setFormTime(time)}
-                  className="w-full bg-secondary rounded-xl p-3 text-sm outline-none"
-                />
-              </div>
-
-              {/* Type */}
-              <div className="mb-4">
-                <p className="text-sm text-muted-foreground mb-2">Tipo</p>
-                <div className="flex flex-wrap gap-2">
-                  {feedingTypes.map((ft) => (
-                    <button
-                      key={ft.id}
-                      onClick={() => setFormType(ft.id)}
-                      className={`px-4 py-2 rounded-full text-sm transition-colors ${
-                        formType === ft.id
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-secondary text-secondary-foreground"
-                      }`}
-                    >
-                      {ft.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Breast-specific */}
-              {formType === "breast" && (
-                <>
-                  <div className="mb-4">
-                    <p className="text-sm text-muted-foreground mb-2">Lado</p>
-                    <div className="flex gap-2">
-                      {["Esquerdo", "Direito", "Ambos"].map((s) => (
-                        <button
-                          key={s}
-                          onClick={() => setFormSide(s)}
-                          className={`flex-1 py-2.5 rounded-full text-sm transition-colors ${
-                            formSide === s
-                              ? "bg-baby-peach text-foreground"
-                              : "bg-secondary text-secondary-foreground"
-                          }`}
-                        >
-                          {s}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="mb-4">
-                    <p className="text-sm text-muted-foreground mb-2">Duração (min)</p>
-                    <div className="flex items-center gap-4 justify-center">
-                      <button
-                        onClick={() => setFormDuration(Math.max(1, formDuration - 1))}
-                        className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center"
-                      >
-                        <Minus className="w-4 h-4" />
-                      </button>
-                      <input
-                        type="number"
-                        inputMode="numeric"
-                        min={1}
-                        value={formDuration}
-                        onChange={(e) => setFormDuration(Math.max(1, Number(e.target.value) || 1))}
-                        className="text-3xl w-16 text-center bg-transparent outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                      />
-                      <button
-                        onClick={() => setFormDuration(formDuration + 1)}
-                        className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center"
-                      >
-                        <Plus className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {/* Formula quantity */}
-              {formType === "formula" && (
-                <div className="mb-4">
-                  <p className="text-sm text-muted-foreground mb-2">Quantidade (ml)</p>
-                  <div className="flex items-center gap-4 justify-center">
-                    <button
-                      onClick={() => setFormAmount(Math.max(0, formAmount - 30))}
-                      className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center"
-                    >
-                      <Minus className="w-4 h-4" />
-                    </button>
-                    <input
-                      type="number"
-                      inputMode="numeric"
-                      min={0}
-                      value={formAmount}
-                      onChange={(e) => setFormAmount(Math.max(0, Number(e.target.value) || 0))}
-                      className="text-3xl w-20 text-center bg-transparent outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                    />
-                    <button
-                      onClick={() => setFormAmount(formAmount + 30)}
-                      className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Formula brand */}
-              {formType === "formula" && (
-                <div className="mb-4">
-                  <p className="text-sm text-muted-foreground mb-2">Marca da fórmula</p>
-                  <div className="flex flex-wrap gap-2">
-                    {formulaBrands.map((brand) => (
-                      <button
-                        key={brand}
-                        onClick={() => setFormFormula(brand)}
-                        className={`px-3 py-1.5 rounded-full text-xs transition-colors ${
-                          formFormula === brand
-                            ? "bg-baby-lavender text-foreground"
-                            : "bg-secondary text-secondary-foreground"
-                        }`}
-                      >
-                        {brand}
-                      </button>
-                    ))}
-                  </div>
-                  {formFormula === "Outra" && (
-                    <input
-                      type="text"
-                      placeholder="Nome da fórmula..."
-                      className="w-full bg-secondary rounded-xl p-3 text-sm outline-none mt-2"
-                      onChange={(e) => setFormFormula(e.target.value)}
-                    />
-                  )}
-                </div>
-              )}
-
-              {/* Solids - food search */}
-              {formType === "solids" && (
-                <>
-                  <div className="mb-4">
-                    <p className="text-sm text-muted-foreground mb-2">Quantidade (g)</p>
-                    <div className="flex items-center gap-4 justify-center">
-                      <button
-                        onClick={() => setFormAmount(Math.max(0, formAmount - 10))}
-                        className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center"
-                      >
-                        <Minus className="w-4 h-4" />
-                      </button>
-                      <input
-                        type="number"
-                        inputMode="numeric"
-                        min={0}
-                        value={formAmount}
-                        onChange={(e) => setFormAmount(Math.max(0, Number(e.target.value) || 0))}
-                        className="text-3xl w-20 text-center bg-transparent outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                      />
-                      <button
-                        onClick={() => setFormAmount(formAmount + 10)}
-                        className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center"
-                      >
-                        <Plus className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="mb-4">
-                    <p className="text-sm text-muted-foreground mb-1.5">
-                      <FlaskConical className="w-3.5 h-3.5 inline mr-1" />
-                      Buscar alimento (FatSecret API)
-                    </p>
-                    <div className="relative">
-                      <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-                      <input
-                        type="text"
-                        value={foodQuery}
-                        onChange={(e) => handleFoodSearch(e.target.value)}
-                        placeholder="Ex: sopa de abóbora, papinha de maçã..."
-                        className="w-full bg-secondary rounded-xl p-3 pl-9 text-sm outline-none"
-                      />
-                      {foodSearching && (
-                        <Loader2 className="absolute right-3 top-3 w-4 h-4 text-muted-foreground animate-spin" />
-                      )}
-                    </div>
-
-                    {/* Search results */}
-                    {foodResults.length > 0 && (
-                      <div className="mt-2 bg-secondary/50 rounded-xl overflow-hidden">
-                        {foodResults.map((food) => (
-                          <button
-                            key={food.id}
-                            onClick={() => {
-                              setFormFood(food);
-                              setFoodQuery(food.name);
-                              setFoodResults([]);
-                            }}
-                            className={`w-full text-left p-3 border-b border-border/30 last:border-0 transition-colors ${
-                              formFood?.id === food.id ? "bg-baby-peach/20" : "hover:bg-secondary"
-                            }`}
-                          >
-                            <p className="text-sm">{food.name}</p>
-                            <div className="flex gap-3 text-[10px] text-muted-foreground mt-0.5">
-                              <span>{food.calories} kcal</span>
-                              <span>P: {food.protein}g</span>
-                              <span>C: {food.carbs}g</span>
-                              <span>G: {food.fat}g</span>
-                              <span>Fibra: {food.fiber}g</span>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* No results -- offer custom food */}
-                    {foodResults.length === 0 && foodQuery.length >= 2 && !foodSearching && !formFood && !showCustomFood && (
-                      <button
-                        onClick={() => { setShowCustomFood(true); setCustomName(foodQuery); }}
-                        className="mt-2 w-full text-left p-3 bg-baby-peach/10 border border-baby-peach/20 rounded-xl text-sm transition-colors hover:bg-baby-peach/20"
-                      >
-                        <Plus className="w-3.5 h-3.5 inline mr-1.5 text-foreground/60" />
-                        Criar &quot;{foodQuery}&quot; como alimento personalizado
-                      </button>
-                    )}
-
-                    {/* Custom food form */}
-                    {showCustomFood && (
-                      <div className="mt-3 bg-baby-peach/10 border border-baby-peach/20 rounded-2xl p-4 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <p className="text-sm font-medium">Novo alimento</p>
-                          <button onClick={resetCustomFood} className="text-xs text-muted-foreground">✕</button>
-                        </div>
-                        <input
-                          type="text"
-                          value={customName}
-                          onChange={(e) => setCustomName(e.target.value)}
-                          placeholder="Nome do alimento"
-                          className="w-full bg-secondary rounded-xl p-2.5 text-sm outline-none"
-                        />
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => setCustomUnit("g")}
-                            className={`flex-1 py-2 rounded-full text-xs transition-colors ${customUnit === "g" ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}
-                          >
-                            Por 100g
-                          </button>
-                          <button
-                            onClick={() => setCustomUnit("portion")}
-                            className={`flex-1 py-2 rounded-full text-xs transition-colors ${customUnit === "portion" ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}
-                          >
-                            Por porção
-                          </button>
-                        </div>
-                        {customUnit === "portion" && (
-                          <div>
-                            <p className="text-[10px] text-muted-foreground mb-1">Gramas por porção</p>
-                            <input
-                              type="number" inputMode="numeric" min={1} value={customGramsPerPortion}
-                              onChange={(e) => setCustomGramsPerPortion(Math.max(1, Number(e.target.value) || 1))}
-                              className="w-full bg-secondary rounded-xl p-2.5 text-sm outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                            />
-                          </div>
-                        )}
-                        <div className="grid grid-cols-5 gap-2">
-                          {([
-                            { label: "kcal", val: customCal, set: setCustomCal },
-                            { label: "Proteína", val: customProtein, set: setCustomProtein },
-                            { label: "Carbs", val: customCarbs, set: setCustomCarbs },
-                            { label: "Gordura", val: customFat, set: setCustomFat },
-                            { label: "Fibra", val: customFiber, set: setCustomFiber },
-                          ] as const).map((m) => (
-                            <div key={m.label}>
-                              <p className="text-[9px] text-muted-foreground mb-1 text-center">{m.label}</p>
-                              <input
-                                type="number" inputMode="decimal" min={0}
-                                value={m.val || ""}
-                                onChange={(e) => m.set(Math.max(0, Number(e.target.value) || 0))}
-                                className="w-full bg-secondary rounded-lg p-1.5 text-xs text-center outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                        <p className="text-[10px] text-muted-foreground text-center">
-                          {customUnit === "g" ? "Valores por 100g" : `Valores por porção (${customGramsPerPortion}g) — serão convertidos para 100g`}
-                        </p>
-                        <button
-                          onClick={saveCustomFood}
-                          disabled={!customName.trim()}
-                          className="w-full bg-primary text-primary-foreground py-2.5 rounded-xl text-sm flex items-center justify-center gap-1.5 active:scale-[0.98] transition-transform disabled:opacity-50"
-                        >
-                          <Check className="w-4 h-4" />
-                          Salvar alimento
-                        </button>
-                      </div>
-                    )}
-
-                    {/* Selected food nutrition card */}
-                    {formFood && (
-                      <div className="mt-3 bg-baby-peach/10 border border-baby-peach/20 rounded-2xl p-3">
-                        <div className="flex items-center justify-between mb-2">
-                          <p className="text-sm">{formFood.name}</p>
-                          <button
-                            onClick={() => { setFormFood(null); setFoodQuery(""); }}
-                            className="text-xs text-muted-foreground"
-                          >
-                            ✕
-                          </button>
-                        </div>
-                        <div className="grid grid-cols-5 gap-2 text-center">
-                          <div>
-                            <p className="text-sm text-baby-peach">{formFood.calories}</p>
-                            <p className="text-[9px] text-muted-foreground">kcal</p>
-                          </div>
-                          <div>
-                            <p className="text-sm">{formFood.protein}g</p>
-                            <p className="text-[9px] text-muted-foreground">proteína</p>
-                          </div>
-                          <div>
-                            <p className="text-sm">{formFood.carbs}g</p>
-                            <p className="text-[9px] text-muted-foreground">carbs</p>
-                          </div>
-                          <div>
-                            <p className="text-sm">{formFood.fat}g</p>
-                            <p className="text-[9px] text-muted-foreground">gordura</p>
-                          </div>
-                          <div>
-                            <p className="text-sm">{formFood.fiber}g</p>
-                            <p className="text-[9px] text-muted-foreground">fibra</p>
-                          </div>
-                        </div>
-                        <p className="text-[10px] text-muted-foreground mt-2 text-center">
-                          {formFood.id.startsWith("custom_") ? "Alimento personalizado" : "Dados via FatSecret API"} · valores por 100g
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
-
-              {/* Notes */}
-              <div className="mb-6">
-                <p className="text-sm text-muted-foreground mb-2">Notas</p>
-                <textarea
-                  value={formNotes}
-                  onChange={(e) => setFormNotes(e.target.value)}
-                  placeholder="Adicionar nota..."
-                  className="w-full bg-secondary rounded-xl p-3 text-sm resize-none h-20 outline-none"
-                />
-              </div>
-
-              <button
-                onClick={handleSave}
-                className="w-full bg-primary text-primary-foreground py-3.5 rounded-2xl flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
-              >
-                <Check className="w-5 h-5" />
-                {editingEntry ? "Salvar alterações" : "Registrar"}
-              </button>
-            </div>
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root>
+      <TrackerDrawer
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        title={`${editingEntry ? "Editar" : "Nova"} Alimentação`}
+      >
+        <FeedingForm
+          key={drawerKey}
+          editingEntry={editingEntry}
+          initialDate={initialDate}
+          feedingTypes={feedingTypes}
+          formulaBrands={formulaBrands}
+          foodDB={foodDB}
+          onSave={handleSave}
+        />
+      </TrackerDrawer>
     </div>
   );
 }

@@ -1,17 +1,16 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router";
-import { Drawer } from "vaul";
 import {
   ArrowLeft,
   Plus,
   Activity,
-  X,
   Check,
   Pencil,
   Trash2,
   Camera,
   Calendar,
 } from "lucide-react";
+import { TrackerDrawer } from "../TrackerDrawer";
 import { getIcon } from "../../iconMap";
 import { useUIBootstrap } from "../../UIBootstrapContext";
 import { getBabyUiState, putBabyUiState } from "@/api/client";
@@ -250,26 +249,11 @@ export function HealthEventsPage() {
       </div>
 
       {/* Drawer */}
-      <Drawer.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-black/30 z-40" />
-          <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl max-h-[92vh] mx-auto max-w-md"
-            aria-describedby={undefined}
-          >
-            <Drawer.Title className="sr-only">
-              {editingEvent ? "Editar" : "Novo"} Evento
-            </Drawer.Title>
-            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mt-3 mb-2" />
-            <div className="px-5 pb-8 overflow-y-auto max-h-[87vh]">
-              <div className="flex items-center justify-between mb-5">
-                <button onClick={() => setDrawerOpen(false)} className="p-1">
-                  <X className="w-5 h-5" />
-                </button>
-                <h3>{editingEvent ? "Editar" : "Novo"} Evento</h3>
-                <div className="w-5" />
-              </div>
-
+      <TrackerDrawer
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        title={`${editingEvent ? "Editar" : "Novo"} Evento`}
+      >
               {/* Type */}
               <div className="mb-4">
                 <label className="text-xs text-muted-foreground mb-2 block">Tipo</label>
@@ -352,10 +336,7 @@ export function HealthEventsPage() {
                 <Check className="w-4 h-4" />
                 {editingEvent ? "Salvar" : "Registrar"}
               </button>
-            </div>
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root>
+      </TrackerDrawer>
     </div>
   );
 }
