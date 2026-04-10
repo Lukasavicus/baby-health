@@ -10,8 +10,8 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 
 from config import settings
-from deps import get_repository
-from repositories import BaseRepository
+from deps import get_current_user
+from models.auth import TokenPayload
 
 router = APIRouter(prefix="/api/media", tags=["media"])
 
@@ -37,12 +37,12 @@ SAFE_FILENAME_RE = re.compile(
 )
 
 
-def profile_images_dir() -> Path:
-    return settings.data_dir.resolve() / "images"
+def profile_images_dir(profile_dir: str) -> Path:
+    return (settings.data_dir / profile_dir).resolve() / "images"
 
 
-def ensure_images_dir() -> Path:
-    d = profile_images_dir()
+def ensure_images_dir(profile_dir: str) -> Path:
+    d = profile_images_dir(profile_dir)
     d.mkdir(parents=True, exist_ok=True)
     return d
 
@@ -88,13 +88,13 @@ def extension_from_upload(filename: str, content_type: str | None) -> str:
 @router.post("/upload")
 async def upload_image(
     file: UploadFile = File(...),
-    _json_repo: BaseRepository = Depends(get_repository),
+    user: TokenPayload = Depends(get_current_user),
 ) -> dict:
     """
-    Save an image under DATA_DIR/images/ for the active profile (DATA_DIR).
+    Save an image under profile/images/ for the authenticated user.
     Limits: 10 MiB per file, 1 GiB total per images folder.
     """
-    dest_dir = ensure_images_dir()
+    dest_dir = ensure_images_dir(user.profile_dir)
     ext = extension_from_upload(file.filename or "", file.content_type)
     body = await file.read(MAX_FILE_BYTES + 1)
     if len(body) > MAX_FILE_BYTES:
@@ -128,11 +128,11 @@ async def upload_image(
 @router.get("/{filename}")
 async def get_image(
     filename: str,
-    _json_repo: BaseRepository = Depends(get_repository),
+    user: TokenPayload = Depends(get_current_user),
 ) -> FileResponse:
     if filename == "upload" or not SAFE_FILENAME_RE.match(filename):
         raise HTTPException(status_code=404, detail="Not found")
-    root = profile_images_dir()
+    root = profile_images_dir(user.profile_dir)
     path = (root / filename).resolve()
     try:
         path.relative_to(root.resolve())

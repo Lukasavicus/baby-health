@@ -1,5 +1,6 @@
 """Configuration for BabyHealth API"""
 import os
+import secrets
 from pathlib import Path
 
 
@@ -17,9 +18,14 @@ class Settings:
         self.app_version = os.getenv("APP_VERSION", "1.0.0")
         self.debug = os.getenv("DEBUG", "True").lower() == "true"
 
-        # JSON store root (babies.json, events.json, …). Use a different path per environment.
+        # JSON store root — parent of all profile directories.
         self.storage_type = os.getenv("STORAGE_TYPE", "json")
         self.data_dir = Path(os.getenv("DATA_DIR", str(Path(__file__).parent / "data")))
+
+        # JWT
+        self.jwt_secret = os.getenv("JWT_SECRET", secrets.token_urlsafe(32))
+        self.jwt_algorithm = os.getenv("JWT_ALGORITHM", "HS256")
+        self.jwt_expiry_minutes = int(os.getenv("JWT_EXPIRY_MINUTES", "1440"))
 
         # Built SPA (Vite); default legacy frontend, override for App Design bundle
         _default_dist = Path(__file__).resolve().parent.parent / "frontend" / "dist"

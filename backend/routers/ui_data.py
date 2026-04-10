@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from config import use_ui_seed
-from deps import get_repository
+from deps import get_profile_repository
 from repositories import BaseRepository
 from repositories.json_repository import JsonRepository
 from seed_json_store import (
@@ -334,7 +334,7 @@ def _inject_recent_milestones(payload: Dict[str, Any], repo: BaseRepository) -> 
 @router.get("/bootstrap")
 async def ui_bootstrap(
     baby_id: Optional[str] = Query(None, description="Baby id; defaults to first in repo or seed default"),
-    repo: BaseRepository = Depends(get_repository),
+    repo: BaseRepository = Depends(get_profile_repository),
 ) -> Dict[str, Any]:
     babies: List[Dict[str, Any]] = repo.get_all("baby")
     if use_ui_seed():

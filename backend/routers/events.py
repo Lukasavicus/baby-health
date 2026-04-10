@@ -7,12 +7,12 @@ from models.event import EventIncoming, EventCreate, EventUpdate, EventResponse,
 from services import EventService
 from services.event_normalization import merge_and_normalize_event, normalize_event_payload
 from repositories import BaseRepository
-from deps import get_repository
+from deps import get_profile_repository
 
 router = APIRouter(prefix="/api/events", tags=["events"])
 
 
-def get_event_service(repo: BaseRepository = Depends(get_repository)) -> EventService:
+def get_event_service(repo: BaseRepository = Depends(get_profile_repository)) -> EventService:
     """Dependency injection for event service"""
     return EventService(repo)
 

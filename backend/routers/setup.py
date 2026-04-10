@@ -8,7 +8,7 @@ import uuid
 from models.baby import Baby
 from models.caregiver import Caregiver
 from repositories import BaseRepository
-from deps import get_repository
+from deps import get_profile_repository
 
 router = APIRouter(prefix="/api/setup", tags=["setup"])
 
@@ -47,7 +47,7 @@ class SetupResponse(BaseModel):
 @router.post("", response_model=SetupResponse)
 async def setup(
     setup_data: SetupRequest,
-    repo: BaseRepository = Depends(get_repository),
+    repo: BaseRepository = Depends(get_profile_repository),
 ):
     """Perform initial setup with baby and caregivers"""
 
@@ -86,7 +86,7 @@ async def setup(
 
 
 @router.post("/seed")
-async def seed_demo_data(repo: BaseRepository = Depends(get_repository)):
+async def seed_demo_data(repo: BaseRepository = Depends(get_profile_repository)):
     """Seed database with demo data for testing"""
     from datetime import datetime, timedelta
 

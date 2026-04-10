@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, ConfigDict
 
-from deps import get_json_repository
+from deps import get_profile_json_repository
 from repositories.json_repository import JsonRepository
 
 router = APIRouter(prefix="/api/ui/baby-state", tags=["ui"])
@@ -31,7 +31,7 @@ class BabyUiStatePatch(BaseModel):
 @router.get("/{baby_id}")
 async def get_baby_ui_state(
     baby_id: str,
-    repo: JsonRepository = Depends(get_json_repository),
+    repo: JsonRepository = Depends(get_profile_json_repository),
 ) -> Dict[str, Any]:
     return repo.get_baby_ui_state(baby_id)
 
@@ -40,6 +40,6 @@ async def get_baby_ui_state(
 async def put_baby_ui_state(
     baby_id: str,
     patch: BabyUiStatePatch,
-    repo: JsonRepository = Depends(get_json_repository),
+    repo: JsonRepository = Depends(get_profile_json_repository),
 ) -> Dict[str, Any]:
     return repo.merge_baby_ui_state(baby_id, patch.model_dump(exclude_unset=True))

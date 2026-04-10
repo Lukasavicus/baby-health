@@ -2,13 +2,13 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from services import DashboardService
 from repositories import BaseRepository
-from deps import get_repository
+from deps import get_profile_repository
 
 router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
 
 
 def get_dashboard_service(
-    repo: BaseRepository = Depends(get_repository),
+    repo: BaseRepository = Depends(get_profile_repository),
 ) -> DashboardService:
     """Dependency injection for dashboard service"""
     return DashboardService(repo)

@@ -3,13 +3,13 @@ from typing import List
 from fastapi import APIRouter, HTTPException, Depends
 from models.baby import BabyCreate, BabyUpdate, BabyResponse, Baby
 from repositories import BaseRepository
-from deps import get_repository
+from deps import get_profile_repository
 
 router = APIRouter(prefix="/api/babies", tags=["babies"])
 
 
 @router.get("", response_model=List[BabyResponse])
-async def list_babies(repo: BaseRepository = Depends(get_repository)):
+async def list_babies(repo: BaseRepository = Depends(get_profile_repository)):
     """List all babies"""
     babies = repo.get_all("baby")
     return babies
@@ -17,7 +17,7 @@ async def list_babies(repo: BaseRepository = Depends(get_repository)):
 
 @router.post("", response_model=BabyResponse)
 async def create_baby(
-    baby_data: BabyCreate, repo: BaseRepository = Depends(get_repository)
+    baby_data: BabyCreate, repo: BaseRepository = Depends(get_profile_repository)
 ):
     """Create a new baby"""
     from datetime import datetime
@@ -36,7 +36,7 @@ async def create_baby(
 
 
 @router.get("/{baby_id}", response_model=BabyResponse)
-async def get_baby(baby_id: str, repo: BaseRepository = Depends(get_repository)):
+async def get_baby(baby_id: str, repo: BaseRepository = Depends(get_profile_repository)):
     """Get a baby by ID"""
     baby = repo.get_by_id("baby", baby_id)
     if not baby:
@@ -48,7 +48,7 @@ async def get_baby(baby_id: str, repo: BaseRepository = Depends(get_repository))
 async def update_baby(
     baby_id: str,
     baby_data: BabyUpdate,
-    repo: BaseRepository = Depends(get_repository),
+    repo: BaseRepository = Depends(get_profile_repository),
 ):
     """Update a baby"""
     existing = repo.get_by_id("baby", baby_id)

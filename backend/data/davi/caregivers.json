@@ -1,0 +1,23 @@
+[
+  {
+    "id": "cg-giseli-1",
+    "name": "Gisele",
+    "role": "babá",
+    "avatar_color": "teal",
+    "created_at": "2026-04-05T12:00:00"
+  },
+  {
+    "id": "cg-suely-1",
+    "name": "Suely",
+    "role": "avó",
+    "avatar_color": "purple",
+    "created_at": "2026-04-07T12:00:00"
+  },
+  {
+    "id": "cg-lucas-1",
+    "name": "Lucas",
+    "role": "pai",
+    "avatar_color": "blue",
+    "created_at": "2026-04-07T12:00:00"
+  }
+]
