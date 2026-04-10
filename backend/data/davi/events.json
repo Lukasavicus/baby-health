@@ -2430,5 +2430,23 @@
     "metadata": {},
     "created_at": "2026-04-10 01:00:45.515229",
     "updated_at": "2026-04-10 01:00:45.515232"
+  },
+  {
+    "id": "efb8235829f44904bf6976eebaacba83",
+    "baby_id": "baby-davi-1",
+    "caregiver_id": "cg-giseli-1",
+    "type": "bath",
+    "subtype": "bath",
+    "timestamp": "2026-04-10 13:52:00",
+    "end_timestamp": null,
+    "quantity": 10.0,
+    "unit": "min",
+    "notes": null,
+    "metadata": {
+      "bath_temperature": "morno",
+      "duration_min": 10
+    },
+    "created_at": "2026-04-10 16:52:55.898728",
+    "updated_at": "2026-04-10T16:52:59.478034"
   }
 ]

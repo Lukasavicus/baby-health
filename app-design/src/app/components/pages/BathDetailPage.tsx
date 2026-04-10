@@ -1,10 +1,11 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router";
-import { Drawer } from "vaul";
-import { ArrowLeft, Bath, Thermometer, Plus, Pencil, Trash2, X, Check } from "lucide-react";
+import { ArrowLeft, Bath, Thermometer, Plus, Check } from "lucide-react";
+import { TrackerDrawer } from "../TrackerDrawer";
 import { EventDateField, clampYmdNotAfterToday, todayYmd } from "../EventDateField";
 import { TimePickerField } from "../TimePickerDialog";
-import { TimePeriodFilter } from "../TimePeriodFilter";
+import { TrackerLogSection } from "../TrackerLogSection";
+import { WeekBarChart } from "../WeekBarChart";
 import { useUIBootstrap } from "../../UIBootstrapContext";
 import { useTimePeriodFilter, dateLabelFromTimestamp } from "../../hooks/useTimePeriodFilter";
 import { createEvent, deleteEvent, listEvents, updateEvent, type ApiEvent } from "@/api/client";
@@ -17,18 +18,8 @@ import {
   weekDayLabelsPt,
 } from "@/api/eventMappers";
 
-// --- Types ---
-type TempType = "frio" | "morno" | "quente";
-
-interface BathEntry {
-  id: string;
-  date?: string;
-  time: string;
-  temp: TempType;
-  tempLabel: string;
-  duration: number;
-  notes: string;
-}
+import type { BathEntry, BathTempType } from "@/types/trackers";
+type TempType = BathTempType;
 
 export function BathDetailPage() {
   const navigate = useNavigate();
@@ -101,11 +92,8 @@ export function BathDetailPage() {
     return seedWeekData;
   }, [canPersist, bathApiEvents, weekLabels, seedWeekData]);
 
-  const maxCount = weekData.length ? Math.max(...weekData.map((d) => d.count), 1) : 1;
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState<BathEntry | null>(null);
-  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
-
   // Form state
   const [formTime, setFormTime] = useState("");
   const [formTemp, setFormTemp] = useState<TempType>("morno");
@@ -216,7 +204,6 @@ export function BathDetailPage() {
         } else {
           setLogs(logs.filter((l) => l.id !== id));
         }
-        setDeleteConfirm(null);
       } catch (e) {
         console.error(e);
       }
@@ -264,96 +251,45 @@ export function BathDetailPage() {
 
       {/* Week chart */}
       <div className="px-4 mb-4">
-        <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
-          <p className="text-sm text-muted-foreground mb-4">Banhos na semana</p>
-          <div className="flex items-end justify-between gap-2 h-24">
-            {weekData.map((d) => (
-              <div key={d.day} className="flex-1 flex flex-col items-center gap-1">
-                <div
-                  className="w-full rounded-lg bg-baby-blue/60 transition-all"
-                  style={{ height: `${(d.count / maxCount) * 100}%`, minHeight: 8 }}
-                />
-                <span className="text-[10px] text-muted-foreground">{d.day}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+        <WeekBarChart
+          title="Banhos na semana"
+          data={weekData.map((d) => ({ day: d.day, value: d.count }))}
+          color="bg-baby-blue/60"
+          valueScale="count"
+          formatValue={(v) => String(Math.round(v))}
+        />
       </div>
 
       {/* Filtered log */}
-      <div className="px-4">
-        <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
-          <TimePeriodFilter filter={timePeriod} />
-          <p className="text-sm text-muted-foreground mb-3">{timePeriod.title}</p>
-          <div className="space-y-1">
-            {logs.length === 0 && (
-              <p className="text-xs text-muted-foreground text-center py-6">Nenhum registro neste período.</p>
-            )}
-            {logs.map((l) => (
-              <div key={l.id} className="flex items-start gap-3 py-2.5 group">
-                <div className="text-xs text-muted-foreground w-12 pt-1 shrink-0">
-                  {timePeriod.period !== "today" && <p className="text-[10px] font-medium">{l.date}</p>}
-                  <p>{l.time}</p>
-                </div>
-                <div className="w-8 h-8 rounded-full bg-baby-blue/40 flex items-center justify-center shrink-0">
-                  <Thermometer className="w-4 h-4 text-foreground/60" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm">{l.tempLabel}</p>
-                    <span className="text-xs text-muted-foreground">{l.duration} min</span>
-                  </div>
-                  {l.notes && <p className="text-xs text-muted-foreground mt-0.5">{l.notes}</p>}
-                </div>
-                <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button
-                    onClick={() => openEdit(l)}
-                    className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center"
-                  >
-                    <Pencil className="w-3 h-3 text-muted-foreground" />
-                  </button>
-                  {deleteConfirm === l.id ? (
-                    <button
-                      onClick={() => handleDelete(l.id)}
-                      className="w-7 h-7 rounded-full bg-destructive/20 flex items-center justify-center"
-                    >
-                      <Check className="w-3 h-3 text-destructive" />
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => setDeleteConfirm(l.id)}
-                      className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center"
-                    >
-                      <Trash2 className="w-3 h-3 text-muted-foreground" />
-                    </button>
-                  )}
-                </div>
+      <TrackerLogSection
+        filter={timePeriod}
+        items={logs}
+        timeAccessor={(l) => ({ date: l.date, time: l.time })}
+        onEdit={openEdit}
+        onDelete={handleDelete}
+        renderItem={(l) => (
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-full bg-baby-blue/40 flex items-center justify-center shrink-0">
+              <Thermometer className="w-4 h-4 text-foreground/60" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <p className="text-sm">{l.tempLabel}</p>
+                <span className="text-xs text-muted-foreground">{l.duration} min</span>
               </div>
-            ))}
+              {l.notes && <p className="text-xs text-muted-foreground mt-0.5">{l.notes}</p>}
+            </div>
           </div>
-        </div>
-      </div>
+        )}
+      />
 
       {/* Add/Edit Drawer */}
-      <Drawer.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-black/30 z-40" />
-          <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl max-h-[90vh] mx-auto max-w-md"
-            aria-describedby={undefined}
-          >
-            <Drawer.Title className="sr-only">{editingEntry ? "Editar" : "Novo"} Banho</Drawer.Title>
-            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mt-3 mb-2" />
-            <div className="px-5 pb-8 overflow-y-auto max-h-[85vh]">
-              <div className="flex items-center justify-between mb-5">
-                <button onClick={() => setDrawerOpen(false)} className="p-1">
-                  <X className="w-5 h-5" />
-                </button>
-                <h3>{editingEntry ? "Editar" : "Novo"} Banho</h3>
-                <div className="w-5" />
-              </div>
-
-              <EventDateField value={formDateYmd} onChange={setFormDateYmd} />
+      <TrackerDrawer
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        title={`${editingEntry ? "Editar" : "Novo"} Banho`}
+      >
+        <EventDateField value={formDateYmd} onChange={setFormDateYmd} />
 
               {/* Horário */}
               <div className="mb-5">
@@ -422,10 +358,7 @@ export function BathDetailPage() {
                 <Check className="w-4 h-4" />
                 {editingEntry ? "Salvar Alterações" : "Registrar"}
               </button>
-            </div>
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root>
+      </TrackerDrawer>
     </div>
   );
 }

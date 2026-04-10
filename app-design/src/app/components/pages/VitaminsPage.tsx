@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import { Drawer } from "vaul";
 import {
   ArrowLeft,
   Plus,
   Pill,
-  X,
   Check,
   Pencil,
   Trash2,
@@ -19,6 +17,7 @@ import {
 } from "lucide-react";
 import { useUIBootstrap } from "../../UIBootstrapContext";
 import { getBabyUiState, putBabyUiState } from "@/api/client";
+import { TrackerDrawer } from "../TrackerDrawer";
 
 function formatHistoryDate(ymd: string): string {
   const d = new Date(ymd + "T12:00:00");
@@ -369,28 +368,21 @@ export function VitaminsPage() {
       )}
 
       {/* Detail / Form Drawer */}
-      <Drawer.Root open={drawerOpen} onOpenChange={(o) => { setDrawerOpen(o); if (!o) { setDetailVitamin(null); setEditingVitamin(null); } }}>
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-black/30 z-40" />
-          <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl max-h-[92vh] mx-auto max-w-md"
-            aria-describedby={undefined}
-          >
-            <Drawer.Title className="sr-only">
-              {detailVitamin ? detailVitamin.name : editingVitamin ? "Editar" : "Novo"} {formCategory === "medication" ? "Medicamento" : "Suplemento"}
-            </Drawer.Title>
-            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mt-3 mb-2" />
-            <div className="px-5 pb-8 overflow-y-auto max-h-[87vh]">
-              <div className="flex items-center justify-between mb-5">
-                <button onClick={() => setDrawerOpen(false)} className="p-1">
-                  <X className="w-5 h-5" />
-                </button>
-                <h3>
-                  {detailVitamin ? detailVitamin.name : `${editingVitamin ? "Editar" : formCategory === "medication" ? "Novo Medicamento" : "Novo Suplemento"}`}
-                </h3>
-                <div className="w-5" />
-              </div>
-
+      <TrackerDrawer
+        open={drawerOpen}
+        onOpenChange={(o) => {
+          setDrawerOpen(o);
+          if (!o) {
+            setDetailVitamin(null);
+            setEditingVitamin(null);
+          }
+        }}
+        title={
+          detailVitamin
+            ? detailVitamin.name
+            : `${editingVitamin ? "Editar" : formCategory === "medication" ? "Novo Medicamento" : "Novo Suplemento"}`
+        }
+      >
               {detailVitamin ? (
                 /* --- Detail --- */
                 <div className="space-y-4">
@@ -620,36 +612,16 @@ export function VitaminsPage() {
                   </button>
                 </div>
               )}
-            </div>
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root>
+      </TrackerDrawer>
 
-      <Drawer.Root
+      <TrackerDrawer
         open={historyEntryDrawerOpen}
         onOpenChange={(o) => {
           setHistoryEntryDrawerOpen(o);
           if (!o) setEditingHistoryRow(null);
         }}
+        title={editingHistoryRow?.name ?? "Histórico"}
       >
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-black/30 z-40" />
-          <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-[60] bg-card rounded-t-3xl max-h-[85vh] mx-auto max-w-md"
-            aria-describedby={undefined}
-          >
-            <Drawer.Title className="sr-only">Editar registro do histórico</Drawer.Title>
-            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mt-3 mb-2" />
-            <div className="px-5 pb-8">
-              <div className="flex items-center justify-between mb-5">
-                <button type="button" onClick={() => setHistoryEntryDrawerOpen(false)} className="p-1">
-                  <X className="w-5 h-5" />
-                </button>
-                <h3 className="text-sm font-medium truncate max-w-[200px]">
-                  {editingHistoryRow?.name ?? "Histórico"}
-                </h3>
-                <div className="w-5" />
-              </div>
               <p className="text-xs text-muted-foreground mb-4">
                 Ajuste data, dose anotada e observações deste registro.
               </p>
@@ -695,10 +667,7 @@ export function VitaminsPage() {
                 <Check className="w-4 h-4" />
                 Salvar
               </button>
-            </div>
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root>
+      </TrackerDrawer>
     </div>
   );
 }

@@ -7,8 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-
-const TOKEN_KEY = "babyhealth_token";
+import { TOKEN_KEY } from "@/api/constants";
 
 interface UserInfo {
   id: string;

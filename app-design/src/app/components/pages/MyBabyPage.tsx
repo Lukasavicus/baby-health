@@ -1,12 +1,10 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router";
-import { Drawer } from "vaul";
 import {
   TrendingUp,
   ChevronRight,
   Camera,
   Pencil,
-  X,
   Check,
   Calendar,
   Heart,
@@ -21,6 +19,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { TrackerCard } from "../TrackerCard";
+import { TrackerDrawer } from "../TrackerDrawer";
 import { getIcon } from "../../iconMap";
 import { useUIBootstrap } from "../../UIBootstrapContext";
 import { useAuth } from "../../AuthContext";
@@ -555,24 +554,7 @@ export function MyBabyPage() {
       </div>
 
       {/* --- Edit Profile Drawer --- */}
-      <Drawer.Root open={editOpen} onOpenChange={setEditOpen}>
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-black/30 z-40" />
-          <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl max-h-[85vh] mx-auto max-w-md"
-            aria-describedby={undefined}
-          >
-            <Drawer.Title className="sr-only">Editar Perfil</Drawer.Title>
-            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mt-3 mb-2" />
-            <div className="px-5 pb-8">
-              <div className="flex items-center justify-between mb-6">
-                <button onClick={() => setEditOpen(false)} className="p-1">
-                  <X className="w-5 h-5" />
-                </button>
-                <h3>Editar Perfil</h3>
-                <div className="w-5" />
-              </div>
-
+      <TrackerDrawer open={editOpen} onOpenChange={setEditOpen} title="Editar Perfil">
               {/* Photo with upload */}
               <div className="flex justify-center mb-6">
                 <input
@@ -654,10 +636,7 @@ export function MyBabyPage() {
                 <Check className="w-4 h-4" />
                 Salvar
               </button>
-            </div>
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root>
+      </TrackerDrawer>
     </div>
   );
 }

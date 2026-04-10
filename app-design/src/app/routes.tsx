@@ -8,7 +8,6 @@ import { FeedingDetailPage } from "./components/pages/FeedingDetailPage";
 import { HydrationDetailPage } from "./components/pages/HydrationDetailPage";
 import { SleepDetailPage } from "./components/pages/SleepDetailPage";
 import { DiaperDetailPage } from "./components/pages/DiaperDetailPage";
-import { ActivityDetailPage } from "./components/pages/ActivityDetailPage";
 import { ActivityDetailPageV2 } from "./components/pages/ActivityDetailPageV2";
 import { BathDetailPage } from "./components/pages/BathDetailPage";
 import { HealthDetailPage } from "./components/pages/HealthDetailPage";
@@ -49,8 +48,7 @@ export const router = createBrowserRouter([
       { path: "tracker/hydration", Component: HydrationDetailPage },
       { path: "tracker/sleep", Component: SleepDetailPage },
       { path: "tracker/diaper", Component: DiaperDetailPage },
-      { path: "tracker/activity", Component: ActivityDetailPage },
-      { path: "tracker/activity-v2", Component: ActivityDetailPageV2 },
+      { path: "tracker/activity", Component: ActivityDetailPageV2 },
       { path: "tracker/bath", Component: BathDetailPage },
       { path: "tracker/health", Component: HealthDetailPage },
     ],

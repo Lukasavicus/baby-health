@@ -1,20 +1,20 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router";
-import { Drawer } from "vaul";
 import {
   ArrowLeft,
   Activity,
   Plus,
   Pencil,
   Trash2,
-  X,
   Check,
   Star,
   ChevronDown,
   ChevronRight,
 } from "lucide-react";
+import { TrackerDrawer } from "../TrackerDrawer";
 import { EventDateField, clampYmdNotAfterToday, todayYmd } from "../EventDateField";
 import { TimePickerField } from "../TimePickerDialog";
+import { WeekBarChart } from "../WeekBarChart";
 import { getIcon } from "../../iconMap";
 import { useUIBootstrap } from "../../UIBootstrapContext";
 import { createEvent, deleteEvent, listEvents, updateEvent, type ApiEvent } from "@/api/client";
@@ -45,14 +45,7 @@ interface ActivityCategory {
   activities: ActivityOption[];
 }
 
-interface ActivityEntry {
-  id: string;
-  time: string;
-  type: string;
-  label: string;
-  duration: number;
-  notes: string;
-}
+import type { ActivityEntry } from "@/types/trackers";
 
 export function ActivityDetailPageV2() {
   const navigate = useNavigate();
@@ -129,8 +122,6 @@ export function ActivityDetailPageV2() {
     }
     return seedWeekData;
   }, [canPersist, actApiEvents, weekLabels, seedWeekData]);
-
-  const maxMin = weekData.length ? Math.max(...weekData.map((d) => d.min), 1) : 1;
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState<ActivityEntry | null>(null);
@@ -362,20 +353,13 @@ export function ActivityDetailPageV2() {
 
       {/* Week chart */}
       <div className="px-4 mb-4">
-        <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
-          <p className="text-sm text-muted-foreground mb-4">Minutos de atividade na semana</p>
-          <div className="flex items-end justify-between gap-2 h-24">
-            {weekData.map((d) => (
-              <div key={d.day} className="flex-1 flex flex-col items-center gap-1">
-                <div
-                  className="w-full rounded-lg bg-baby-mint/60 transition-all"
-                  style={{ height: `${(d.min / maxMin) * 100}%`, minHeight: 8 }}
-                />
-                <span className="text-[10px] text-muted-foreground">{d.day}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+        <WeekBarChart
+          title="Minutos de atividade na semana"
+          data={weekData.map((d) => ({ day: d.day, value: d.min }))}
+          color="bg-baby-mint/60"
+          valueScale="minutes"
+          formatValue={(v) => `${Math.round(v)} min`}
+        />
       </div>
 
       {/* Today's log */}
@@ -438,41 +422,27 @@ export function ActivityDetailPageV2() {
       </div>
 
       {/* Add/Edit Drawer */}
-      <Drawer.Root open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-black/30 z-40" />
-          <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-50 bg-card rounded-t-3xl max-h-[92vh] mx-auto max-w-md"
-            aria-describedby={undefined}
-          >
-            <Drawer.Title className="sr-only">
-              {editingEntry ? "Editar" : "Nova"} Atividade
-            </Drawer.Title>
-            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mt-3 mb-2" />
-            <div className="px-5 pb-8 overflow-y-auto max-h-[87vh]">
-              <div className="flex items-center justify-between mb-5">
-                <button
-                  onClick={() => {
-                    if (formStep === "details" && !editingEntry) {
-                      setFormStep("select");
-                    } else {
-                      setDrawerOpen(false);
-                    }
-                  }}
-                  className="p-1"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-                <h3>
-                  {formStep === "select"
-                    ? "Escolher Atividade"
-                    : editingEntry
-                      ? "Editar Atividade"
-                      : "Registrar Atividade"}
-                </h3>
-                <div className="w-5" />
-              </div>
-
+      <TrackerDrawer
+        open={drawerOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            if (formStep === "details" && !editingEntry) {
+              setFormStep("select");
+            } else {
+              setDrawerOpen(false);
+            }
+          } else {
+            setDrawerOpen(open);
+          }
+        }}
+        title={
+          formStep === "select"
+            ? "Escolher Atividade"
+            : editingEntry
+              ? "Editar Atividade"
+              : "Registrar Atividade"
+        }
+      >
               {formStep === "select" ? (
                 /* --- Activity Selection Step --- */
                 <div className="space-y-4">
@@ -682,10 +652,7 @@ export function ActivityDetailPageV2() {
                   </button>
                 </div>
               )}
-            </div>
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root>
+      </TrackerDrawer>
     </div>
   );
 }
