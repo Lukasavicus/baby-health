@@ -1,6 +1,6 @@
 # BabyHealth — Backlog Index
 
-> Hierarquia completa: **11 Epics → 34 Features → 43 Stories → 148 Tasks**
+> Hierarquia completa: **12 Epics → 40 Features → 49 Stories → 180 Tasks**
 
 ---
 
@@ -31,7 +31,7 @@
 | [FE-03.1 — Hero Card do Dia](features/FE-03.1-hero-card-do-dia.md) | [US-03.1.1](stories/US-03.1.1-estado-geral-bebe.md) | [TK-03.1.1](tasks/TK-03.1.1-metricas-hero-card.md), [TK-03.1.2](tasks/TK-03.1.2-resumo-textual-dia.md), [TK-03.1.3](tasks/TK-03.1.3-status-badge.md), [TK-03.1.4](tasks/TK-03.1.4-visual-principal-card.md) | P0 |
 | [FE-03.2 — Cards dos Trackers](features/FE-03.2-cards-trackers-obrigatorios.md) | [US-03.2.1](stories/US-03.2.1-acompanhar-trackers.md) | [TK-03.2.1](tasks/TK-03.2.1-card-alimentacao.md) .. [TK-03.2.6](tasks/TK-03.2.6-card-atividades.md) | P0 |
 | [FE-03.3 — Linha do Tempo](features/FE-03.3-linha-do-tempo-do-dia.md) | [US-03.3.1](stories/US-03.3.1-timeline-cronologica.md) | [TK-03.3.1](tasks/TK-03.3.1-lista-cronologica-reversa.md) .. [TK-03.3.4](tasks/TK-03.3.4-filtro-por-tipo.md) | P0 |
-| [FE-03.4 — Registro Inline](features/FE-03.4-registro-inline.md) | [US-03.4.1](stories/US-03.4.1-registrar-direto-card.md) | [TK-03.4.1](tasks/TK-03.4.1-cta-inline-por-card.md) .. [TK-03.4.4](tasks/TK-03.4.4-feedback-visual-sucesso.md) | P0 |
+| [FE-03.4 — Registro Inline](features/FE-03.4-registro-inline.md) | [US-03.4.1](stories/US-03.4.1-registrar-direto-card.md) | [TK-03.4.1](tasks/TK-03.4.1-cta-inline-por-card.md) .. [TK-03.4.5](tasks/TK-03.4.5-corrigir-sonner-next-themes.md) | P0 |
 
 ---
 
@@ -39,10 +39,10 @@
 
 | Feature | Stories | Tasks | Priority |
 |---------|---------|-------|----------|
-| [FE-04.1 — Mamadeira/Leite](features/FE-04.1-mamadeira-leite.md) | [US-04.1.1](stories/US-04.1.1-registrar-mamadeira.md), [US-04.1.2](stories/US-04.1.2-ultima-mamada.md) | [TK-04.1.1](tasks/TK-04.1.1-tipos-mamadeira.md) .. [TK-04.1.5](tasks/TK-04.1.5-total-diario.md) | P0 |
+| [FE-04.1 — Mamadeira/Leite](features/FE-04.1-mamadeira-leite.md) | [US-04.1.1](stories/US-04.1.1-registrar-mamadeira.md), [US-04.1.2](stories/US-04.1.2-ultima-mamada.md) | [TK-04.1.1](tasks/TK-04.1.1-tipos-mamadeira.md) .. [TK-04.1.6](tasks/TK-04.1.6-icone-mamadeira-alimentacao.md), [TK-04.4.7](tasks/TK-04.4.7-grafico-semanal-alimentacao.md) | P0 |
 | [FE-04.2 — Amamentação](features/FE-04.2-amamentacao-basica-avancada.md) | [US-04.2.1](stories/US-04.2.1-modo-simples-amamentacao.md), [US-04.2.2](stories/US-04.2.2-modo-avancado-amamentacao.md) | [TK-04.2.1](tasks/TK-04.2.1-modo-basico.md) .. [TK-04.2.7](tasks/TK-04.2.7-sessoes-compostas.md) | P0 |
 | [FE-04.3 — Sólidos/Papinhas](features/FE-04.3-solidos-papinhas-refeicoes.md) | [US-04.3.1](stories/US-04.3.1-registrar-solidos.md), [US-04.3.2](stories/US-04.3.2-primeira-exposicao.md) | [TK-04.3.1](tasks/TK-04.3.1-tipos-solidos.md) .. [TK-04.3.6](tasks/TK-04.3.6-reacao-alergia.md) | P0 |
-| [FE-04.4 — Hidratação](features/FE-04.4-hidratacao.md) | [US-04.4.1](stories/US-04.4.1-registrar-hidratacao.md) | [TK-04.4.1](tasks/TK-04.4.1-presets-volume.md) .. [TK-04.4.5](tasks/TK-04.4.5-progresso-visual.md) | P0 |
+| [FE-04.4 — Hidratação](features/FE-04.4-hidratacao.md) | [US-04.4.1](stories/US-04.4.1-registrar-hidratacao.md) | [TK-04.4.1](tasks/TK-04.4.1-presets-volume.md) .. [TK-04.4.6](tasks/TK-04.4.6-grafico-semanal-hidratacao.md) | P0 |
 
 ---
 
@@ -52,7 +52,7 @@
 |---------|---------|-------|----------|
 | [FE-05.1 — Registro de Sono](features/FE-05.1-registro-de-sono.md) | [US-05.1.1](stories/US-05.1.1-iniciar-encerrar-sono.md) | [TK-05.1.1](tasks/TK-05.1.1-tipos-sono.md) .. [TK-05.1.5](tasks/TK-05.1.5-edicao-posterior.md) | P0 |
 | [FE-05.2 — Tempo Acordado](features/FE-05.2-tempo-acordado.md) | [US-05.2.1](stories/US-05.2.1-tempo-acordado.md) | [TK-05.2.1](tasks/TK-05.2.1-calcular-awake-window.md) .. [TK-05.2.4](tasks/TK-05.2.4-comportamento-sem-dados.md) | P0 |
-| [FE-05.3 — Resumo Diário de Sono](features/FE-05.3-resumo-diario-sono.md) | [US-05.3.1](stories/US-05.3.1-resumo-diario-sono.md) | [TK-05.3.1](tasks/TK-05.3.1-somar-sono-diurno.md) .. [TK-05.3.4](tasks/TK-05.3.4-padrao-basico-home.md) | P0 |
+| [FE-05.3 — Resumo Diário de Sono](features/FE-05.3-resumo-diario-sono.md) | [US-05.3.1](stories/US-05.3.1-resumo-diario-sono.md) | [TK-05.3.1](tasks/TK-05.3.1-somar-sono-diurno.md) .. [TK-05.3.5](tasks/TK-05.3.5-grafico-semanal-sono.md) | P0 |
 
 ---
 
@@ -115,20 +115,33 @@
 
 ---
 
+## EP-12 — Autenticação e Controle de Acesso `P0`
+
+| Feature | Stories | Tasks | Priority |
+|---------|---------|-------|----------|
+| [FE-12.1 — Modelo de Usuário e Credenciais](features/FE-12.1-modelo-usuario-credenciais.md) | [US-12.1.1](stories/US-12.1.1-cadastro-usuarios-json.md) | [TK-12.1.1](tasks/TK-12.1.1-modelo-pydantic-user.md), [TK-12.1.2](tasks/TK-12.1.2-criar-users-json.md), [TK-12.1.3](tasks/TK-12.1.3-user-service.md), [TK-12.1.4](tasks/TK-12.1.4-hashing-senhas-bcrypt.md) | P0 |
+| [FE-12.2 — Autenticação JWT no Backend](features/FE-12.2-autenticacao-jwt-backend.md) | [US-12.2.1](stories/US-12.2.1-login-retorna-jwt.md) | [TK-12.2.1](tasks/TK-12.2.1-dependencias-auth.md), [TK-12.2.2](tasks/TK-12.2.2-config-jwt.md), [TK-12.2.3](tasks/TK-12.2.3-auth-service.md), [TK-12.2.4](tasks/TK-12.2.4-router-auth.md), [TK-12.2.5](tasks/TK-12.2.5-jwt-payload-completo.md) | P0 |
+| [FE-12.3 — Middleware de Proteção de Rotas](features/FE-12.3-middleware-protecao-rotas.md) | [US-12.3.1](stories/US-12.3.1-rotas-protegidas.md) | [TK-12.3.1](tasks/TK-12.3.1-dependency-get-current-user.md), [TK-12.3.2](tasks/TK-12.3.2-dependency-get-profile-repository.md), [TK-12.3.3](tasks/TK-12.3.3-substituir-get-repository.md), [TK-12.3.4](tasks/TK-12.3.4-rotas-publicas.md), [TK-12.3.5](tasks/TK-12.3.5-http-401-tokens-invalidos.md) | P0 |
+| [FE-12.4 — Tela de Login](features/FE-12.4-tela-login-frontend.md) | [US-12.4.1](stories/US-12.4.1-tela-login-credenciais.md) | [TK-12.4.1](tasks/TK-12.4.1-login-page-component.md), [TK-12.4.2](tasks/TK-12.4.2-chamada-api-login.md), [TK-12.4.3](tasks/TK-12.4.3-feedback-erro-login.md), [TK-12.4.4](tasks/TK-12.4.4-redirect-home-login.md), [TK-12.4.5](tasks/TK-12.4.5-estilizar-login-design-system.md) | P0 |
+| [FE-12.5 — Contexto de Autenticação](features/FE-12.5-contexto-autenticacao-frontend.md) | [US-12.5.1](stories/US-12.5.1-sessao-usuario-frontend.md) | [TK-12.5.1](tasks/TK-12.5.1-auth-context-provider.md), [TK-12.5.2](tasks/TK-12.5.2-token-localstorage.md), [TK-12.5.3](tasks/TK-12.5.3-client-bearer-header.md), [TK-12.5.4](tasks/TK-12.5.4-protected-route.md), [TK-12.5.5](tasks/TK-12.5.5-implementar-logout.md), [TK-12.5.6](tasks/TK-12.5.6-caregiver-id-do-token.md), [TK-12.5.7](tasks/TK-12.5.7-tratar-401-global.md) | P0 |
+| [FE-12.6 — Migração de Dados e Scripts](features/FE-12.6-migracao-dados-scripts.md) | [US-12.6.1](stories/US-12.6.1-dados-preservados-scripts-simples.md) | [TK-12.6.1](tasks/TK-12.6.1-renomear-davi-test.md), [TK-12.6.2](tasks/TK-12.6.2-remover-scripts-npm-perfil.md), [TK-12.6.3](tasks/TK-12.6.3-simplificar-package-json.md), [TK-12.6.4](tasks/TK-12.6.4-atualizar-local-run-md.md), [TK-12.6.5](tasks/TK-12.6.5-env-example-jwt.md), [TK-12.6.6](tasks/TK-12.6.6-config-data-dir-raiz.md) | P0 |
+
+---
+
 ## Resumo Quantitativo
 
 | Nível | Quantidade |
 |-------|-----------|
-| Epics | 11 |
-| Features | 34 |
-| User Stories | 43 |
-| Tasks | 148 |
-| **Total de arquivos** | **225** |
+| Epics | 12 |
+| Features | 40 |
+| User Stories | 49 |
+| Tasks | 180 |
+| **Total de arquivos** | **270** |
 
 ### Por Prioridade
 
 | Prioridade | Features | Descrição |
 |------------|----------|-----------|
-| **P0** | 25 | MVP Core (EP-01 a EP-08) |
+| **P0** | 31 | MVP Core (EP-01 a EP-08, EP-12) |
 | **P1** | 7 | Post-MVP (EP-09 a EP-11 + filtro cuidadores + insights) |
 | **P2** | 2 | Futuro (curadoria externa, observações, saúde leve) |
