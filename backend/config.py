@@ -18,9 +18,10 @@ class Settings:
         self.app_version = os.getenv("APP_VERSION", "1.0.0")
         self.debug = os.getenv("DEBUG", "True").lower() == "true"
 
-        # JSON store root — parent of all profile directories.
+        # Storage: "json" (local files) or "gcs" (Google Cloud Storage)
         self.storage_type = os.getenv("STORAGE_TYPE", "json")
         self.data_dir = Path(os.getenv("DATA_DIR", str(Path(__file__).parent / "data")))
+        self.gcs_bucket = os.getenv("GCS_BUCKET", "")
 
         # JWT
         self.jwt_secret = os.getenv("JWT_SECRET", secrets.token_urlsafe(32))

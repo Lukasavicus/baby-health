@@ -10,6 +10,10 @@ from repositories import BaseRepository, JsonRepository
 from services.auth_service import decode_access_token
 from services.user_service import UserService
 
+def _make_gcs_repo(prefix: str) -> BaseRepository:
+    from repositories.gcs_repository import GcsRepository
+    return GcsRepository(bucket_name=settings.gcs_bucket, prefix=prefix)
+
 _bearer_scheme = HTTPBearer(auto_error=False)
 
 _user_service: UserService | None = None
@@ -44,8 +48,8 @@ async def get_current_user(
 def get_profile_repository(
     user: TokenPayload = Depends(get_current_user),
 ) -> BaseRepository:
-    if settings.storage_type != "json":
-        raise ValueError(f"Unsupported storage type: {settings.storage_type}")
+    if settings.storage_type == "gcs":
+        return _make_gcs_repo(f"{user.profile_dir}/")
     profile_path = (settings.data_dir / user.profile_dir).resolve()
     if not profile_path.is_dir():
         raise HTTPException(
@@ -69,8 +73,8 @@ def get_profile_json_repository(
 
 # Legacy helpers kept for backward-compatibility during migration
 def get_repository() -> BaseRepository:
-    if settings.storage_type != "json":
-        raise ValueError(f"Unsupported storage type: {settings.storage_type}")
+    if settings.storage_type == "gcs":
+        return _make_gcs_repo("")
     return JsonRepository(settings.data_dir.resolve())
 
 
