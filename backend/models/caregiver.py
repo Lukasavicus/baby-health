@@ -4,7 +4,18 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field
 
 
-CaregiverRole = Literal["pai", "mãe", "babá", "avó", "avô", "outro"]
+CaregiverRole = Literal[
+    "pai",
+    "mãe",
+    "babá",
+    "avó",
+    "avô",
+    "vovô",
+    "vovó",
+    "tia",
+    "tio",
+    "outro",
+]
 AvatarColor = Literal["red", "blue", "green", "yellow", "purple", "orange", "pink", "teal"]
 
 

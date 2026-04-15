@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 import os
 
 from config import settings, use_ui_seed
-from routers import auth, babies, baby_ui_state, caregivers, events, dashboard, media, setup, ui_data
+from routers import auth, babies, baby_ui_state, caregivers, events, dashboard, media, onboarding, setup, ui_data
 
 # Application lifecycle
 @asynccontextmanager
@@ -52,6 +52,7 @@ app.add_middleware(
 
 # Include routers (API routes take priority; auth first — public)
 app.include_router(auth.router)
+app.include_router(onboarding.router)
 app.include_router(babies.router)
 app.include_router(caregivers.router)
 app.include_router(events.router)
