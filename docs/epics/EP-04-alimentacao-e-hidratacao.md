@@ -96,6 +96,12 @@ Cobrir o tracker mais importante do produto—o registro de alimentação—com 
   - Effort: 2 hours
   - Acceptance: Card shows "Today: 450 ml" (sum of all bottle feedings); updates after new log
 
+- **TK-04.1.7** — Spike: uma modalidade por vez vs. várias no mesmo fluxo (alimentação)
+  - Deliverable: Documento com evidência, recomendação e impacto em US-04.1.1 / #105 (e FE-04.2/04.3 se aplicável)
+  - Owner: Product / UX
+  - Effort: 4 hours
+  - Acceptance: Decisão ou “em aberto” + próximos passos; link da task e da issue
+
 ---
 
 ### FE-04.2 — Amamentação Básica e Avançada (P0)

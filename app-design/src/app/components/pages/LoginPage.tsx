@@ -52,7 +52,7 @@ export function LoginPage() {
                 id="username"
                 type="text"
                 autoComplete="username"
-                placeholder="gisele"
+                placeholder="nome de usuário"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 disabled={submitting}

@@ -1,6 +1,6 @@
 # Davi — dataset de teste
 
-Arquivos no formato do [`JsonRepository`](../../repositories/json_repository.py): `babies.json`, `caregivers.json`, `events.json`, `medications.json`. A subpasta **`images/`** guarda uploads da API (`POST /api/media/upload`) para este perfil; `baby.photo_url` pode apontar para `/api/media/...`.
+Arquivos no formato do [`JsonRepository`](../../repositories/json_repository.py): `babies.json`, `caregivers.json`, `events.json`, `medications.json`. A subpasta **`images/`** guarda uploads da API (`POST /api/media/upload`) para este perfil; `baby.photo_url` pode apontar para `/api/media/...` depois de um upload (no seed versionado, `photo_url` fica `null` até existir o arquivo em `images/`).
 
 - **Bebê:** Davi, nascimento `2025-09-07`, id `baby-davi-1`.
 - **Cuidadora:** Giseli (babá), id `cg-giseli-1`.

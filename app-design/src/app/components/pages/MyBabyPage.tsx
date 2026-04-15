@@ -24,7 +24,8 @@ import { getIcon } from "../../iconMap";
 import { useUIBootstrap } from "../../UIBootstrapContext";
 import { useAuth } from "../../AuthContext";
 import { toast } from "sonner";
-import { resolveMediaSrc, updateBaby, uploadProfileImage } from "@/api/client";
+import { updateBaby, uploadProfileImage } from "@/api/client";
+import { AuthenticatedProfilePhoto } from "../AuthenticatedProfilePhoto";
 
 /** Display string for birth date field (pt-BR). */
 function formatBirthDatePtBr(d: Date): string {
@@ -96,8 +97,6 @@ export function MyBabyPage() {
   const [bloodType, setBloodType] = useState("");
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [birthDateInput, setBirthDateInput] = useState("");
-
-  const displayPhotoSrc = useMemo(() => resolveMediaSrc(photoUrl), [photoUrl]);
 
   useEffect(() => {
     const b = data?.baby;
@@ -238,15 +237,12 @@ export function MyBabyPage() {
               onClick={() => fileInputRef.current?.click()}
               className="w-16 h-16 rounded-full overflow-hidden flex items-center justify-center bg-baby-peach/30 ring-2 ring-white shadow-md"
             >
-              {displayPhotoSrc ? (
-                <img
-                  src={displayPhotoSrc}
-                  alt={babyName}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <Baby className="w-7 h-7 text-baby-peach" />
-              )}
+              <AuthenticatedProfilePhoto
+                photoUrl={photoUrl}
+                alt={babyName}
+                imgClassName="w-full h-full object-cover"
+                fallback={<Baby className="w-7 h-7 text-baby-peach" />}
+              />
             </button>
             <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center shadow-sm pointer-events-none">
               <Camera className="w-3 h-3" />
@@ -569,15 +565,12 @@ export function MyBabyPage() {
                     onClick={() => editFileInputRef.current?.click()}
                     className="w-24 h-24 rounded-full overflow-hidden flex items-center justify-center bg-baby-peach/30 ring-4 ring-secondary shadow-md"
                   >
-                    {displayPhotoSrc ? (
-                      <img
-                        src={displayPhotoSrc}
-                        alt={babyName}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <Baby className="w-10 h-10 text-baby-peach" />
-                    )}
+                    <AuthenticatedProfilePhoto
+                      photoUrl={photoUrl}
+                      alt={babyName}
+                      imgClassName="w-full h-full object-cover"
+                      fallback={<Baby className="w-10 h-10 text-baby-peach" />}
+                    />
                   </button>
                   <div className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow-sm pointer-events-none">
                     <Camera className="w-4 h-4" />

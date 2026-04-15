@@ -8,7 +8,7 @@ function apiOrigin(): string {
   return (raw ?? "").replace(/\/$/, "");
 }
 
-function authHeaders(): Record<string, string> {
+export function authHeaders(): Record<string, string> {
   const token = localStorage.getItem(TOKEN_KEY);
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
