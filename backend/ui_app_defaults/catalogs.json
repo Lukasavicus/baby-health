@@ -1,0 +1,426 @@
+{
+  "logTypes": [
+    {
+      "id": "feeding",
+      "label": "Alimentação",
+      "icon": "Milk",
+      "color": "bg-baby-peach"
+    },
+    {
+      "id": "hydration",
+      "label": "Hidratação",
+      "icon": "Droplets",
+      "color": "bg-baby-blue"
+    },
+    {
+      "id": "sleep",
+      "label": "Sono",
+      "icon": "Moon",
+      "color": "bg-baby-lavender"
+    },
+    {
+      "id": "diaper",
+      "label": "Fralda",
+      "icon": "Diaper",
+      "color": "bg-baby-yellow"
+    },
+    {
+      "id": "activity",
+      "label": "Atividade",
+      "icon": "Activity",
+      "color": "bg-baby-mint"
+    },
+    {
+      "id": "bath",
+      "label": "Banho",
+      "icon": "Bath",
+      "color": "bg-baby-blue"
+    },
+    {
+      "id": "health",
+      "label": "Saúde",
+      "icon": "Pill",
+      "color": "bg-baby-pink"
+    }
+  ],
+  "feedingTypes": [
+    {
+      "id": "breast",
+      "label": "Amamentação"
+    },
+    {
+      "id": "formula",
+      "label": "Fórmula"
+    },
+    {
+      "id": "solids",
+      "label": "Sólidos"
+    }
+  ],
+  "formulaBrands": [
+    "Mamadeira",
+    "NAN 1",
+    "NAN 2",
+    "Aptamil 1",
+    "Aptamil 2",
+    "Enfamil",
+    "Similac",
+    "Nestogeno",
+    "Outra"
+  ],
+  "drinkTypes": [
+    {
+      "id": "water",
+      "label": "Água",
+      "icon": "GlassWater"
+    },
+    {
+      "id": "juice",
+      "label": "Suco",
+      "icon": "CupSoda"
+    },
+    {
+      "id": "tea",
+      "label": "Chá",
+      "icon": "Coffee"
+    },
+    {
+      "id": "other",
+      "label": "Outro",
+      "icon": "Droplets"
+    }
+  ],
+  "quickAmounts": [
+    30,
+    60,
+    90,
+    120,
+    150,
+    180
+  ],
+  "sleepTypes": [
+    {
+      "id": "night",
+      "label": "Noturno",
+      "icon": "Moon"
+    },
+    {
+      "id": "nap",
+      "label": "Cochilo",
+      "icon": "Sun"
+    }
+  ],
+  "sleepLocations": [
+    "Berço",
+    "Colo",
+    "Carrinho",
+    "Cama",
+    "Rede",
+    "Outro"
+  ],
+  "diaperTypes": [
+    {
+      "id": "pee",
+      "label": "Xixi"
+    },
+    {
+      "id": "poo",
+      "label": "Cocô"
+    },
+    {
+      "id": "mixed",
+      "label": "Misto"
+    }
+  ],
+  "volumeLabels": {
+    "1": "Pouco",
+    "2": "Normal",
+    "3": "Bastante",
+    "4": "Muito cheio"
+  },
+  "volumeLabelsLogSheet": {
+    "1": "Pouco",
+    "2": "Normal",
+    "3": "Bastante",
+    "4": "Muito"
+  },
+  "volumeColors": {
+    "1": "bg-baby-blue/20 text-baby-blue",
+    "2": "bg-baby-blue/40 text-baby-blue",
+    "3": "bg-baby-blue/60 text-white",
+    "4": "bg-baby-blue text-white"
+  },
+  "pooVolumeColors": {
+    "1": "bg-amber-100 text-amber-600",
+    "2": "bg-amber-200 text-amber-700",
+    "3": "bg-amber-300 text-amber-800",
+    "4": "bg-amber-400 text-white"
+  },
+  "bathTemps": [
+    {
+      "id": "frio",
+      "label": "Frio",
+      "icon": "❄"
+    },
+    {
+      "id": "morno",
+      "label": "Morno",
+      "icon": "🌡"
+    },
+    {
+      "id": "quente",
+      "label": "Quente",
+      "icon": "♨"
+    }
+  ],
+  "bathDurations": [
+    5,
+    10,
+    15,
+    20,
+    25,
+    30
+  ],
+  "activityTypes": [
+    {
+      "id": "tummy",
+      "label": "Bruços",
+      "icon": "Baby"
+    },
+    {
+      "id": "reading",
+      "label": "Leitura",
+      "icon": "BookOpen"
+    },
+    {
+      "id": "music",
+      "label": "Música",
+      "icon": "Music"
+    },
+    {
+      "id": "play",
+      "label": "Brincar",
+      "icon": "Footprints"
+    },
+    {
+      "id": "walk",
+      "label": "Passeio",
+      "icon": "TreePalm"
+    },
+    {
+      "id": "visual",
+      "label": "Est. Visual",
+      "icon": "Eye"
+    },
+    {
+      "id": "auditory",
+      "label": "Est. Auditivo",
+      "icon": "Ear"
+    },
+    {
+      "id": "spatial",
+      "label": "Est. Espacial",
+      "icon": "Move3d"
+    },
+    {
+      "id": "other",
+      "label": "Mais",
+      "icon": "MoreHorizontal"
+    }
+  ],
+  "activityOptions": [
+    {
+      "id": "tummy",
+      "label": "Bruços",
+      "icon": "Baby"
+    },
+    {
+      "id": "reading",
+      "label": "Leitura",
+      "icon": "BookOpen"
+    },
+    {
+      "id": "music",
+      "label": "Música",
+      "icon": "Music"
+    },
+    {
+      "id": "play",
+      "label": "Brincar",
+      "icon": "Footprints"
+    },
+    {
+      "id": "walk",
+      "label": "Passeio",
+      "icon": "TreePalm"
+    },
+    {
+      "id": "visual",
+      "label": "Visual",
+      "icon": "Eye"
+    },
+    {
+      "id": "auditory",
+      "label": "Auditivo",
+      "icon": "Ear"
+    },
+    {
+      "id": "spatial",
+      "label": "Motor",
+      "icon": "Move3d"
+    }
+  ],
+  "activityDurationOptions": [
+    5,
+    10,
+    15,
+    20,
+    30,
+    45,
+    60
+  ],
+  "healthSubTypes": [
+    {
+      "id": "vitamin",
+      "label": "Vitamina"
+    },
+    {
+      "id": "medication",
+      "label": "Medicamento"
+    }
+  ],
+  "milestoneCategories": [
+    {
+      "id": "motor_gross",
+      "label": "Motor Amplo",
+      "icon": "Footprints",
+      "color": "text-teal-500",
+      "bgColor": "bg-baby-mint/30"
+    },
+    {
+      "id": "motor_fine",
+      "label": "Motor Fino",
+      "icon": "Hand",
+      "color": "text-emerald-500",
+      "bgColor": "bg-baby-mint/20"
+    },
+    {
+      "id": "language",
+      "label": "Linguagem",
+      "icon": "MessageCircle",
+      "color": "text-blue-500",
+      "bgColor": "bg-baby-blue/30"
+    },
+    {
+      "id": "cognitive",
+      "label": "Cognitivo",
+      "icon": "Brain",
+      "color": "text-violet-500",
+      "bgColor": "bg-baby-lavender/30"
+    },
+    {
+      "id": "social",
+      "label": "Social-Emocional",
+      "icon": "Heart",
+      "color": "text-pink-500",
+      "bgColor": "bg-baby-pink/30"
+    },
+    {
+      "id": "sensory",
+      "label": "Sensorial",
+      "icon": "Eye",
+      "color": "text-amber-500",
+      "bgColor": "bg-baby-peach/30"
+    }
+  ],
+  "milestoneStatusConfig": {
+    "observed": {
+      "label": "Observado",
+      "color": "text-primary",
+      "bgColor": "bg-primary/10"
+    },
+    "emerging": {
+      "label": "Comecando",
+      "color": "text-amber-600",
+      "bgColor": "bg-baby-yellow/50"
+    },
+    "not_yet": {
+      "label": "Ainda nao",
+      "color": "text-muted-foreground",
+      "bgColor": "bg-secondary"
+    }
+  },
+  "healthEventTypes": [
+    {
+      "id": "fever",
+      "label": "Febre",
+      "icon": "Thermometer",
+      "color": "text-red-400",
+      "bgColor": "bg-red-100"
+    },
+    {
+      "id": "cold",
+      "label": "Resfriado",
+      "icon": "Bug",
+      "color": "text-blue-400",
+      "bgColor": "bg-baby-blue/30"
+    },
+    {
+      "id": "allergy",
+      "label": "Alergia",
+      "icon": "AlertCircle",
+      "color": "text-amber-500",
+      "bgColor": "bg-baby-yellow/30"
+    },
+    {
+      "id": "malaise",
+      "label": "Mal-estar",
+      "icon": "Heart",
+      "color": "text-rose-400",
+      "bgColor": "bg-baby-pink/30"
+    },
+    {
+      "id": "consultation",
+      "label": "Consulta",
+      "icon": "Stethoscope",
+      "color": "text-primary",
+      "bgColor": "bg-baby-mint/30"
+    },
+    {
+      "id": "other",
+      "label": "Outro",
+      "icon": "Activity",
+      "color": "text-muted-foreground",
+      "bgColor": "bg-secondary"
+    }
+  ],
+  "metricConfig": {
+    "weight": {
+      "label": "Peso",
+      "unit": "kg",
+      "icon": "Weight",
+      "color": "bg-baby-peach/40",
+      "chartColor": "#f4a261"
+    },
+    "height": {
+      "label": "Altura",
+      "unit": "cm",
+      "icon": "Ruler",
+      "color": "bg-baby-blue/40",
+      "chartColor": "#64b5f6"
+    },
+    "head": {
+      "label": "Cabeça",
+      "unit": "cm",
+      "icon": "CircleDot",
+      "color": "bg-baby-lavender/40",
+      "chartColor": "#ce93d8"
+    }
+  },
+  "growthTimeFilters": [
+    "3m",
+    "6m",
+    "1a",
+    "Tudo"
+  ]
+}

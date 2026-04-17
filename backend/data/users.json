@@ -1,0 +1,26 @@
+[
+  {
+    "id": "usr-001",
+    "username": "gisele",
+    "display_name": "Gisele",
+    "hashed_password": "$2b$12$rcn86CKQabpxwPbzJb9mbe9mNqO1gb9q6TLAQd/RGtCT8CSoH1eJC",
+    "profile_dir": "davi",
+    "caregiver_id": "cg-giseli-1"
+  },
+  {
+    "id": "usr-002",
+    "username": "suely",
+    "display_name": "Suely",
+    "hashed_password": "$2b$12$3l6kkD/m3PmYIqzwL8cCdev1JenthOqdlVJLtlS/kAmduXfpkhI9K",
+    "profile_dir": "davi",
+    "caregiver_id": "cg-suely-1"
+  },
+  {
+    "id": "usr-003",
+    "username": "lucas",
+    "display_name": "Lucas",
+    "hashed_password": "$2b$12$4bFgpOGRzYBO7ijFg9o0ru6O9eDFVwHb/xCINTAb//GsbYsSjsQ0q",
+    "profile_dir": "davi",
+    "caregiver_id": "cg-lucas-1"
+  }
+]

@@ -1,0 +1,73 @@
+{
+  "vitamins": [
+    {
+      "id": "1",
+      "name": "Vitamina D",
+      "dose": "400",
+      "unit": "UI",
+      "frequency": "1x ao dia",
+      "startDate": "2025-08-10",
+      "endDate": null,
+      "active": true,
+      "notes": "Orientacao do pediatra desde o nascimento",
+      "history": [
+        {
+          "date": "2025-08-10",
+          "dose": "400 UI",
+          "notes": "Inicio"
+        },
+        {
+          "date": "2025-12-15",
+          "dose": "400 UI",
+          "notes": "Pediatra confirmou manter dose"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Ferro (Sulfato Ferroso)",
+      "dose": "1",
+      "unit": "mg/kg",
+      "frequency": "1x ao dia",
+      "startDate": "2026-02-05",
+      "endDate": null,
+      "active": true,
+      "notes": "Iniciado aos 6 meses. Dar longe das refeicoes de leite.",
+      "history": [
+        {
+          "date": "2026-02-05",
+          "dose": "1 mg/kg (8 gotas)",
+          "notes": "Inicio - peso 7.9 kg"
+        },
+        {
+          "date": "2026-03-10",
+          "dose": "1 mg/kg (8.5 gotas)",
+          "notes": "Ajuste - peso 8.2 kg"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Polivitaminico",
+      "dose": "15",
+      "unit": "gotas",
+      "frequency": "1x ao dia",
+      "startDate": "2025-10-01",
+      "endDate": "2026-01-15",
+      "active": false,
+      "notes": "Usado por 3 meses conforme orientacao",
+      "history": [
+        {
+          "date": "2025-10-01",
+          "dose": "15 gotas",
+          "notes": "Inicio"
+        },
+        {
+          "date": "2026-01-15",
+          "dose": "15 gotas",
+          "notes": "Encerrado"
+        }
+      ]
+    }
+  ]
+}

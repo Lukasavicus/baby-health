@@ -1,0 +1,40 @@
+{
+  "pillars": [
+    {
+      "label": "Alimentação",
+      "shortLabel": "Alim.",
+      "score": 86,
+      "color": "#FFDAB9",
+      "status": "No caminho",
+      "trend": "up",
+      "detail": "4 refeições registradas — padrão consistente com a idade."
+    },
+    {
+      "label": "Sono",
+      "shortLabel": "Sono",
+      "score": 78,
+      "color": "#E8D5F0",
+      "status": "Bom",
+      "trend": "stable",
+      "detail": "2h40 de sono diurno — janela de despertar saudável."
+    },
+    {
+      "label": "Hidratação",
+      "shortLabel": "Hidr.",
+      "score": 92,
+      "color": "#A8D8EA",
+      "status": "Normal",
+      "trend": "up",
+      "detail": "3 fraldas molhadas, 1 suja — eliminação adequada."
+    },
+    {
+      "label": "Desenvolvimento",
+      "shortLabel": "Desenv.",
+      "score": 70,
+      "color": "#7EC8B8",
+      "status": "Um pouco baixo",
+      "trend": "down",
+      "detail": "1 sessão de atividade — considere mais tempo de barriga."
+    }
+  ]
+}

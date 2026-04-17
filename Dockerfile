@@ -1,22 +1,19 @@
 # Multi-stage build for BabyHealth application
-# Stage 1: Build React frontend
+# Stage 1: Build SPA (app-design / ex-Figma export)
 FROM node:18-alpine AS frontend-builder
 
-WORKDIR /app/frontend
+WORKDIR /app/app-design
 
-# Copy frontend files
-COPY frontend/package*.json ./
-RUN npm ci
+COPY app-design/package.json ./
+RUN npm install
 
-COPY frontend/src ./src
-COPY frontend/public ./public
-COPY frontend/index.html ./
-COPY frontend/vite.config.js ./
-COPY frontend/tailwind.config.js ./
-COPY frontend/postcss.config.js ./
-COPY frontend/.env.example ./.env.production
+COPY app-design/index.html app-design/vite.config.ts app-design/postcss.config.mjs ./
+COPY app-design/src ./src
+COPY app-design/guidelines ./guidelines
 
-# Build React frontend
+# Same-origin /api in container (FastAPI serves the built SPA)
+ENV VITE_API_BASE_URL=
+
 RUN npm run build
 
 
@@ -42,8 +39,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy backend code
 COPY backend ./backend
 
-# Copy built frontend from stage 1
-COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
+# Copy built frontend from stage 1 (default path expected by backend config)
+COPY --from=frontend-builder /app/app-design/dist ./frontend/dist
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \

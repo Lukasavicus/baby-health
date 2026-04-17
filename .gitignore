@@ -21,9 +21,14 @@ build/
 .env.production.local
 npm-debug.log*
 
-# Data
+# Data (local runtime; versioned UI defaults live in backend/ui_app_defaults/)
 backend/data/*.json
+!backend/data/users.json
 !backend/data/.gitkeep
+!backend/ui_app_defaults/**/*.json
+# Uploaded profile images (keep folder placeholders only)
+backend/data/**/images/*
+!backend/data/**/images/.gitkeep
 
 # IDE
 .vscode/
@@ -34,6 +39,17 @@ backend/data/*.json
 # OS
 .DS_Store
 Thumbs.db
+
+# Credentials (never commit service-account keys)
+INPUTS/baby-health-492304-2ba759213009.json
+
+# INPUTS/ -- reference materials; tracked intentionally in development
+
+# Terraform
+infra/.terraform/
+infra/*.tfstate*
+infra/terraform.tfvars
+infra/.terraform.lock.hcl
 
 # Misc
 *.log

@@ -157,6 +157,44 @@ class JsonRepository(BaseRepository):
 
         return events
 
+    def _baby_ui_state_path(self) -> Path:
+        return self.data_dir / "baby_ui_state.json"
+
+    def get_baby_ui_state(self, baby_id: str) -> Dict[str, Any]:
+        """Per-baby UI domain lists (growth, milestones, vitamins, vaccines, health events)."""
+        path = self._baby_ui_state_path()
+        if not path.exists():
+            return {}
+        try:
+            raw = json.loads(path.read_text())
+        except (json.JSONDecodeError, IOError):
+            return {}
+        by_baby = raw.get("by_baby_id") or {}
+        if not isinstance(by_baby, dict):
+            return {}
+        state = by_baby.get(baby_id)
+        return dict(state) if isinstance(state, dict) else {}
+
+    def merge_baby_ui_state(self, baby_id: str, patch: Dict[str, Any]) -> Dict[str, Any]:
+        """Merge non-null keys into stored state for baby_id and persist."""
+        path = self._baby_ui_state_path()
+        if path.exists():
+            try:
+                raw = json.loads(path.read_text())
+            except (json.JSONDecodeError, IOError):
+                raw = {"version": 1, "by_baby_id": {}}
+        else:
+            raw = {"version": 1, "by_baby_id": {}}
+        if "by_baby_id" not in raw or not isinstance(raw["by_baby_id"], dict):
+            raw["by_baby_id"] = {}
+        current = dict(raw["by_baby_id"].get(baby_id) or {})
+        for key, value in patch.items():
+            if value is not None:
+                current[key] = value
+        raw["by_baby_id"][baby_id] = current
+        path.write_text(json.dumps(raw, indent=2, default=str))
+        return current
+
     @staticmethod
     def _parse_datetime(dt_str: str) -> Optional[datetime]:
         """Parse datetime string"""

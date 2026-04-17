@@ -1,0 +1,107 @@
+import type { LucideIcon } from "lucide-react";
+import {
+  Activity,
+  AlertCircle,
+  Apple,
+  Baby,
+  Bath,
+  Blocks,
+  BookOpen,
+  Brain,
+  Bug,
+  Circle,
+  CircleDot,
+  CloudRain,
+  Coffee,
+  CupSoda,
+  Droplets,
+  Ear,
+  Eye,
+  Footprints,
+  GlassWater,
+  Hand,
+  Heart,
+  Leaf,
+  MessageCircle,
+  Milk,
+  Moon,
+  MoreHorizontal,
+  Move3d,
+  Music,
+  Palette,
+  Pill,
+  Play,
+  Puzzle,
+  Ruler,
+  Shapes,
+  Smile,
+  Sparkles,
+  Star,
+  Stethoscope,
+  Sun,
+  Thermometer,
+  TreePalm,
+  TreePine,
+  Users,
+  Weight,
+} from "lucide-react";
+import { DiaperIcon } from "./components/DiaperIcon";
+
+export type IconComponent = LucideIcon;
+
+/**
+ * Static registry so Vite/Rollup keep each icon in the bundle (tree-shaking).
+ * Keys must match `icon` strings in backend/ui_app_defaults/*.json.
+ */
+const registry: Record<string, LucideIcon> = {
+  Activity,
+  AlertCircle,
+  Apple,
+  Baby,
+  Bath,
+  Blocks,
+  BookOpen,
+  Brain,
+  Bug,
+  CircleDot,
+  CloudRain,
+  Coffee,
+  CupSoda,
+  Droplets,
+  Ear,
+  Eye,
+  Footprints,
+  GlassWater,
+  Hand,
+  Heart,
+  Leaf,
+  MessageCircle,
+  Milk,
+  Moon,
+  MoreHorizontal,
+  Move3d,
+  Music,
+  Palette,
+  Pill,
+  Play,
+  Puzzle,
+  Ruler,
+  Shapes,
+  Smile,
+  Sparkles,
+  Star,
+  Stethoscope,
+  Sun,
+  Thermometer,
+  TreePalm,
+  TreePine,
+  Users,
+  Weight,
+};
+
+/** Resolve Lucide icon name from seed JSON; `Diaper` maps to DiaperIcon. */
+export function getIcon(name: string | undefined | null): IconComponent {
+  if (!name?.trim()) return Circle;
+  if (name === "Diaper") return DiaperIcon as unknown as LucideIcon;
+  return registry[name] ?? Circle;
+}

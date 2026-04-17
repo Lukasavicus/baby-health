@@ -1,0 +1,151 @@
+{
+  "version": 1,
+  "by_baby_id": {
+    "baby-davi-1": {
+      "vitamins": [
+        {
+          "id": "1",
+          "name": "Vitamina D",
+          "dose": "400",
+          "unit": "UI",
+          "frequency": "1x ao dia",
+          "startDate": "2025-08-10",
+          "endDate": null,
+          "active": true,
+          "notes": "Orientacao do pediatra desde o nascimento",
+          "history": [
+            {
+              "date": "2026-04-09",
+              "dose": "400 UI",
+              "notes": "00:09"
+            }
+          ]
+        },
+        {
+          "id": "2",
+          "name": "Ferro (Sulfato Ferroso)",
+          "dose": "1",
+          "unit": "mg/kg",
+          "frequency": "1x ao dia",
+          "startDate": "2026-02-05",
+          "endDate": null,
+          "active": true,
+          "notes": "Iniciado aos 6 meses. Dar longe das refeicoes de leite.",
+          "history": [
+            {
+              "date": "2026-02-05",
+              "dose": "1 mg/kg (8 gotas)",
+              "notes": "Inicio - peso 7.9 kg"
+            },
+            {
+              "date": "2026-03-10",
+              "dose": "1 mg/kg (8.5 gotas)",
+              "notes": "Ajuste - peso 8.2 kg"
+            },
+            {
+              "date": "2026-04-09",
+              "dose": "1 mg/kg",
+              "notes": "00:09"
+            }
+          ]
+        },
+        {
+          "id": "3",
+          "name": "Polivitaminico",
+          "dose": "15",
+          "unit": "gotas",
+          "frequency": "1x ao dia",
+          "startDate": "2025-10-01",
+          "endDate": "2026-01-15",
+          "active": false,
+          "notes": "Usado por 3 meses conforme orientacao",
+          "history": []
+        },
+        {
+          "id": "1775687448200",
+          "category": "vitamin",
+          "name": "Inala\u00e7\u00e3o (Soro fisiol\u00f3gico)",
+          "dose": "10",
+          "unit": "mL",
+          "frequency": "Uso livre",
+          "startDate": "2026-04-08",
+          "endDate": null,
+          "active": true,
+          "notes": "",
+          "history": [
+            {
+              "date": "2026-04-08",
+              "dose": "10 mL",
+              "notes": "Inicio"
+            }
+          ]
+        }
+      ],
+      "growth_entries": [
+        {
+          "id": "1775701331597",
+          "date": "2025-09-07",
+          "weight": 2.47,
+          "height": 46,
+          "head": 34
+        },
+        {
+          "id": "1775700985354",
+          "date": "2025-09-12",
+          "weight": 2.395,
+          "height": 47.5,
+          "head": 33.3
+        },
+        {
+          "id": "1775700931532",
+          "date": "2025-09-16",
+          "weight": 2.655,
+          "height": 48,
+          "head": 0
+        },
+        {
+          "id": "1775698950919",
+          "date": "2025-10-06",
+          "weight": 3.72,
+          "height": 52,
+          "head": 36.2
+        },
+        {
+          "id": "1775698805099",
+          "date": "2025-11-12",
+          "weight": 5.13,
+          "height": 56,
+          "head": 39
+        },
+        {
+          "id": "1775698654925",
+          "date": "2025-12-09",
+          "weight": 6.025,
+          "height": 60.5,
+          "head": 40.8
+        },
+        {
+          "id": "1775698566601",
+          "date": "2026-01-15",
+          "weight": 6.57,
+          "height": 64.2,
+          "head": 42.2
+        },
+        {
+          "id": "2",
+          "date": "2026-02-10",
+          "weight": 7.2,
+          "height": 65,
+          "head": 43
+        },
+        {
+          "id": "1775698355749",
+          "date": "2026-03-17",
+          "weight": 7.7,
+          "height": 67.5,
+          "head": 44
+        }
+      ]
+    }
+  }
+}

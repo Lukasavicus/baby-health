@@ -3,24 +3,13 @@ from typing import List
 from fastapi import APIRouter, HTTPException, Depends
 from models.caregiver import CaregiverCreate, CaregiverUpdate, CaregiverResponse, Caregiver
 from repositories import BaseRepository
+from deps import get_profile_repository
 
 router = APIRouter(prefix="/api/caregivers", tags=["caregivers"])
 
 
-def get_repository() -> BaseRepository:
-    """Dependency injection for repository"""
-    from config import settings
-    from repositories import JsonRepository
-    from pathlib import Path
-
-    if settings.storage_type == "json":
-        return JsonRepository(settings.data_dir)
-    else:
-        raise ValueError(f"Unsupported storage type: {settings.storage_type}")
-
-
 @router.get("", response_model=List[CaregiverResponse])
-async def list_caregivers(repo: BaseRepository = Depends(get_repository)):
+async def list_caregivers(repo: BaseRepository = Depends(get_profile_repository)):
     """List all caregivers"""
     caregivers = repo.get_all("caregiver")
     return caregivers
@@ -29,7 +18,7 @@ async def list_caregivers(repo: BaseRepository = Depends(get_repository)):
 @router.post("", response_model=CaregiverResponse)
 async def create_caregiver(
     caregiver_data: CaregiverCreate,
-    repo: BaseRepository = Depends(get_repository),
+    repo: BaseRepository = Depends(get_profile_repository),
 ):
     """Create a new caregiver"""
     from datetime import datetime
@@ -51,7 +40,7 @@ async def create_caregiver(
 async def update_caregiver(
     caregiver_id: str,
     caregiver_data: CaregiverUpdate,
-    repo: BaseRepository = Depends(get_repository),
+    repo: BaseRepository = Depends(get_profile_repository),
 ):
     """Update a caregiver"""
     existing = repo.get_by_id("caregiver", caregiver_id)
@@ -69,7 +58,7 @@ async def update_caregiver(
 
 @router.delete("/{caregiver_id}")
 async def delete_caregiver(
-    caregiver_id: str, repo: BaseRepository = Depends(get_repository)
+    caregiver_id: str, repo: BaseRepository = Depends(get_profile_repository)
 ):
     """Delete a caregiver"""
     existing = repo.get_by_id("caregiver", caregiver_id)

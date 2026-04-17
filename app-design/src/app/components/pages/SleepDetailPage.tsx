@@ -1,0 +1,391 @@
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { useNavigate } from "react-router";
+import { ArrowLeft, Plus, Check, Moon, Sun } from "lucide-react";
+import { TrackerDrawer } from "../TrackerDrawer";
+import { calcDurationMin, formatDuration } from "../../utils/time";
+import { EventDateField, clampYmdNotAfterToday, todayYmd } from "../EventDateField";
+import { TimePickerField } from "../TimePickerDialog";
+import { TrackerLogSection } from "../TrackerLogSection";
+import { WeekBarChart } from "../WeekBarChart";
+import { getIcon } from "../../iconMap";
+import { useUIBootstrap } from "../../UIBootstrapContext";
+import { useTimePeriodFilter, dateLabelFromTimestamp } from "../../hooks/useTimePeriodFilter";
+import { createEvent, deleteEvent, listEvents, updateEvent, type ApiEvent } from "@/api/client";
+import {
+  apiEventToSleepEntry,
+  formatYmd,
+  isApiEventId,
+  sleepEntryToIncoming,
+  weekDayLabelsPt,
+  weekHoursByDay,
+} from "@/api/eventMappers";
+
+import type { SleepEntry } from "@/types/trackers";
+
+export function SleepDetailPage() {
+  const navigate = useNavigate();
+  const { data, babyId, caregiverId, canPersist } = useUIBootstrap();
+
+  const sleepTypes = useMemo(
+    () =>
+      ((data?.catalogs?.sleepTypes ?? []) as { id: SleepEntry["type"]; label: string; icon: string }[]).map(
+        (t) => ({ ...t, Icon: getIcon(t.icon) }),
+      ),
+    [data?.catalogs?.sleepTypes],
+  );
+  const locations = useMemo(
+    () => (data?.catalogs?.sleepLocations ?? []) as string[],
+    [data?.catalogs?.sleepLocations],
+  );
+  const seedWeekData = useMemo(
+    () => (data?.tracker_logs?.sleep?.weekData ?? []) as { day: string; hours: number }[],
+    [data?.tracker_logs?.sleep?.weekData],
+  );
+  const weekLabels = useMemo(() => weekDayLabelsPt(), []);
+  const timePeriod = useTimePeriodFilter();
+
+  const [sleepApiEvents, setSleepApiEvents] = useState<ApiEvent[]>([]);
+  const [logs, setLogs] = useState<SleepEntry[]>([]);
+
+  const refreshFromApi = useCallback(async () => {
+    if (!canPersist || !babyId || !caregiverId) return;
+    const evs = await listEvents({ baby_id: babyId, event_type: "sleep" });
+    setSleepApiEvents(evs);
+  }, [babyId, caregiverId, canPersist]);
+
+  useEffect(() => {
+    if (!sleepApiEvents.length && !canPersist) return;
+    const mapped = timePeriod
+      .filterEvents(sleepApiEvents)
+      .sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+      .map((e) => ({
+        ...apiEventToSleepEntry(e),
+        date: dateLabelFromTimestamp(e.timestamp),
+      }));
+    setLogs(mapped);
+  }, [sleepApiEvents, timePeriod.filterEvents, canPersist]);
+
+  useEffect(() => {
+    if (!data) return;
+    if (canPersist && babyId && caregiverId) {
+      void refreshFromApi().catch(() => {
+        const L = data.tracker_logs?.sleep?.initialLogs as SleepEntry[] | undefined;
+        if (L?.length) setLogs(L);
+      });
+      return;
+    }
+    const L = data.tracker_logs?.sleep?.initialLogs as SleepEntry[] | undefined;
+    if (L?.length) setLogs(L);
+    else setLogs([]);
+  }, [data, canPersist, babyId, caregiverId, refreshFromApi]);
+
+  const weekData = useMemo(() => {
+    if (canPersist && sleepApiEvents.length > 0) {
+      return weekHoursByDay(sleepApiEvents, weekLabels, new Date());
+    }
+    return seedWeekData;
+  }, [canPersist, sleepApiEvents, weekLabels, seedWeekData]);
+
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<SleepEntry | null>(null);
+  // Form state
+  const [formType, setFormType] = useState<SleepEntry["type"]>("nap");
+  const [formStart, setFormStart] = useState("");
+  const [formEnd, setFormEnd] = useState("");
+  const [formLocation, setFormLocation] = useState("Berço");
+  const [formNotes, setFormNotes] = useState("");
+  const [formDateYmd, setFormDateYmd] = useState(() => todayYmd());
+
+  const [filterType, setFilterType] = useState<"all" | "night" | "nap">("all");
+
+  // Computed summaries
+  const nightMin = logs.filter((l) => l.type === "night").reduce((s, l) => s + calcDurationMin(l.start, l.end), 0);
+  const napMin = logs.filter((l) => l.type === "nap").reduce((s, l) => s + calcDurationMin(l.start, l.end), 0);
+  const totalMin = nightMin + napMin;
+
+  const filteredLogs = useMemo(() => {
+    if (filterType === "all") return logs;
+    return logs.filter((l) => l.type === filterType);
+  }, [filterType, logs]);
+
+  const nowTime = () => {
+    const n = new Date();
+    return `${n.getHours().toString().padStart(2, "0")}:${n.getMinutes().toString().padStart(2, "0")}`;
+  };
+
+  const openNew = () => {
+    setEditingEntry(null);
+    setFormType("nap");
+    setFormStart(nowTime());
+    setFormEnd(nowTime());
+    setFormLocation("Berço");
+    setFormNotes("");
+    setFormDateYmd(todayYmd());
+    setDrawerOpen(true);
+  };
+
+  const openEdit = (entry: SleepEntry) => {
+    setEditingEntry(entry);
+    let dateYmd = todayYmd();
+    if (isApiEventId(entry.id)) {
+      const ev = sleepApiEvents.find((e) => e.id === entry.id);
+      if (ev) dateYmd = formatYmd(new Date(ev.timestamp));
+    }
+    setFormDateYmd(dateYmd);
+    setFormType(entry.type);
+    setFormStart(entry.start);
+    setFormEnd(entry.end);
+    setFormLocation(entry.location);
+    setFormNotes(entry.notes);
+    setDrawerOpen(true);
+  };
+
+  const handleSave = () => {
+    const typeLabel = sleepTypes.find((t) => t.id === formType)?.label || "Cochilo";
+    const dayYmd = clampYmdNotAfterToday(formDateYmd);
+
+    void (async () => {
+      try {
+        if (canPersist && babyId && caregiverId) {
+          const incoming = sleepEntryToIncoming(
+            {
+              type: formType,
+              start: formStart,
+              end: formEnd,
+              location: formLocation,
+              notes: formNotes,
+            },
+            babyId,
+            caregiverId,
+            dayYmd,
+          );
+          if (editingEntry && isApiEventId(editingEntry.id)) {
+            await updateEvent(editingEntry.id, {
+              subtype: incoming.subtype,
+              timestamp: incoming.timestamp,
+              end_timestamp: incoming.end_timestamp ?? null,
+              notes: incoming.notes,
+              metadata: incoming.metadata,
+            });
+          } else {
+            await createEvent(incoming);
+          }
+          await refreshFromApi();
+          setDrawerOpen(false);
+          return;
+        }
+
+        const entry: SleepEntry = {
+          id: editingEntry?.id || Date.now().toString(),
+          type: formType,
+          typeLabel,
+          start: formStart,
+          end: formEnd,
+          location: formLocation,
+          notes: formNotes,
+        };
+        if (editingEntry) {
+          setLogs(logs.map((l) => (l.id === entry.id ? entry : l)));
+        } else {
+          setLogs([entry, ...logs].sort((a, b) => a.start.localeCompare(b.start)));
+        }
+        setDrawerOpen(false);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  };
+
+  const handleDelete = (id: string) => {
+    void (async () => {
+      try {
+        if (canPersist && isApiEventId(id)) {
+          await deleteEvent(id);
+          await refreshFromApi();
+        } else {
+          setLogs(logs.filter((l) => l.id !== id));
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  };
+
+  return (
+    <div className="pb-6">
+      {/* Header */}
+      <div className="px-5 pt-5 pb-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button onClick={() => navigate("/")} className="p-1">
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+          <h2>Sono</h2>
+        </div>
+        <button
+          onClick={openNew}
+          className="bg-baby-lavender text-white w-9 h-9 rounded-full flex items-center justify-center active:scale-95 transition-transform"
+        >
+          <Plus className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Summary */}
+      <div className="px-4 mb-4">
+        <div className="bg-card rounded-3xl p-5 shadow-sm border border-border/50">
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              onClick={() => setFilterType(filterType === "night" ? "all" : "night")}
+              className={`bg-baby-lavender/20 rounded-2xl p-4 text-center transition-all ${filterType === "night" ? "ring-2 ring-baby-lavender scale-[1.03]" : filterType !== "all" ? "opacity-40" : ""}`}
+            >
+              <Moon className="w-5 h-5 text-baby-lavender mx-auto mb-2" />
+              <p className="text-2xl">{formatDuration(nightMin)}</p>
+              <p className="text-[10px] text-muted-foreground">sono noturno</p>
+            </button>
+            <button
+              onClick={() => setFilterType(filterType === "nap" ? "all" : "nap")}
+              className={`bg-baby-blue/20 rounded-2xl p-4 text-center transition-all ${filterType === "nap" ? "ring-2 ring-baby-blue scale-[1.03]" : filterType !== "all" ? "opacity-40" : ""}`}
+            >
+              <Sun className="w-5 h-5 text-baby-blue mx-auto mb-2" />
+              <p className="text-2xl">{formatDuration(napMin)}</p>
+              <p className="text-[10px] text-muted-foreground">cochilos</p>
+            </button>
+          </div>
+          <div className="mt-4 bg-secondary/50 rounded-xl p-3 text-center">
+            <p className="text-sm">Total: <span className="text-baby-lavender">{formatDuration(totalMin)}</span></p>
+            <p className="text-[10px] text-muted-foreground">Recomendado para 8 meses: 12–15h</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Week chart */}
+      <div className="px-4 mb-4">
+        <WeekBarChart
+          title="Sono na semana (horas)"
+          data={weekData.map((d) => ({ day: d.day, value: d.hours }))}
+          color="bg-baby-lavender/60"
+          valueScale="hours"
+          formatValue={(v) => `${v.toFixed(1)} h`}
+        />
+      </div>
+
+      {/* Filtered log */}
+      <TrackerLogSection
+        filter={timePeriod}
+        items={filteredLogs}
+        timeAccessor={(l) => ({ date: l.date, time: l.start })}
+        onEdit={openEdit}
+        onDelete={handleDelete}
+        renderItem={(l) => {
+          const dur = calcDurationMin(l.start, l.end);
+          return (
+            <>
+              <div className="flex items-center gap-2">
+                <p className="text-sm">{l.typeLabel}</p>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                  l.type === "night" ? "bg-baby-lavender/20 text-baby-lavender" : "bg-baby-blue/20 text-baby-blue"
+                }`}>
+                  {formatDuration(dur)}
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {l.start} – {l.end} · {l.location}
+              </p>
+              {l.notes && <p className="text-xs text-muted-foreground mt-0.5">{l.notes}</p>}
+            </>
+          );
+        }}
+      />
+
+      {/* Add/Edit Drawer */}
+      <TrackerDrawer
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        title={`${editingEntry ? "Editar" : "Novo"} Registro`}
+      >
+        <EventDateField value={formDateYmd} onChange={setFormDateYmd} />
+
+              {/* Tipo */}
+              <div className="mb-5">
+                <label className="text-xs text-muted-foreground mb-2 block">Tipo</label>
+                <div className="flex gap-2">
+                  {sleepTypes.map((t) => (
+                    <button
+                      key={t.id}
+                      onClick={() => setFormType(t.id)}
+                      className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-xs transition-all ${
+                        formType === t.id
+                          ? t.id === "night" ? "bg-baby-lavender text-white shadow-sm" : "bg-baby-blue text-white shadow-sm"
+                          : "bg-secondary text-foreground/60"
+                      }`}
+                    >
+                      <t.Icon className="w-4 h-4" />
+                      {t.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Início */}
+              <div className="mb-5">
+                <label className="text-xs text-muted-foreground mb-2 block">Início</label>
+                <TimePickerField value={formStart} onChange={setFormStart} />
+              </div>
+
+              {/* Fim */}
+              <div className="mb-5">
+                <label className="text-xs text-muted-foreground mb-2 block">Fim</label>
+                <TimePickerField value={formEnd} onChange={setFormEnd} />
+              </div>
+
+              {/* Duração calculada */}
+              {formStart && formEnd && (
+                <div className="mb-5 bg-secondary/50 rounded-2xl p-3 text-center">
+                  <p className="text-xs text-muted-foreground">Duração</p>
+                  <p className="text-lg">{formatDuration(calcDurationMin(formStart, formEnd))}</p>
+                </div>
+              )}
+
+              {/* Local */}
+              <div className="mb-5">
+                <label className="text-xs text-muted-foreground mb-2 block">Local</label>
+                <div className="flex flex-wrap gap-2">
+                  {locations.map((loc) => (
+                    <button
+                      key={loc}
+                      onClick={() => setFormLocation(loc)}
+                      className={`px-4 py-2.5 rounded-2xl text-xs transition-all ${
+                        formLocation === loc
+                          ? "bg-baby-lavender text-white shadow-sm"
+                          : "bg-secondary text-foreground/60"
+                      }`}
+                    >
+                      {loc}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Notas */}
+              <div className="mb-6">
+                <label className="text-xs text-muted-foreground mb-2 block">Observações</label>
+                <textarea
+                  value={formNotes}
+                  onChange={(e) => setFormNotes(e.target.value)}
+                  placeholder="Ex: Acordou uma vez, dormiu bem..."
+                  rows={3}
+                  className="w-full bg-secondary rounded-2xl px-4 py-3 text-sm outline-none resize-none placeholder:text-muted-foreground/50"
+                />
+              </div>
+
+              {/* Save */}
+              <button
+                onClick={handleSave}
+                className="w-full py-3.5 rounded-2xl bg-baby-lavender text-white text-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+              >
+                <Check className="w-4 h-4" />
+                {editingEntry ? "Salvar Alterações" : "Registrar"}
+              </button>
+      </TrackerDrawer>
+    </div>
+  );
+}

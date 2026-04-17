@@ -1,0 +1,398 @@
+{
+  "feeding": {
+    "initialFeedings": [
+      {
+        "id": "1",
+        "time": "07:15",
+        "type": "breast",
+        "typeLabel": "Amamentação",
+        "side": "Esquerdo",
+        "duration": "12 min"
+      },
+      {
+        "id": "2",
+        "time": "10:00",
+        "type": "solids",
+        "typeLabel": "Sólidos",
+        "notes": "Banana e aveia",
+        "amount": "~80g",
+        "food": {
+          "id": "4",
+          "name": "Banana amassada",
+          "calories": 89,
+          "protein": 1.1,
+          "carbs": 22.8,
+          "fat": 0.3,
+          "fiber": 2.6
+        }
+      },
+      {
+        "id": "3",
+        "time": "12:30",
+        "type": "bottle",
+        "typeLabel": "Mamadeira",
+        "amount": "150 ml",
+        "notes": "Leite materno"
+      },
+      {
+        "id": "4",
+        "time": "13:30",
+        "type": "formula",
+        "typeLabel": "Fórmula",
+        "amount": "180 ml",
+        "formulaBrand": "NAN 1"
+      },
+      {
+        "id": "5",
+        "time": "15:00",
+        "type": "breast",
+        "typeLabel": "Amamentação",
+        "side": "Direito",
+        "duration": "10 min"
+      }
+    ],
+    "weekSummary": [
+      {
+        "day": "Seg",
+        "count": 6
+      },
+      {
+        "day": "Ter",
+        "count": 5
+      },
+      {
+        "day": "Qua",
+        "count": 7
+      },
+      {
+        "day": "Qui",
+        "count": 5
+      },
+      {
+        "day": "Sex",
+        "count": 6
+      },
+      {
+        "day": "Sáb",
+        "count": 4
+      },
+      {
+        "day": "Dom",
+        "count": 5
+      }
+    ]
+  },
+  "sleep": {
+    "initialLogs": [
+      {
+        "id": "1",
+        "type": "night",
+        "typeLabel": "Noturno",
+        "start": "22:00",
+        "end": "06:30",
+        "location": "Berço",
+        "notes": ""
+      },
+      {
+        "id": "2",
+        "type": "nap",
+        "typeLabel": "Cochilo",
+        "start": "08:30",
+        "end": "09:10",
+        "location": "Colo",
+        "notes": ""
+      },
+      {
+        "id": "3",
+        "type": "nap",
+        "typeLabel": "Cochilo",
+        "start": "13:00",
+        "end": "14:30",
+        "location": "Berço",
+        "notes": "Dormiu após almoço"
+      }
+    ],
+    "weekData": [
+      {
+        "day": "Seg",
+        "hours": 13.5
+      },
+      {
+        "day": "Ter",
+        "hours": 12.0
+      },
+      {
+        "day": "Qua",
+        "hours": 14.0
+      },
+      {
+        "day": "Qui",
+        "hours": 13.0
+      },
+      {
+        "day": "Sex",
+        "hours": 11.5
+      },
+      {
+        "day": "Sáb",
+        "hours": 13.5
+      },
+      {
+        "day": "Dom",
+        "hours": 10.7
+      }
+    ]
+  },
+  "hydration": {
+    "initialLogs": [
+      {
+        "id": "1",
+        "time": "08:00",
+        "amount": 60,
+        "type": "water",
+        "typeLabel": "Água",
+        "notes": "Após amamentar"
+      },
+      {
+        "id": "2",
+        "time": "10:30",
+        "amount": 80,
+        "type": "juice",
+        "typeLabel": "Suco",
+        "notes": "Suco de maçã"
+      },
+      {
+        "id": "3",
+        "time": "13:00",
+        "amount": 60,
+        "type": "water",
+        "typeLabel": "Água",
+        "notes": "Com almoço"
+      },
+      {
+        "id": "4",
+        "time": "15:30",
+        "amount": 50,
+        "type": "tea",
+        "typeLabel": "Chá",
+        "notes": "Chá de camomila"
+      }
+    ],
+    "weekData": [
+      {
+        "day": "Seg",
+        "ml": 240
+      },
+      {
+        "day": "Ter",
+        "ml": 300
+      },
+      {
+        "day": "Qua",
+        "ml": 180
+      },
+      {
+        "day": "Qui",
+        "ml": 210
+      },
+      {
+        "day": "Sex",
+        "ml": 270
+      },
+      {
+        "day": "Sáb",
+        "ml": 180
+      },
+      {
+        "day": "Dom",
+        "ml": 250
+      }
+    ]
+  },
+  "diaper": {
+    "initialLogs": [
+      {
+        "id": "1",
+        "time": "07:45",
+        "type": "pee",
+        "typeLabel": "Xixi",
+        "peeVolume": 2,
+        "pooVolume": 1,
+        "notes": ""
+      },
+      {
+        "id": "2",
+        "time": "10:15",
+        "type": "poo",
+        "typeLabel": "Cocô",
+        "peeVolume": 1,
+        "pooVolume": 3,
+        "notes": "Consistência normal"
+      },
+      {
+        "id": "3",
+        "time": "11:30",
+        "type": "mixed",
+        "typeLabel": "Misto",
+        "peeVolume": 2,
+        "pooVolume": 2,
+        "notes": ""
+      },
+      {
+        "id": "4",
+        "time": "14:00",
+        "type": "pee",
+        "typeLabel": "Xixi",
+        "peeVolume": 3,
+        "pooVolume": 1,
+        "notes": ""
+      },
+      {
+        "id": "5",
+        "time": "16:45",
+        "type": "pee",
+        "typeLabel": "Xixi",
+        "peeVolume": 1,
+        "pooVolume": 1,
+        "notes": "Antes do banho"
+      }
+    ],
+    "weekData": [
+      {
+        "day": "Seg",
+        "wet": 5,
+        "dirty": 2
+      },
+      {
+        "day": "Ter",
+        "wet": 6,
+        "dirty": 1
+      },
+      {
+        "day": "Qua",
+        "wet": 4,
+        "dirty": 2
+      },
+      {
+        "day": "Qui",
+        "wet": 5,
+        "dirty": 1
+      },
+      {
+        "day": "Sex",
+        "wet": 5,
+        "dirty": 2
+      },
+      {
+        "day": "Sáb",
+        "wet": 3,
+        "dirty": 1
+      },
+      {
+        "day": "Dom",
+        "wet": 3,
+        "dirty": 0
+      }
+    ]
+  },
+  "bath": {
+    "initialLogs": [
+      {
+        "id": "1",
+        "time": "18:30",
+        "temp": "morno",
+        "tempLabel": "Morno",
+        "duration": 15,
+        "notes": "Banho relaxante antes de dormir"
+      }
+    ],
+    "weekData": [
+      {
+        "day": "Seg",
+        "count": 1
+      },
+      {
+        "day": "Ter",
+        "count": 1
+      },
+      {
+        "day": "Qua",
+        "count": 2
+      },
+      {
+        "day": "Qui",
+        "count": 1
+      },
+      {
+        "day": "Sex",
+        "count": 1
+      },
+      {
+        "day": "Sáb",
+        "count": 1
+      },
+      {
+        "day": "Dom",
+        "count": 1
+      }
+    ]
+  },
+  "activity": {
+    "initialLogs": [
+      {
+        "id": "1",
+        "time": "09:30",
+        "type": "tummy",
+        "label": "Bruços",
+        "duration": 15,
+        "notes": ""
+      },
+      {
+        "id": "2",
+        "time": "11:00",
+        "type": "reading",
+        "label": "Leitura",
+        "duration": 10,
+        "notes": "2 livros"
+      },
+      {
+        "id": "3",
+        "time": "14:30",
+        "type": "play",
+        "label": "Brincar",
+        "duration": 20,
+        "notes": ""
+      }
+    ],
+    "weekData": [
+      {
+        "day": "Seg",
+        "min": 45
+      },
+      {
+        "day": "Ter",
+        "min": 60
+      },
+      {
+        "day": "Qua",
+        "min": 30
+      },
+      {
+        "day": "Qui",
+        "min": 50
+      },
+      {
+        "day": "Sex",
+        "min": 40
+      },
+      {
+        "day": "Sáb",
+        "min": 25
+      },
+      {
+        "day": "Dom",
+        "min": 45
+      }
+    ]
+  }
+}

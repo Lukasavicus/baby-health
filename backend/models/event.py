@@ -1,11 +1,20 @@
 """Event model for logging baby activities"""
 from datetime import datetime
 from typing import Any, Dict, Literal, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 # Event types and subtypes
-EventType = Literal["feeding", "hydration", "sleep", "diaper", "activity", "medication"]
+EventType = Literal[
+    "feeding",
+    "hydration",
+    "sleep",
+    "diaper",
+    "activity",
+    "medication",
+    "bath",
+    "health",
+]
 FeedingSubtype = Literal[
     "bottle_formula", "bottle_breastmilk", "breastfeeding", "solids", "snack"
 ]
@@ -13,8 +22,19 @@ HydrationSubtype = Literal["water", "juice", "other"]
 SleepSubtype = Literal["nap", "night_sleep"]
 DiaperSubtype = Literal["wet", "dirty", "mixed"]
 ActivitySubtype = Literal[
-    "tummy_time", "reading", "play", "walk", "bath", "sensory"
+    "tummy_time",
+    "reading",
+    "play",
+    "walk",
+    "bath",
+    "sensory",
+    "music",
+    "visual",
+    "auditory",
+    "spatial",
 ]
+BathSubtype = Literal["bath"]
+HealthSubtype = Literal["vitamin", "medication"]
 
 
 class Event(BaseModel):
@@ -54,8 +74,25 @@ class Event(BaseModel):
         }
 
 
+class EventIncoming(BaseModel):
+    """Loose create payload (App Design / aliases); normalized before persistence."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    baby_id: str
+    caregiver_id: str
+    type: str
+    subtype: str = ""
+    timestamp: Optional[datetime] = None
+    end_timestamp: Optional[datetime] = None
+    quantity: Optional[float] = None
+    unit: Optional[str] = None
+    notes: Optional[str] = None
+    metadata: Dict[str, Any] = Field(default_factory=dict)
+
+
 class EventCreate(BaseModel):
-    """Schema for creating an event"""
+    """Schema for creating an event (canonical, post-normalization)"""
 
     baby_id: str
     caregiver_id: str
@@ -107,6 +144,9 @@ class EventSummary(BaseModel):
     feeding_count: int = 0
     feeding_total_ml: float = 0
     hydration_count: int = 0
+    hydration_total_ml: float = 0
     sleep_hours: float = 0
     diaper_count: int = 0
     activity_count: int = 0
+    bath_count: int = 0
+    health_count: int = 0

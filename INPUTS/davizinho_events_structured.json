@@ -1,0 +1,1155 @@
+{
+  "metadata": {
+    "source_file": "t.html",
+    "source_type": "WhatsApp Web HTML export/search view",
+    "baby_name": "Davizinho",
+    "primary_caregiver_in_records": "Giseli Babá",
+    "generated_from_chat_context": true,
+    "notes": [
+      "Os eventos abaixo foram estruturados a partir dos registros claramente visíveis no arquivo HTML.",
+      "A data 2026-04-02 foi inferida a partir do rótulo 'quinta-feira' com base na informação fornecida pelo usuário de que a última quinta-feira foi 02/04/2026.",
+      "Quando uma mesma linha continha dois eventos no mesmo horário, eles foram separados em dois itens com o mesmo timestamp."
+    ]
+  },
+  "days": [
+    {
+      "date": "2026-02-02",
+      "caregiver": "Giseli Babá",
+      "events": [
+        {
+          "time": "09:10",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": null
+        },
+        {
+          "time": "09:25",
+          "type": "sleep_start",
+          "label": "dormiu",
+          "details": null
+        },
+        {
+          "time": "10:20",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        },
+        {
+          "time": "11:11",
+          "type": "breastfeeding",
+          "label": "mamou",
+          "details": null
+        },
+        {
+          "time": "12:05",
+          "type": "sleep_start",
+          "label": "dormiu",
+          "details": null
+        },
+        {
+          "time": "12:57",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        },
+        {
+          "time": "13:04",
+          "type": "breastfeeding",
+          "label": "mamou",
+          "details": null
+        },
+        {
+          "time": "14:34",
+          "type": "sleep_start",
+          "label": "dormiu",
+          "details": null
+        },
+        {
+          "time": "16:08",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        },
+        {
+          "time": "16:15",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": null
+        }
+      ]
+    },
+    {
+      "date": "2026-02-03",
+      "caregiver": "Giseli Babá",
+      "events": [
+        {
+          "time": "09:37",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": null
+        },
+        {
+          "time": "09:57",
+          "type": "sleep_start",
+          "label": "dormiu",
+          "details": null
+        },
+        {
+          "time": "11:07",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        },
+        {
+          "time": "11:59",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": null
+        },
+        {
+          "time": "12:45",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": null
+        },
+        {
+          "time": "13:00",
+          "type": "sleep_start",
+          "label": "dormiu",
+          "details": null
+        },
+        {
+          "time": "13:50",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        },
+        {
+          "time": "15:20",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": null
+        },
+        {
+          "time": "15:40",
+          "type": "sleep_start",
+          "label": "dormiu",
+          "details": null
+        },
+        {
+          "time": "16:25",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        }
+      ]
+    },
+    {
+      "date": "2026-02-04",
+      "caregiver": "Giseli Babá",
+      "events": [
+        {
+          "time": "08:05",
+          "type": "breastfeeding",
+          "label": "mamou",
+          "details": null
+        },
+        {
+          "time": "09:40",
+          "type": "breastfeeding",
+          "label": "mamou",
+          "details": null
+        },
+        {
+          "time": "09:50",
+          "type": "sleep_start",
+          "label": "dormiu",
+          "details": null
+        },
+        {
+          "time": "11:50",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        },
+        {
+          "time": "11:50",
+          "type": "breastfeeding",
+          "label": "mamou",
+          "details": null
+        },
+        {
+          "time": "13:45",
+          "type": "sleep_start",
+          "label": "dormiu",
+          "details": null
+        },
+        {
+          "time": "15:25",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        },
+        {
+          "time": "15:25",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": null
+        }
+      ]
+    },
+    {
+      "date": "2026-02-05",
+      "caregiver": "Giseli Babá",
+      "events": [
+        {
+          "time": "08:20",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        },
+        {
+          "time": "09:38",
+          "type": "sleep_start",
+          "label": "dormiu",
+          "details": null
+        },
+        {
+          "time": "10:53",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        },
+        {
+          "time": "11:00",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": null
+        },
+        {
+          "time": "12:38",
+          "type": "breastfeeding",
+          "label": "mamou",
+          "details": null
+        },
+        {
+          "time": "13:20",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": null
+        },
+        {
+          "time": "13:55",
+          "type": "sleep_start",
+          "label": "dormiu",
+          "details": null
+        },
+        {
+          "time": "14:54",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        },
+        {
+          "time": "15:14",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": null
+        },
+        {
+          "time": "15:40",
+          "type": "feeding_bottle",
+          "label": "restante da mamadeira",
+          "details": "restante da mamadeira"
+        }
+      ]
+    },
+    {
+      "date": "2026-02-06",
+      "caregiver": "Giseli Babá",
+      "events": [
+        {
+          "time": "08:12",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        },
+        {
+          "time": "08:48",
+          "type": "breastfeeding",
+          "label": "mamou",
+          "details": null
+        },
+        {
+          "time": "09:38",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": null
+        },
+        {
+          "time": "10:13",
+          "type": "sleep_start",
+          "label": "dormiu",
+          "details": null
+        },
+        {
+          "time": "11:55",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        },
+        {
+          "time": "12:45",
+          "type": "breastfeeding",
+          "label": "mamou",
+          "details": null
+        },
+        {
+          "time": "14:12",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": "30 ml"
+        },
+        {
+          "time": "14:25",
+          "type": "sleep_start",
+          "label": "dormiu",
+          "details": null
+        },
+        {
+          "time": "16:00",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        },
+        {
+          "time": "16:36",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": null
+        }
+      ]
+    },
+    {
+      "date": "2026-02-09",
+      "caregiver": "Giseli Babá",
+      "events": [
+        {
+          "time": "08:00",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        },
+        {
+          "time": "08:00",
+          "type": "breastfeeding",
+          "label": "mamou",
+          "details": null
+        },
+        {
+          "time": "09:14",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": null
+        },
+        {
+          "time": "09:45",
+          "type": "sleep_start",
+          "label": "dormiu",
+          "details": null
+        },
+        {
+          "time": "10:25",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        },
+        {
+          "time": "10:25",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": null
+        },
+        {
+          "time": "12:19",
+          "type": "breastfeeding",
+          "label": "mamou",
+          "details": null
+        },
+        {
+          "time": "12:19",
+          "type": "sleep_start",
+          "label": "dormiu",
+          "details": null
+        },
+        {
+          "time": "14:13",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        },
+        {
+          "time": "14:48",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": null
+        },
+        {
+          "time": "16:00",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": null
+        },
+        {
+          "time": "16:11",
+          "type": "sleep_start",
+          "label": "dormiu",
+          "details": null
+        }
+      ]
+    },
+    {
+      "date": "2026-04-02",
+      "caregiver": "Giseli",
+      "events": [
+        {
+          "time": "08:35",
+          "type": "food",
+          "label": "mexerica",
+          "details": null
+        },
+        {
+          "time": "09:15",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": "30 ml"
+        },
+        {
+          "time": "10:03",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": "100 ml"
+        },
+        {
+          "time": "10:20",
+          "type": "sleep_start",
+          "label": "dormiu",
+          "details": null
+        },
+        {
+          "time": "10:43",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        },
+        {
+          "time": "11:20",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": null
+        },
+        {
+          "time": "11:40",
+          "type": "food",
+          "label": "papa",
+          "details": null
+        },
+        {
+          "time": "13:10",
+          "type": "breastfeeding",
+          "label": "mamou",
+          "details": null
+        },
+        {
+          "time": "13:20",
+          "type": "sleep_start",
+          "label": "dormiu",
+          "details": null
+        },
+        {
+          "time": "13:50",
+          "type": "sleep_end",
+          "label": "acordou",
+          "details": null
+        },
+        {
+          "time": "15:01",
+          "type": "feeding_bottle",
+          "label": "mamadeira",
+          "details": "145 ml"
+        },
+        {
+          "time": "16:00",
+          "type": "food",
+          "label": "maçã",
+          "details": null
+        }
+      ]
+    }
+  ],
+  "flat_events": [
+    {
+      "date": "2026-02-02",
+      "datetime_local": "2026-02-02T09:10:00",
+      "caregiver": "Giseli Babá",
+      "time": "09:10",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": null
+    },
+    {
+      "date": "2026-02-02",
+      "datetime_local": "2026-02-02T09:25:00",
+      "caregiver": "Giseli Babá",
+      "time": "09:25",
+      "type": "sleep_start",
+      "label": "dormiu",
+      "details": null
+    },
+    {
+      "date": "2026-02-02",
+      "datetime_local": "2026-02-02T10:20:00",
+      "caregiver": "Giseli Babá",
+      "time": "10:20",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-02-02",
+      "datetime_local": "2026-02-02T11:11:00",
+      "caregiver": "Giseli Babá",
+      "time": "11:11",
+      "type": "breastfeeding",
+      "label": "mamou",
+      "details": null
+    },
+    {
+      "date": "2026-02-02",
+      "datetime_local": "2026-02-02T12:05:00",
+      "caregiver": "Giseli Babá",
+      "time": "12:05",
+      "type": "sleep_start",
+      "label": "dormiu",
+      "details": null
+    },
+    {
+      "date": "2026-02-02",
+      "datetime_local": "2026-02-02T12:57:00",
+      "caregiver": "Giseli Babá",
+      "time": "12:57",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-02-02",
+      "datetime_local": "2026-02-02T13:04:00",
+      "caregiver": "Giseli Babá",
+      "time": "13:04",
+      "type": "breastfeeding",
+      "label": "mamou",
+      "details": null
+    },
+    {
+      "date": "2026-02-02",
+      "datetime_local": "2026-02-02T14:34:00",
+      "caregiver": "Giseli Babá",
+      "time": "14:34",
+      "type": "sleep_start",
+      "label": "dormiu",
+      "details": null
+    },
+    {
+      "date": "2026-02-02",
+      "datetime_local": "2026-02-02T16:08:00",
+      "caregiver": "Giseli Babá",
+      "time": "16:08",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-02-02",
+      "datetime_local": "2026-02-02T16:15:00",
+      "caregiver": "Giseli Babá",
+      "time": "16:15",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": null
+    },
+    {
+      "date": "2026-02-03",
+      "datetime_local": "2026-02-03T09:37:00",
+      "caregiver": "Giseli Babá",
+      "time": "09:37",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": null
+    },
+    {
+      "date": "2026-02-03",
+      "datetime_local": "2026-02-03T09:57:00",
+      "caregiver": "Giseli Babá",
+      "time": "09:57",
+      "type": "sleep_start",
+      "label": "dormiu",
+      "details": null
+    },
+    {
+      "date": "2026-02-03",
+      "datetime_local": "2026-02-03T11:07:00",
+      "caregiver": "Giseli Babá",
+      "time": "11:07",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-02-03",
+      "datetime_local": "2026-02-03T11:59:00",
+      "caregiver": "Giseli Babá",
+      "time": "11:59",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": null
+    },
+    {
+      "date": "2026-02-03",
+      "datetime_local": "2026-02-03T12:45:00",
+      "caregiver": "Giseli Babá",
+      "time": "12:45",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": null
+    },
+    {
+      "date": "2026-02-03",
+      "datetime_local": "2026-02-03T13:00:00",
+      "caregiver": "Giseli Babá",
+      "time": "13:00",
+      "type": "sleep_start",
+      "label": "dormiu",
+      "details": null
+    },
+    {
+      "date": "2026-02-03",
+      "datetime_local": "2026-02-03T13:50:00",
+      "caregiver": "Giseli Babá",
+      "time": "13:50",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-02-03",
+      "datetime_local": "2026-02-03T15:20:00",
+      "caregiver": "Giseli Babá",
+      "time": "15:20",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": null
+    },
+    {
+      "date": "2026-02-03",
+      "datetime_local": "2026-02-03T15:40:00",
+      "caregiver": "Giseli Babá",
+      "time": "15:40",
+      "type": "sleep_start",
+      "label": "dormiu",
+      "details": null
+    },
+    {
+      "date": "2026-02-03",
+      "datetime_local": "2026-02-03T16:25:00",
+      "caregiver": "Giseli Babá",
+      "time": "16:25",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-02-04",
+      "datetime_local": "2026-02-04T08:05:00",
+      "caregiver": "Giseli Babá",
+      "time": "08:05",
+      "type": "breastfeeding",
+      "label": "mamou",
+      "details": null
+    },
+    {
+      "date": "2026-02-04",
+      "datetime_local": "2026-02-04T09:40:00",
+      "caregiver": "Giseli Babá",
+      "time": "09:40",
+      "type": "breastfeeding",
+      "label": "mamou",
+      "details": null
+    },
+    {
+      "date": "2026-02-04",
+      "datetime_local": "2026-02-04T09:50:00",
+      "caregiver": "Giseli Babá",
+      "time": "09:50",
+      "type": "sleep_start",
+      "label": "dormiu",
+      "details": null
+    },
+    {
+      "date": "2026-02-04",
+      "datetime_local": "2026-02-04T11:50:00",
+      "caregiver": "Giseli Babá",
+      "time": "11:50",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-02-04",
+      "datetime_local": "2026-02-04T11:50:00",
+      "caregiver": "Giseli Babá",
+      "time": "11:50",
+      "type": "breastfeeding",
+      "label": "mamou",
+      "details": null
+    },
+    {
+      "date": "2026-02-04",
+      "datetime_local": "2026-02-04T13:45:00",
+      "caregiver": "Giseli Babá",
+      "time": "13:45",
+      "type": "sleep_start",
+      "label": "dormiu",
+      "details": null
+    },
+    {
+      "date": "2026-02-04",
+      "datetime_local": "2026-02-04T15:25:00",
+      "caregiver": "Giseli Babá",
+      "time": "15:25",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-02-04",
+      "datetime_local": "2026-02-04T15:25:00",
+      "caregiver": "Giseli Babá",
+      "time": "15:25",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": null
+    },
+    {
+      "date": "2026-02-05",
+      "datetime_local": "2026-02-05T08:20:00",
+      "caregiver": "Giseli Babá",
+      "time": "08:20",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-02-05",
+      "datetime_local": "2026-02-05T09:38:00",
+      "caregiver": "Giseli Babá",
+      "time": "09:38",
+      "type": "sleep_start",
+      "label": "dormiu",
+      "details": null
+    },
+    {
+      "date": "2026-02-05",
+      "datetime_local": "2026-02-05T10:53:00",
+      "caregiver": "Giseli Babá",
+      "time": "10:53",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-02-05",
+      "datetime_local": "2026-02-05T11:00:00",
+      "caregiver": "Giseli Babá",
+      "time": "11:00",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": null
+    },
+    {
+      "date": "2026-02-05",
+      "datetime_local": "2026-02-05T12:38:00",
+      "caregiver": "Giseli Babá",
+      "time": "12:38",
+      "type": "breastfeeding",
+      "label": "mamou",
+      "details": null
+    },
+    {
+      "date": "2026-02-05",
+      "datetime_local": "2026-02-05T13:20:00",
+      "caregiver": "Giseli Babá",
+      "time": "13:20",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": null
+    },
+    {
+      "date": "2026-02-05",
+      "datetime_local": "2026-02-05T13:55:00",
+      "caregiver": "Giseli Babá",
+      "time": "13:55",
+      "type": "sleep_start",
+      "label": "dormiu",
+      "details": null
+    },
+    {
+      "date": "2026-02-05",
+      "datetime_local": "2026-02-05T14:54:00",
+      "caregiver": "Giseli Babá",
+      "time": "14:54",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-02-05",
+      "datetime_local": "2026-02-05T15:14:00",
+      "caregiver": "Giseli Babá",
+      "time": "15:14",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": null
+    },
+    {
+      "date": "2026-02-05",
+      "datetime_local": "2026-02-05T15:40:00",
+      "caregiver": "Giseli Babá",
+      "time": "15:40",
+      "type": "feeding_bottle",
+      "label": "restante da mamadeira",
+      "details": "restante da mamadeira"
+    },
+    {
+      "date": "2026-02-06",
+      "datetime_local": "2026-02-06T08:12:00",
+      "caregiver": "Giseli Babá",
+      "time": "08:12",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-02-06",
+      "datetime_local": "2026-02-06T08:48:00",
+      "caregiver": "Giseli Babá",
+      "time": "08:48",
+      "type": "breastfeeding",
+      "label": "mamou",
+      "details": null
+    },
+    {
+      "date": "2026-02-06",
+      "datetime_local": "2026-02-06T09:38:00",
+      "caregiver": "Giseli Babá",
+      "time": "09:38",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": null
+    },
+    {
+      "date": "2026-02-06",
+      "datetime_local": "2026-02-06T10:13:00",
+      "caregiver": "Giseli Babá",
+      "time": "10:13",
+      "type": "sleep_start",
+      "label": "dormiu",
+      "details": null
+    },
+    {
+      "date": "2026-02-06",
+      "datetime_local": "2026-02-06T11:55:00",
+      "caregiver": "Giseli Babá",
+      "time": "11:55",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-02-06",
+      "datetime_local": "2026-02-06T12:45:00",
+      "caregiver": "Giseli Babá",
+      "time": "12:45",
+      "type": "breastfeeding",
+      "label": "mamou",
+      "details": null
+    },
+    {
+      "date": "2026-02-06",
+      "datetime_local": "2026-02-06T14:12:00",
+      "caregiver": "Giseli Babá",
+      "time": "14:12",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": "30 ml"
+    },
+    {
+      "date": "2026-02-06",
+      "datetime_local": "2026-02-06T14:25:00",
+      "caregiver": "Giseli Babá",
+      "time": "14:25",
+      "type": "sleep_start",
+      "label": "dormiu",
+      "details": null
+    },
+    {
+      "date": "2026-02-06",
+      "datetime_local": "2026-02-06T16:00:00",
+      "caregiver": "Giseli Babá",
+      "time": "16:00",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-02-06",
+      "datetime_local": "2026-02-06T16:36:00",
+      "caregiver": "Giseli Babá",
+      "time": "16:36",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": null
+    },
+    {
+      "date": "2026-02-09",
+      "datetime_local": "2026-02-09T08:00:00",
+      "caregiver": "Giseli Babá",
+      "time": "08:00",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-02-09",
+      "datetime_local": "2026-02-09T08:00:00",
+      "caregiver": "Giseli Babá",
+      "time": "08:00",
+      "type": "breastfeeding",
+      "label": "mamou",
+      "details": null
+    },
+    {
+      "date": "2026-02-09",
+      "datetime_local": "2026-02-09T09:14:00",
+      "caregiver": "Giseli Babá",
+      "time": "09:14",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": null
+    },
+    {
+      "date": "2026-02-09",
+      "datetime_local": "2026-02-09T09:45:00",
+      "caregiver": "Giseli Babá",
+      "time": "09:45",
+      "type": "sleep_start",
+      "label": "dormiu",
+      "details": null
+    },
+    {
+      "date": "2026-02-09",
+      "datetime_local": "2026-02-09T10:25:00",
+      "caregiver": "Giseli Babá",
+      "time": "10:25",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-02-09",
+      "datetime_local": "2026-02-09T10:25:00",
+      "caregiver": "Giseli Babá",
+      "time": "10:25",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": null
+    },
+    {
+      "date": "2026-02-09",
+      "datetime_local": "2026-02-09T12:19:00",
+      "caregiver": "Giseli Babá",
+      "time": "12:19",
+      "type": "breastfeeding",
+      "label": "mamou",
+      "details": null
+    },
+    {
+      "date": "2026-02-09",
+      "datetime_local": "2026-02-09T12:19:00",
+      "caregiver": "Giseli Babá",
+      "time": "12:19",
+      "type": "sleep_start",
+      "label": "dormiu",
+      "details": null
+    },
+    {
+      "date": "2026-02-09",
+      "datetime_local": "2026-02-09T14:13:00",
+      "caregiver": "Giseli Babá",
+      "time": "14:13",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-02-09",
+      "datetime_local": "2026-02-09T14:48:00",
+      "caregiver": "Giseli Babá",
+      "time": "14:48",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": null
+    },
+    {
+      "date": "2026-02-09",
+      "datetime_local": "2026-02-09T16:00:00",
+      "caregiver": "Giseli Babá",
+      "time": "16:00",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": null
+    },
+    {
+      "date": "2026-02-09",
+      "datetime_local": "2026-02-09T16:11:00",
+      "caregiver": "Giseli Babá",
+      "time": "16:11",
+      "type": "sleep_start",
+      "label": "dormiu",
+      "details": null
+    },
+    {
+      "date": "2026-04-02",
+      "datetime_local": "2026-04-02T08:35:00",
+      "caregiver": "Giseli",
+      "time": "08:35",
+      "type": "food",
+      "label": "mexerica",
+      "details": null
+    },
+    {
+      "date": "2026-04-02",
+      "datetime_local": "2026-04-02T09:15:00",
+      "caregiver": "Giseli",
+      "time": "09:15",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": "30 ml"
+    },
+    {
+      "date": "2026-04-02",
+      "datetime_local": "2026-04-02T10:03:00",
+      "caregiver": "Giseli",
+      "time": "10:03",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": "100 ml"
+    },
+    {
+      "date": "2026-04-02",
+      "datetime_local": "2026-04-02T10:20:00",
+      "caregiver": "Giseli",
+      "time": "10:20",
+      "type": "sleep_start",
+      "label": "dormiu",
+      "details": null
+    },
+    {
+      "date": "2026-04-02",
+      "datetime_local": "2026-04-02T10:43:00",
+      "caregiver": "Giseli",
+      "time": "10:43",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-04-02",
+      "datetime_local": "2026-04-02T11:20:00",
+      "caregiver": "Giseli",
+      "time": "11:20",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": null
+    },
+    {
+      "date": "2026-04-02",
+      "datetime_local": "2026-04-02T11:40:00",
+      "caregiver": "Giseli",
+      "time": "11:40",
+      "type": "food",
+      "label": "papa",
+      "details": null
+    },
+    {
+      "date": "2026-04-02",
+      "datetime_local": "2026-04-02T13:10:00",
+      "caregiver": "Giseli",
+      "time": "13:10",
+      "type": "breastfeeding",
+      "label": "mamou",
+      "details": null
+    },
+    {
+      "date": "2026-04-02",
+      "datetime_local": "2026-04-02T13:20:00",
+      "caregiver": "Giseli",
+      "time": "13:20",
+      "type": "sleep_start",
+      "label": "dormiu",
+      "details": null
+    },
+    {
+      "date": "2026-04-02",
+      "datetime_local": "2026-04-02T13:50:00",
+      "caregiver": "Giseli",
+      "time": "13:50",
+      "type": "sleep_end",
+      "label": "acordou",
+      "details": null
+    },
+    {
+      "date": "2026-04-02",
+      "datetime_local": "2026-04-02T15:01:00",
+      "caregiver": "Giseli",
+      "time": "15:01",
+      "type": "feeding_bottle",
+      "label": "mamadeira",
+      "details": "145 ml"
+    },
+    {
+      "date": "2026-04-02",
+      "datetime_local": "2026-04-02T16:00:00",
+      "caregiver": "Giseli",
+      "time": "16:00",
+      "type": "food",
+      "label": "maçã",
+      "details": null
+    }
+  ],
+  "summary": {
+    "total_days": 7,
+    "total_events": 72,
+    "date_range": {
+      "start": "2026-02-02",
+      "end": "2026-04-02"
+    },
+    "event_type_counts": {
+      "feeding_bottle": 22,
+      "sleep_start": 17,
+      "sleep_end": 19,
+      "breastfeeding": 11,
+      "food": 3
+    }
+  }
+}

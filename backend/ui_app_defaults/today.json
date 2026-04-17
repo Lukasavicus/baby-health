@@ -1,0 +1,76 @@
+{
+  "insights": [
+    "O cochilo da manhã costuma ser entre 8h e 9h.",
+    "Hidratação tende a cair à tarde — lembre-se de oferecer água!",
+    "A ingestão de leite está mais forte pela manhã."
+  ],
+  "quickActivities": [
+    {
+      "id": "tummy",
+      "label": "Bruços",
+      "icon": "Baby"
+    },
+    {
+      "id": "reading",
+      "label": "Leitura",
+      "icon": "BookOpen"
+    },
+    {
+      "id": "play",
+      "label": "Brincar",
+      "icon": "Footprints"
+    },
+    {
+      "id": "visual",
+      "label": "Estímulo",
+      "icon": "Eye"
+    }
+  ],
+  "quickVitamins": [
+    {
+      "id": "vitd",
+      "label": "Vit. D"
+    },
+    {
+      "id": "iron",
+      "label": "Ferro"
+    }
+  ],
+  "quickMeds": [
+    {
+      "id": "paracetamol",
+      "label": "Paracet."
+    },
+    {
+      "id": "dipirona",
+      "label": "Dipirona"
+    }
+  ],
+  "vitaminItems": [
+    {
+      "id": "vitd",
+      "label": "Vit. D",
+      "takenAt": "08:00"
+    },
+    {
+      "id": "iron",
+      "label": "Ferro",
+      "takenAt": null
+    }
+  ],
+  "medItems": [
+    {
+      "id": "paracetamol",
+      "label": "Paracetamol",
+      "takenAt": null
+    },
+    {
+      "id": "dipirona",
+      "label": "Dipirona",
+      "takenAt": null
+    }
+  ],
+  "initialWaterMl": 180,
+  "hydrationGoalMl": 500,
+  "lastWakeOffsetMs": 5400000
+}

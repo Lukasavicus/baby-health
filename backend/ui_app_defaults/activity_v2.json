@@ -1,0 +1,508 @@
+{
+  "categories": [
+    {
+      "id": "attachment",
+      "label": "Vínculo & Afeto",
+      "color": "text-pink-500",
+      "bgColor": "bg-baby-pink/30",
+      "icon": "Heart",
+      "activities": [
+        {
+          "id": "skin_contact",
+          "label": "Pele a pele",
+          "icon": "Heart",
+          "description": "Contato pele a pele"
+        },
+        {
+          "id": "gentle_touch",
+          "label": "Toque suave",
+          "icon": "Hand",
+          "description": "Massagem e carinho"
+        },
+        {
+          "id": "held_feeding",
+          "label": "Colo durante mamada",
+          "icon": "Baby",
+          "description": "Olhar e conversar durante alimentação"
+        },
+        {
+          "id": "turn_taking",
+          "label": "Troca de turnos",
+          "icon": "Smile",
+          "description": "Imitar sons e gestos do bebê"
+        },
+        {
+          "id": "calming",
+          "label": "Acalmar juntos",
+          "icon": "Sparkles",
+          "description": "Estratégias de autorregulação"
+        }
+      ]
+    },
+    {
+      "id": "language",
+      "label": "Linguagem & Comunicação",
+      "color": "text-blue-500",
+      "bgColor": "bg-baby-blue/30",
+      "icon": "MessageCircle",
+      "activities": [
+        {
+          "id": "face_talk",
+          "label": "Conversa face a face",
+          "icon": "MessageCircle",
+          "description": "Falar no nível dos olhos"
+        },
+        {
+          "id": "narrate",
+          "label": "Narrar ações",
+          "icon": "MessageCircle",
+          "description": "Descrever o que está fazendo"
+        },
+        {
+          "id": "sound_imitation",
+          "label": "Imitar sons",
+          "icon": "Ear",
+          "description": "Copiar e expandir sons do bebê"
+        },
+        {
+          "id": "name_objects",
+          "label": "Nomear objetos",
+          "icon": "Eye",
+          "description": "Apontar e nomear o que o bebê olha"
+        },
+        {
+          "id": "songs_rhymes",
+          "label": "Canções e rimas",
+          "icon": "Music",
+          "description": "Cantar com gestos"
+        },
+        {
+          "id": "simple_directions",
+          "label": "Instruções simples",
+          "icon": "MessageCircle",
+          "description": "Pedidos de 2-3 passos"
+        }
+      ]
+    },
+    {
+      "id": "literacy",
+      "label": "Livros & Leitura",
+      "color": "text-indigo-500",
+      "bgColor": "bg-baby-lavender/30",
+      "icon": "BookOpen",
+      "activities": [
+        {
+          "id": "picture_book",
+          "label": "Livro de figuras",
+          "icon": "BookOpen",
+          "description": "Olhar fotos coloridas juntos"
+        },
+        {
+          "id": "point_label",
+          "label": "Apontar e nomear",
+          "icon": "Eye",
+          "description": "Identificar figuras no livro"
+        },
+        {
+          "id": "story_questions",
+          "label": "Perguntas da história",
+          "icon": "Brain",
+          "description": "O que acontece depois?"
+        },
+        {
+          "id": "bedtime_reading",
+          "label": "Leitura antes de dormir",
+          "icon": "BookOpen",
+          "description": "Rotina calma com 1-2 livros"
+        }
+      ]
+    },
+    {
+      "id": "sensory",
+      "label": "Exploração Sensorial",
+      "color": "text-amber-500",
+      "bgColor": "bg-baby-peach/30",
+      "icon": "Sparkles",
+      "activities": [
+        {
+          "id": "visual_tracking",
+          "label": "Rastrear visual",
+          "icon": "Eye",
+          "description": "Mover objeto colorido lentamente"
+        },
+        {
+          "id": "texture_touch",
+          "label": "Texturas variadas",
+          "icon": "Hand",
+          "description": "Explorar tecidos, objetos diferentes"
+        },
+        {
+          "id": "sound_making",
+          "label": "Fazer sons",
+          "icon": "Music",
+          "description": "Chocalho, tambor, colher na panela"
+        },
+        {
+          "id": "safe_mouthing",
+          "label": "Exploração oral",
+          "icon": "Baby",
+          "description": "Objetos seguros para levar à boca"
+        },
+        {
+          "id": "food_textures",
+          "label": "Texturas alimentares",
+          "icon": "Sparkles",
+          "description": "Variedade de texturas na alimentação"
+        },
+        {
+          "id": "sensory_outdoor",
+          "label": "Sensorial ao ar livre",
+          "icon": "Leaf",
+          "description": "Plantas, terra, água"
+        }
+      ]
+    },
+    {
+      "id": "fine_motor",
+      "label": "Motricidade Fina & Mão-Olho",
+      "color": "text-emerald-500",
+      "bgColor": "bg-baby-mint/30",
+      "icon": "Hand",
+      "activities": [
+        {
+          "id": "grasp_release",
+          "label": "Pegar e soltar",
+          "icon": "Hand",
+          "description": "Agarrar e largar brinquedos"
+        },
+        {
+          "id": "container_play",
+          "label": "Colocar e tirar",
+          "icon": "Blocks",
+          "description": "Objetos dentro/fora de caixas"
+        },
+        {
+          "id": "stacking",
+          "label": "Empilhar",
+          "icon": "Blocks",
+          "description": "Blocos, copos, objetos"
+        },
+        {
+          "id": "shape_sorting",
+          "label": "Encaixar formas",
+          "icon": "Shapes",
+          "description": "Classificar por forma"
+        },
+        {
+          "id": "puzzles",
+          "label": "Quebra-cabeças",
+          "icon": "Puzzle",
+          "description": "Puzzles simples"
+        },
+        {
+          "id": "art_crayons",
+          "label": "Arte e rabiscos",
+          "icon": "Palette",
+          "description": "Giz de cera grosso, tinta"
+        },
+        {
+          "id": "self_feeding",
+          "label": "Comer sozinho",
+          "icon": "Baby",
+          "description": "Prática com colher e copo"
+        },
+        {
+          "id": "helper_tasks",
+          "label": "Tarefas de ajudante",
+          "icon": "Hand",
+          "description": "Guardar objetos, levar guardanapo"
+        }
+      ]
+    },
+    {
+      "id": "gross_motor",
+      "label": "Motricidade Grossa & Ativo",
+      "color": "text-teal-500",
+      "bgColor": "bg-baby-mint/40",
+      "icon": "Footprints",
+      "activities": [
+        {
+          "id": "tummy_time",
+          "label": "Bruços",
+          "icon": "Baby",
+          "description": "Tempo de barriga (30min/dia)"
+        },
+        {
+          "id": "rolling_reaching",
+          "label": "Rolar e alcançar",
+          "icon": "Move3d",
+          "description": "Rolar para pegar brinquedos"
+        },
+        {
+          "id": "kicking_reaching",
+          "label": "Chutar e alcançar",
+          "icon": "Footprints",
+          "description": "Jogos de chutar e alcançar"
+        },
+        {
+          "id": "crawl_chase",
+          "label": "Engatinhar e perseguir",
+          "icon": "Footprints",
+          "description": "Jogos de engatinhar"
+        },
+        {
+          "id": "walk_run_climb",
+          "label": "Andar, correr, subir",
+          "icon": "Footprints",
+          "description": "Movimentação livre"
+        },
+        {
+          "id": "ball_play",
+          "label": "Brincadeira com bola",
+          "icon": "Move3d",
+          "description": "Rolar, chutar, perseguir bola"
+        },
+        {
+          "id": "dance_music",
+          "label": "Dançar com música",
+          "icon": "Music",
+          "description": "Mover-se ao som de música"
+        },
+        {
+          "id": "go_games",
+          "label": "Jogos de movimento",
+          "icon": "Footprints",
+          "description": "Preparar, apontar, já!"
+        }
+      ]
+    },
+    {
+      "id": "cognitive",
+      "label": "Cognitivo & Resolução de Problemas",
+      "color": "text-violet-500",
+      "bgColor": "bg-baby-lavender/40",
+      "icon": "Brain",
+      "activities": [
+        {
+          "id": "peekaboo",
+          "label": "Cadê? Achou!",
+          "icon": "Eye",
+          "description": "Esconder e revelar rosto/objetos"
+        },
+        {
+          "id": "hide_find",
+          "label": "Esconder e achar",
+          "icon": "Brain",
+          "description": "Esconder brinquedo sob pano"
+        },
+        {
+          "id": "cause_effect",
+          "label": "Causa e efeito",
+          "icon": "Sparkles",
+          "description": "Apertar botão = algo acontece"
+        },
+        {
+          "id": "sorting",
+          "label": "Classificar",
+          "icon": "Shapes",
+          "description": "Separar por cor/forma"
+        },
+        {
+          "id": "counting",
+          "label": "Contar objetos",
+          "icon": "Brain",
+          "description": "Contar partes do corpo, degraus"
+        },
+        {
+          "id": "problem_solving",
+          "label": "Resolver problemas",
+          "icon": "Puzzle",
+          "description": "Apoiar tentativas de solução"
+        }
+      ]
+    },
+    {
+      "id": "socioemotional",
+      "label": "Social-Emocional",
+      "color": "text-rose-500",
+      "bgColor": "bg-baby-pink/40",
+      "icon": "Smile",
+      "activities": [
+        {
+          "id": "label_feelings",
+          "label": "Nomear emoções",
+          "icon": "Smile",
+          "description": "Dar palavras aos sentimentos"
+        },
+        {
+          "id": "gentle_rules",
+          "label": "Toque gentil e regras",
+          "icon": "Heart",
+          "description": "Modelar toque suave"
+        },
+        {
+          "id": "praise_behavior",
+          "label": "Elogiar comportamento",
+          "icon": "Star",
+          "description": "Reforço positivo"
+        },
+        {
+          "id": "empathy_talk",
+          "label": "Conversa sobre empatia",
+          "icon": "Users",
+          "description": "Comentar emoções dos outros"
+        },
+        {
+          "id": "offer_choices",
+          "label": "Oferecer escolhas",
+          "icon": "Sparkles",
+          "description": "Camiseta vermelha ou azul?"
+        },
+        {
+          "id": "peer_play",
+          "label": "Brincar com outras crianças",
+          "icon": "Users",
+          "description": "Interação e divisão"
+        }
+      ]
+    },
+    {
+      "id": "nature",
+      "label": "Natureza & Ar Livre",
+      "color": "text-green-600",
+      "bgColor": "bg-green-100",
+      "icon": "TreePine",
+      "activities": [
+        {
+          "id": "outdoor_walk",
+          "label": "Passeio ao ar livre",
+          "icon": "Sun",
+          "description": "Caminhada em área natural"
+        },
+        {
+          "id": "plant_contact",
+          "label": "Contato com plantas",
+          "icon": "Leaf",
+          "description": "Tocar folhas, flores, grama"
+        },
+        {
+          "id": "water_play",
+          "label": "Brincar com água",
+          "icon": "Droplets",
+          "description": "Com supervisão constante"
+        },
+        {
+          "id": "earth_play",
+          "label": "Brincar com terra",
+          "icon": "TreePine",
+          "description": "Areia, terra, gravetos"
+        },
+        {
+          "id": "rain_play",
+          "label": "Brincar na chuva",
+          "icon": "CloudRain",
+          "description": "Poças, barragens, barquinhos"
+        },
+        {
+          "id": "playground",
+          "label": "Parquinho",
+          "icon": "Footprints",
+          "description": "Balanço, escorrega"
+        },
+        {
+          "id": "outdoor_picnic",
+          "label": "Piquenique",
+          "icon": "Sun",
+          "description": "Comer ao ar livre em família"
+        }
+      ]
+    }
+  ],
+  "durationOptions": [
+    5,
+    10,
+    15,
+    20,
+    30,
+    45,
+    60
+  ],
+  "initialLogs": [
+    {
+      "id": "1",
+      "time": "09:30",
+      "type": "tummy_time",
+      "label": "Bruços",
+      "duration": 15,
+      "notes": ""
+    },
+    {
+      "id": "2",
+      "time": "10:15",
+      "type": "picture_book",
+      "label": "Livro de figuras",
+      "duration": 10,
+      "notes": "O Gato Xadrez"
+    },
+    {
+      "id": "3",
+      "time": "11:00",
+      "type": "container_play",
+      "label": "Colocar e tirar",
+      "duration": 15,
+      "notes": "Blocos na caixa"
+    },
+    {
+      "id": "4",
+      "time": "14:30",
+      "type": "outdoor_walk",
+      "label": "Passeio ao ar livre",
+      "duration": 30,
+      "notes": "Praça"
+    },
+    {
+      "id": "5",
+      "time": "16:00",
+      "type": "peekaboo",
+      "label": "Cadê? Achou!",
+      "duration": 5,
+      "notes": ""
+    }
+  ],
+  "weekData": [
+    {
+      "day": "Seg",
+      "min": 65
+    },
+    {
+      "day": "Ter",
+      "min": 80
+    },
+    {
+      "day": "Qua",
+      "min": 45
+    },
+    {
+      "day": "Qui",
+      "min": 70
+    },
+    {
+      "day": "Sex",
+      "min": 55
+    },
+    {
+      "day": "Sáb",
+      "min": 90
+    },
+    {
+      "day": "Dom",
+      "min": 75
+    }
+  ],
+  "defaultFavoriteActivityIds": [
+    "tummy_time",
+    "picture_book",
+    "outdoor_walk",
+    "container_play"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "defaultBabyId": "seed-liam-1",
+  "bloodType": "O+",
+  "growthCards": [
+    {
+      "label": "Peso",
+      "value": "8.2",
+      "unit": "kg",
+      "percentile": 55,
+      "icon": "Weight",
+      "color": "bg-baby-peach/40"
+    },
+    {
+      "label": "Altura",
+      "value": "70",
+      "unit": "cm",
+      "percentile": 62,
+      "icon": "Ruler",
+      "color": "bg-baby-blue/40"
+    },
+    {
+      "label": "Cabeça",
+      "value": "44",
+      "unit": "cm",
+      "percentile": 48,
+      "icon": "CircleDot",
+      "color": "bg-baby-lavender/40"
+    }
+  ],
+  "recentMilestones": [],
+  "healthSummary": {
+    "vaccines": {
+      "total": 12,
+      "upToDate": true
+    },
+    "vitamins": {
+      "active": 2,
+      "names": [
+        "Vit. D",
+        "Ferro"
+      ]
+    },
+    "events": {
+      "recent": 1,
+      "lastEvent": "Resfriado leve"
+    }
+  }
+}

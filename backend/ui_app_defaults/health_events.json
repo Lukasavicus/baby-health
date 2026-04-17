@@ -1,0 +1,28 @@
+{
+  "events": [
+    {
+      "id": "1",
+      "type": "consultation",
+      "date": "2026-03-10",
+      "endDate": null,
+      "description": "Consulta de rotina - 7 meses",
+      "notes": "Peso 8.2kg, altura 70cm. Pediatra satisfeito com desenvolvimento. Manter Vit D e Ferro."
+    },
+    {
+      "id": "2",
+      "type": "cold",
+      "date": "2026-02-20",
+      "endDate": "2026-02-25",
+      "description": "Resfriado leve",
+      "notes": "Nariz escorrendo por 5 dias. Sem febre. Usado soro fisiologico nasal."
+    },
+    {
+      "id": "3",
+      "type": "fever",
+      "date": "2025-12-06",
+      "endDate": "2025-12-07",
+      "description": "Febre pos-vacina",
+      "notes": "38.2C apos Pentavalente 2a dose. Cedeu com Paracetamol. Durou 24h."
+    }
+  ]
+}

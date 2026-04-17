@@ -31,23 +31,44 @@ class EventService:
         self,
         baby_id: str,
         date: Optional[str] = None,
+        start_date: Optional[str] = None,
+        end_date: Optional[str] = None,
         event_type: Optional[str] = None,
         caregiver_id: Optional[str] = None,
     ) -> List[Dict[str, Any]]:
-        """Get events for a baby, optionally filtered by date and type"""
+        """Get events for a baby, optionally filtered by date/range and type"""
         events = self.repo.list_by_field("event", "baby_id", baby_id)
 
-        # Filter by date if provided
         if date:
             target_date = datetime.fromisoformat(date)
-            start_date = target_date.replace(hour=0, minute=0, second=0, microsecond=0)
-            end_date = start_date + timedelta(days=1) - timedelta(seconds=1)
+            range_start = target_date.replace(hour=0, minute=0, second=0, microsecond=0)
+            range_end = range_start + timedelta(days=1) - timedelta(seconds=1)
 
             events = [
                 e
                 for e in events
                 if self._parse_datetime(e.get("timestamp"))
-                and start_date <= self._parse_datetime(e.get("timestamp")) <= end_date
+                and range_start <= self._parse_datetime(e.get("timestamp")) <= range_end
+            ]
+        elif start_date or end_date:
+            if start_date:
+                range_start = datetime.fromisoformat(start_date).replace(
+                    hour=0, minute=0, second=0, microsecond=0
+                )
+            else:
+                range_start = datetime.min
+            if end_date:
+                range_end = datetime.fromisoformat(end_date).replace(
+                    hour=23, minute=59, second=59, microsecond=999999
+                )
+            else:
+                range_end = datetime.max
+
+            events = [
+                e
+                for e in events
+                if self._parse_datetime(e.get("timestamp"))
+                and range_start <= self._parse_datetime(e.get("timestamp")) <= range_end
             ]
 
         # Filter by event type if provided
@@ -72,9 +93,13 @@ class EventService:
             "feeding_count": 0,
             "feeding_total_ml": 0,
             "hydration_count": 0,
+            "hydration_total_ml": 0.0,
             "sleep_hours": 0,
             "diaper_count": 0,
             "activity_count": 0,
+            "activity_minutes": 0.0,
+            "bath_count": 0,
+            "health_count": 0,
         }
 
         for event in events:
@@ -82,11 +107,19 @@ class EventService:
 
             if event_type == "feeding":
                 summary["feeding_count"] += 1
-                if event.get("quantity"):
-                    summary["feeding_total_ml"] += event.get("quantity", 0)
+                q = event.get("quantity")
+                if q is not None:
+                    unit = (event.get("unit") or "ml").lower()
+                    if unit == "ml":
+                        summary["feeding_total_ml"] += float(q)
 
             elif event_type == "hydration":
                 summary["hydration_count"] += 1
+                q = event.get("quantity")
+                if q is not None:
+                    unit = (event.get("unit") or "ml").lower()
+                    if unit == "ml":
+                        summary["hydration_total_ml"] += float(q)
 
             elif event_type == "sleep":
                 # Calculate hours from timestamp and end_timestamp
@@ -101,6 +134,21 @@ class EventService:
 
             elif event_type == "activity":
                 summary["activity_count"] += 1
+                q = event.get("quantity")
+                unit = (event.get("unit") or "").lower()
+                md = event.get("metadata") or {}
+                if unit == "min" and q is not None:
+                    summary["activity_minutes"] += float(q)
+                elif md.get("duration_min"):
+                    summary["activity_minutes"] += float(md["duration_min"])
+
+            if event_type == "bath" or (
+                event_type == "activity" and event.get("subtype") == "bath"
+            ):
+                summary["bath_count"] += 1
+
+            if event_type in ("health", "medication"):
+                summary["health_count"] += 1
 
         return summary
 
@@ -123,9 +171,13 @@ class EventService:
             "feeding_count": sum(s["feeding_count"] for s in summaries),
             "feeding_total_ml": sum(s["feeding_total_ml"] for s in summaries),
             "hydration_count": sum(s["hydration_count"] for s in summaries),
+            "hydration_total_ml": sum(s["hydration_total_ml"] for s in summaries),
             "sleep_hours": sum(s["sleep_hours"] for s in summaries),
             "diaper_count": sum(s["diaper_count"] for s in summaries),
             "activity_count": sum(s["activity_count"] for s in summaries),
+            "activity_minutes": sum(s["activity_minutes"] for s in summaries),
+            "bath_count": sum(s["bath_count"] for s in summaries),
+            "health_count": sum(s["health_count"] for s in summaries),
         }
 
         return aggregated

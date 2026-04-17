@@ -14,6 +14,62 @@ GET /
 GET /health
 ```
 
+## JSON storage (`DATA_DIR`)
+
+All repository-backed endpoints read and write under **`DATA_DIR`** (env var, default `backend/data` relative to config). That folder must contain `babies.json`, `caregivers.json`, `events.json`, etc. Uploaded images for that profile go under **`DATA_DIR/images/`** (created automatically; max **10 MiB** per file, **1 GiB** total for all files in that folder).
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/media/upload` | Multipart field `file`. Allowed: JPEG, PNG, GIF, WebP, BMP, TIFF, HEIC/HEIF (by extension or `Content-Type`). Returns `{ "url": "/api/media/<id>.<ext>", ... }` to store in `baby.photo_url`. |
+| GET | `/api/media/{filename}` | Public read of a file previously uploaded to the active profile’s `images/` folder. |
+
+To use a different dataset (e.g. `backend/data/davi_test`), **point `DATA_DIR` at that directory** when starting the API (absolute path recommended, or relative to the process working directory). There is no query parameter or header for switching folders at request time.
+
+## UI SEED (app-design)
+
+**Environment:** `BABYHEALTH_USE_UI_SEED=1` enables reading `backend/ui_app_defaults/*.json`. Optional: `BABYHEALTH_UI_DEFAULTS_DIR` overrides that directory (absolute or relative path expanded from env). If `BABYHEALTH_USE_UI_SEED` is unset (default), `/api/ui/bootstrap` returns the same JSON **shape** with **empty** catalogs and lists, and `baby` comes only from `babies.json` (placeholder baby with empty `id`/`name` when there are no records). `/api/ui/seed/*` returns **404** when seed is disabled.
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/ui/bootstrap` | With seed: merged demo + repo baby (or `default_baby.json`). Without seed: empty UI data + repo baby only. Optional query: `baby_id`. |
+| GET | `/api/ui/seed/{name}` | Single seed file by logical name (e.g. `catalogs`, `growth`, `milestones`). See `seed_json_store.SEED_NAMES`. Only when `BABYHEALTH_USE_UI_SEED=1`. |
+
+Example:
+
+```bash
+# Empty bootstrap (default)
+curl -s http://localhost:8000/api/ui/bootstrap | head
+
+# Demo catalogs from JSON files
+BABYHEALTH_USE_UI_SEED=1 curl -s http://localhost:8000/api/ui/bootstrap | head
+curl -s http://localhost:8000/api/ui/seed/catalogs | head
+```
+
+From the repo root, `npm run dev-api` starts the API without seed; `npm run dev-api-seed` sets `BABYHEALTH_USE_UI_SEED=1`.
+
+## App-design persistence (JSON store)
+
+**Events (trackers + timeline):** With a real `baby.id` from bootstrap and a selected caregiver, the UI persists logs via `GET/POST/PUT/DELETE /api/events` (`baby_id` required; optional `date=YYYY-MM-DD`, `event_type=`). Detail screens and “Hoje” prefer these API results when `canPersist` is true; seed `tracker_logs` / `timeline_seed` remain fallbacks if the API fails or IDs are missing.
+
+**Bootstrap `today`:** Optional `hydrationGoalMl` (default `500` in app when absent) sets the hydration progress target on the Today screen. `initialWaterMl` is legacy/demo; the app-design Today view derives demo hydration total from `tracker_logs.hydration.initialLogs` when not using the API.
+
+**Per-baby UI state (growth, milestones, vitamins, vaccines, health events):** Stored in `baby_ui_state.json` under the same `DATA_DIR` as the other JSON files. Keys are optional: `growth_entries`, `milestones`, `vitamins`, `vaccines`, `health_events` (each a JSON array when set).
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/ui/baby-state/{baby_id}` | Returns saved state for that baby (may be `{}`). |
+| PUT | `/api/ui/baby-state/{baby_id}` | Merges provided keys into stored state (replace per key). |
+
+```bash
+# With API using default DATA_DIR=backend/data
+curl -s "http://localhost:8000/api/ui/baby-state/BABY_ID"
+curl -s -X PUT "http://localhost:8000/api/ui/baby-state/BABY_ID" \
+  -H "Content-Type: application/json" \
+  -d '{"growth_entries":[]}'
+```
+
+**Manual check:** Start the API with `DATA_DIR` pointing at your dataset folder (e.g. `backend/data/davi_test`), register a sleep or feeding in the app, reload, and confirm `events.json` (and optionally `baby_ui_state.json`) updated in that folder.
+
 ## BABIES
 
 | Method | Endpoint | Description |
@@ -90,7 +146,7 @@ POST /api/caregivers
 ### Query Parameters
 - `baby_id` (required) - Baby ID
 - `date` (optional) - YYYY-MM-DD format
-- `event_type` (optional) - feeding, sleep, diaper, activity, hydration, medication
+- `event_type` (optional) - feeding, sleep, diaper, activity, hydration, medication, bath, health
 - `caregiver_id` (optional) - Caregiver ID
 
 ### Create Feeding Event
@@ -110,6 +166,26 @@ POST /api/events
 ```
 
 ### Event Types & Subtypes
+
+Canonical `type` values: `feeding`, `hydration`, `sleep`, `diaper`, `activity`, `medication`, **`bath`**, **`health`**.
+
+**POST / PUT normalization (App Design aliases)**  
+Incoming bodies are normalized before storage. Examples:
+
+| Area | Accepted alias / input | Stored |
+|------|------------------------|--------|
+| Diaper subtype | `pee` | `wet` |
+| Diaper subtype | `poo` | `dirty` |
+| Sleep subtype | `night` | `night_sleep` |
+| Sleep window | `metadata.sleep_start` + `metadata.sleep_end` (HH:MM) | `timestamp` / `end_timestamp` (cross-midnight supported) |
+| Feeding subtype | `breast` | `breastfeeding` (+ `metadata.breast_side` if sent) |
+| Feeding subtype | `bottle` | `bottle_formula` or `bottle_breastmilk` (via `metadata.milk_source` / `bottle_contents`) |
+| Feeding subtype | `formula` | `bottle_formula` |
+| Hydration subtype | `tea` | `other` + `metadata.drink_type: "tea"` |
+| Activity subtype | `tummy` | `tummy_time` |
+| Activity subtype | `other` | `play` + `metadata.activity_kind: "other"` |
+| Bath | `type: bath`, subtype `frio` / `morno` / `quente` | `subtype: bath` + `metadata.bath_temperature` |
+| Health | `type: health`, `subtype: vitamin` \| `medication` | unchanged; use `metadata.health_name`, `metadata.health_dosage` |
 
 **Feeding**
 - `bottle_formula`
@@ -137,8 +213,17 @@ POST /api/events
 - `reading`
 - `play`
 - `walk`
-- `bath`
+- `bath` (legacy; prefer top-level `type: bath` for new logs)
 - `sensory`
+- `music`, `visual`, `auditory`, `spatial`
+
+**Bath** (`type: bath`)
+- Subtype typically `bath`; temperature may live in `metadata.bath_temperature` (`frio`, `morno`, `quente`).
+- Duration: `metadata.duration_min` and/or `quantity` + `unit: min`.
+
+**Health** (`type: health`)
+- `subtype`: `vitamin` or `medication`
+- Optional: `metadata.health_name`, `metadata.health_dosage`
 
 ### Get Daily Summary
 ```bash
@@ -152,11 +237,19 @@ Response:
   "feeding_count": 4,
   "feeding_total_ml": 480,
   "hydration_count": 2,
+  "hydration_total_ml": 180,
   "sleep_hours": 14.5,
   "diaper_count": 8,
-  "activity_count": 3
+  "activity_count": 3,
+  "bath_count": 1,
+  "health_count": 2
 }
 ```
+
+- `feeding_total_ml` sums `quantity` only when `unit` is `ml` (solids in `g` are excluded).
+- `hydration_total_ml` sums hydration `quantity` when `unit` is `ml` (default `ml` if omitted).
+- `bath_count` includes `type: bath` **and** legacy `type: activity` + `subtype: bath`.
+- `health_count` includes `type: health` and `type: medication`.
 
 ### Get Weekly Summary
 ```bash
