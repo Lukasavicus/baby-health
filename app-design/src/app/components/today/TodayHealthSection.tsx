@@ -21,6 +21,7 @@ export interface TodayHealthSectionProps {
   quickMeds: QuickItem[];
   vitaminsV2: VitMedItem[];
   medsV2: VitMedItem[];
+  vitaminsVariant: "v1" | "v2";
   caregiverName: string;
   onLog: (entry: Record<string, unknown>) => Promise<void> | void;
   onToggleVitamin: (id: string) => void;
@@ -37,6 +38,7 @@ export function TodayHealthSection({
   quickMeds,
   vitaminsV2,
   medsV2,
+  vitaminsVariant,
   caregiverName,
   onLog,
   onToggleVitamin,
@@ -46,7 +48,7 @@ export function TodayHealthSection({
 }: TodayHealthSectionProps) {
   return (
     <>
-      {/* V1: Vitamins & Medications */}
+      {vitaminsVariant === "v1" && (
       <TrackerCard
         icon={Pill}
         title="Vitaminas & Medicamentos"
@@ -129,8 +131,9 @@ export function TodayHealthSection({
           </div>
         </div>
       </TrackerCard>
+      )}
 
-      {/* V2: Vitamins & Medications — quick status view */}
+      {vitaminsVariant === "v2" && (
       <TrackerCard
         icon={Pill}
         title="Vitaminas & Meds (V2)"
@@ -239,6 +242,7 @@ export function TodayHealthSection({
           </div>
         </div>
       </TrackerCard>
+      )}
     </>
   );
 }

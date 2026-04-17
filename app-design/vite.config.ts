@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       // Fallback when VITE_API_BASE_URL is empty: same-origin /api -> FastAPI
-      "/api": { target: "http://localhost:8000", changeOrigin: true },
+      "/api": { target: "http://127.0.0.1:8080", changeOrigin: true },
     },
   },
   plugins: [

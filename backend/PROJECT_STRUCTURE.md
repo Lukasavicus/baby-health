@@ -296,7 +296,7 @@ class Settings:
     # CORS
     cors_allowed_origins = [
         "http://localhost:3000",
-        "http://localhost:8000",
+        "http://localhost:8080",
         "*"
     ]
 ```
@@ -417,7 +417,7 @@ def get_repository() -> BaseRepository:
 
 ## Documentation
 
-- **API Docs**: http://localhost:8000/docs (auto-generated)
+- **API Docs**: http://localhost:8080/docs (auto-generated)
 - **README.md**: Comprehensive API and architecture docs
 - **QUICKSTART.md**: 5-minute getting started
 - **PROJECT_STRUCTURE.md**: This file (architecture overview)
@@ -428,8 +428,8 @@ def get_repository() -> BaseRepository:
 ```bash
 pip install -r requirements.txt
 python main.py
-# API available at http://localhost:8000
-# Docs at http://localhost:8000/docs
+# API available at http://localhost:8080
+# Docs at http://localhost:8080/docs
 ```
 
 ### Testing

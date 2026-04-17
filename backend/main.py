@@ -8,6 +8,11 @@ import os
 from config import settings, use_ui_seed
 from routers import auth, babies, baby_ui_state, caregivers, events, dashboard, media, onboarding, setup, ui_data
 
+if os.getenv("FEATURE_FLAGS_ENABLED", "0").lower() in ("1", "true", "yes"):
+    from feature_flags.router import router as feature_flags_router
+else:
+    feature_flags_router = None  # type: ignore[assignment]
+
 # Application lifecycle
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -61,6 +66,8 @@ app.include_router(setup.router)
 app.include_router(ui_data.router)
 app.include_router(baby_ui_state.router)
 app.include_router(media.router)
+if feature_flags_router is not None:
+    app.include_router(feature_flags_router)
 
 
 @app.get("/api")
@@ -92,7 +99,7 @@ if static_dir.exists():
 if __name__ == "__main__":
     import uvicorn
 
-    port = int(os.getenv("PORT", "8000"))
+    port = int(os.getenv("PORT", "8080"))
     uvicorn.run(
         "main:app",
         host="0.0.0.0",

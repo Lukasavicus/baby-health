@@ -33,7 +33,7 @@ Edit `.env` to match your setup:
 
 ```env
 # Local API server
-VITE_API_BASE_URL=http://localhost:8000/api
+VITE_API_BASE_URL=http://localhost:8080/api
 
 # Production example
 # VITE_API_BASE_URL=https://api.babyhealth.com/api
@@ -315,7 +315,7 @@ npm run dev
 # Terminal 2: Backend (if available)
 cd backend
 # Your backend startup command
-# API at http://localhost:8000/api
+# API at http://localhost:8080/api
 ```
 
 ### Making Changes

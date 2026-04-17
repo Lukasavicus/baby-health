@@ -2,7 +2,7 @@
 
 ## Base URL
 ```
-http://localhost:8000/api
+http://localhost:8080/api
 ```
 
 ## Authentication
@@ -38,11 +38,11 @@ Example:
 
 ```bash
 # Empty bootstrap (default)
-curl -s http://localhost:8000/api/ui/bootstrap | head
+curl -s http://localhost:8080/api/ui/bootstrap | head
 
 # Demo catalogs from JSON files
-BABYHEALTH_USE_UI_SEED=1 curl -s http://localhost:8000/api/ui/bootstrap | head
-curl -s http://localhost:8000/api/ui/seed/catalogs | head
+BABYHEALTH_USE_UI_SEED=1 curl -s http://localhost:8080/api/ui/bootstrap | head
+curl -s http://localhost:8080/api/ui/seed/catalogs | head
 ```
 
 From the repo root, `npm run dev-api` starts the API without seed; `npm run dev-api-seed` sets `BABYHEALTH_USE_UI_SEED=1`.
@@ -62,8 +62,8 @@ From the repo root, `npm run dev-api` starts the API without seed; `npm run dev-
 
 ```bash
 # With API using default DATA_DIR=backend/data
-curl -s "http://localhost:8000/api/ui/baby-state/BABY_ID"
-curl -s -X PUT "http://localhost:8000/api/ui/baby-state/BABY_ID" \
+curl -s "http://localhost:8080/api/ui/baby-state/BABY_ID"
+curl -s -X PUT "http://localhost:8080/api/ui/baby-state/BABY_ID" \
   -H "Content-Type: application/json" \
   -d '{"growth_entries":[]}'
 ```
@@ -354,21 +354,21 @@ Dates are YYYY-MM-DD:
 
 ### Create Baby
 ```bash
-curl -X POST http://localhost:8000/api/babies \
+curl -X POST http://localhost:8080/api/babies \
   -H "Content-Type: application/json" \
   -d '{"name":"Emma","birth_date":"2024-01-15"}'
 ```
 
 ### Create Caregiver
 ```bash
-curl -X POST http://localhost:8000/api/caregivers \
+curl -X POST http://localhost:8080/api/caregivers \
   -H "Content-Type: application/json" \
   -d '{"name":"Maria","role":"mãe","avatar_color":"blue"}'
 ```
 
 ### Log Feeding Event
 ```bash
-curl -X POST http://localhost:8000/api/events \
+curl -X POST http://localhost:8080/api/events \
   -H "Content-Type: application/json" \
   -d '{
     "baby_id":"baby123",
@@ -383,44 +383,44 @@ curl -X POST http://localhost:8000/api/events \
 
 ### Get Daily Summary
 ```bash
-curl "http://localhost:8000/api/events/summary/daily?baby_id=baby123&date=2024-01-15"
+curl "http://localhost:8080/api/events/summary/daily?baby_id=baby123&date=2024-01-15"
 ```
 
 ### Get Dashboard
 ```bash
-curl "http://localhost:8000/api/dashboard?baby_id=baby123"
+curl "http://localhost:8080/api/dashboard?baby_id=baby123"
 ```
 
 ### List Events for Day
 ```bash
-curl "http://localhost:8000/api/events?baby_id=baby123&date=2024-01-15"
+curl "http://localhost:8080/api/events?baby_id=baby123&date=2024-01-15"
 ```
 
 ### Filter by Event Type
 ```bash
-curl "http://localhost:8000/api/events?baby_id=baby123&event_type=feeding"
+curl "http://localhost:8080/api/events?baby_id=baby123&event_type=feeding"
 ```
 
 ### Seed Demo Data
 ```bash
-curl -X POST http://localhost:8000/api/setup/seed
+curl -X POST http://localhost:8080/api/setup/seed
 ```
 
 ## Documentation
 
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
-- **OpenAPI JSON**: http://localhost:8000/openapi.json
+- **Swagger UI**: http://localhost:8080/docs
+- **ReDoc**: http://localhost:8080/redoc
+- **OpenAPI JSON**: http://localhost:8080/openapi.json
 
 ## Common Workflows
 
 ### 1. Get Started
 ```bash
 # Seed demo data
-curl -X POST http://localhost:8000/api/setup/seed
+curl -X POST http://localhost:8080/api/setup/seed
 
 # List babies
-curl http://localhost:8000/api/babies
+curl http://localhost:8080/api/babies
 
 # Use baby_id from response for next calls
 ```
@@ -428,38 +428,38 @@ curl http://localhost:8000/api/babies
 ### 2. Create from Scratch
 ```bash
 # Create baby
-BABY=$(curl -X POST http://localhost:8000/api/babies \
+BABY=$(curl -X POST http://localhost:8080/api/babies \
   -H "Content-Type: application/json" \
   -d '{"name":"Emma","birth_date":"2024-01-15"}' | jq -r '.id')
 
 # Create caregiver
-CAREGIVER=$(curl -X POST http://localhost:8000/api/caregivers \
+CAREGIVER=$(curl -X POST http://localhost:8080/api/caregivers \
   -H "Content-Type: application/json" \
   -d '{"name":"Maria","role":"mãe","avatar_color":"blue"}' | jq -r '.id')
 
 # Log feeding event
-curl -X POST http://localhost:8000/api/events \
+curl -X POST http://localhost:8080/api/events \
   -H "Content-Type: application/json" \
   -d "{\"baby_id\":\"$BABY\",\"caregiver_id\":\"$CAREGIVER\",\"type\":\"feeding\",\"subtype\":\"bottle_formula\",\"timestamp\":\"$(date -u +%Y-%m-%dT%H:%M:%S)\",\"quantity\":120,\"unit\":\"ml\"}"
 
 # View dashboard
-curl "http://localhost:8000/api/dashboard?baby_id=$BABY"
+curl "http://localhost:8080/api/dashboard?baby_id=$BABY"
 ```
 
 ### 3. Daily Log
 ```bash
 # Log feeding
-curl -X POST http://localhost:8000/api/events \
+curl -X POST http://localhost:8080/api/events \
   -H "Content-Type: application/json" \
   -d '{"baby_id":"baby123","caregiver_id":"cg123","type":"feeding","subtype":"bottle_formula","timestamp":"2024-01-15T10:30:00","quantity":120,"unit":"ml"}'
 
 # Log diaper change
-curl -X POST http://localhost:8000/api/events \
+curl -X POST http://localhost:8080/api/events \
   -H "Content-Type: application/json" \
   -d '{"baby_id":"baby123","caregiver_id":"cg123","type":"diaper","subtype":"wet","timestamp":"2024-01-15T11:00:00"}'
 
 # Log sleep
-curl -X POST http://localhost:8000/api/events \
+curl -X POST http://localhost:8080/api/events \
   -H "Content-Type: application/json" \
   -d '{"baby_id":"baby123","caregiver_id":"cg123","type":"sleep","subtype":"nap","timestamp":"2024-01-15T12:00:00","end_timestamp":"2024-01-15T13:30:00","metadata":{"awakenings":1}}'
 ```
@@ -467,16 +467,16 @@ curl -X POST http://localhost:8000/api/events \
 ### 4. View Reports
 ```bash
 # Daily summary
-curl "http://localhost:8000/api/events/summary/daily?baby_id=baby123&date=2024-01-15"
+curl "http://localhost:8080/api/events/summary/daily?baby_id=baby123&date=2024-01-15"
 
 # Weekly summary
-curl "http://localhost:8000/api/events/summary/weekly?baby_id=baby123&start_date=2024-01-08"
+curl "http://localhost:8080/api/events/summary/weekly?baby_id=baby123&start_date=2024-01-08"
 
 # Timeline for day
-curl "http://localhost:8000/api/events/timeline/view?baby_id=baby123&date=2024-01-15"
+curl "http://localhost:8080/api/events/timeline/view?baby_id=baby123&date=2024-01-15"
 
 # Dashboard with all info
-curl "http://localhost:8000/api/dashboard?baby_id=baby123"
+curl "http://localhost:8080/api/dashboard?baby_id=baby123"
 ```
 
 ## Tips
@@ -504,7 +504,7 @@ curl "http://localhost:8000/api/dashboard?baby_id=baby123"
 
 5. **Check Status**: Add `-v` to curl:
    ```bash
-   curl -v http://localhost:8000/api/babies
+   curl -v http://localhost:8080/api/babies
    ```
 
 ## Limits & Constraints
@@ -528,7 +528,7 @@ Can be edited directly, but API is recommended.
 
 ## Support
 
-- **API Docs**: http://localhost:8000/docs
+- **API Docs**: http://localhost:8080/docs
 - **Full README**: See README.md in backend directory
 - **Quick Start**: See QUICKSTART.md
 - **Architecture**: See PROJECT_STRUCTURE.md

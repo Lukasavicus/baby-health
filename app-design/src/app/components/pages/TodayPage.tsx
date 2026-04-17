@@ -37,10 +37,12 @@ import { TodayHeroCard } from "../today/TodayHeroCard";
 import { TodayTrackerGrid } from "../today/TodayTrackerGrid";
 import { TodayHealthSection } from "../today/TodayHealthSection";
 import { TodayTimeline } from "../today/TodayTimeline";
+import { getFeatureVariant } from "../../lib/featureFlags";
 
 export function TodayPage() {
   const navigate = useNavigate();
-  const { data, babyId, caregiverId, canPersist, caregivers } = useUIBootstrap();
+  const { data, babyId, caregiverId, canPersist, caregivers, featureAssignments } =
+    useUIBootstrap();
   const openSleepEventIdRef = useRef<string | null>(null);
 
   // ── seed data ──────────────────────────────────────────────
@@ -62,6 +64,17 @@ export function TodayPage() {
     const c = caregivers.find((x) => x.id === caregiverId);
     return c?.name?.trim() || "—";
   }, [caregivers, caregiverId]);
+
+  const activitiesVariant = useMemo(
+    () =>
+      getFeatureVariant("activities_tile", featureAssignments) === "v2" ? "v2" : "v1",
+    [featureAssignments],
+  );
+  const vitaminsVariant = useMemo(
+    () =>
+      getFeatureVariant("vitamins_tile", featureAssignments) === "v2" ? "v2" : "v1",
+    [featureAssignments],
+  );
 
   const icons = useMemo(() => ({
     Milk: getIcon("Milk"),
@@ -323,6 +336,7 @@ export function TodayPage() {
           hydrationMlDisplayed={hydrationMlDisplayed}
           quickActivities={quickActivities}
           activityV2Preview={activityV2Preview}
+          activitiesVariant={activitiesVariant}
           icons={icons}
           onOpenLog={openLog}
           onNavigate={(path) => navigate(path)}
@@ -338,6 +352,7 @@ export function TodayPage() {
           quickMeds={quickMeds}
           vitaminsV2={vitaminsV2}
           medsV2={medsV2}
+          vitaminsVariant={vitaminsVariant}
           caregiverName={caregiverName}
           onLog={handleLog}
           onToggleVitamin={handleToggleVitamin}

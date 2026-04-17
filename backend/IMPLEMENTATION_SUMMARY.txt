@@ -341,14 +341,14 @@ QUICK START
    python main.py
 
 3. Access API:
-   - Swagger UI: http://localhost:8000/docs
-   - API Base: http://localhost:8000/api
+   - Swagger UI: http://localhost:8080/docs
+   - API Base: http://localhost:8080/api
 
 4. Seed demo data:
-   curl -X POST http://localhost:8000/api/setup/seed
+   curl -X POST http://localhost:8080/api/setup/seed
 
 5. View dashboard:
-   curl http://localhost:8000/api/dashboard?baby_id=<baby_id>
+   curl http://localhost:8080/api/dashboard?baby_id=<baby_id>
 
 ================================================================================
 CODE QUALITY

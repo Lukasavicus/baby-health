@@ -108,7 +108,7 @@ if static_dir.exists():
     app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
 
 # In main:
-port = int(os.getenv("PORT", "8000"))
+port = int(os.getenv("PORT", "8080"))
 ```
 
 **Why**: Enables serving React frontend and FastAPI backend from single container

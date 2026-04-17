@@ -78,7 +78,7 @@ BACKEND MODIFICATIONS
    - Added static file mounting at root (/)
    - Mounted AFTER all API routes so /api/* routes take priority
    - Updated PORT configuration to read from environment variable
-   - Changed default port from 8000 to 8080 via env var
+   - Default HTTP port 8080 via PORT env (see main.py)
    - Added html=True to StaticFiles for SPA routing support
 
    Key additions:
@@ -93,7 +93,7 @@ BACKEND MODIFICATIONS
        app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
    
    # PORT from environment
-   port = int(os.getenv("PORT", "8000"))
+   port = int(os.getenv("PORT", "8080"))
    ```
 
 DEPLOYMENT SCRIPTS & CONFIG

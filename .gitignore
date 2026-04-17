@@ -29,6 +29,8 @@ backend/data/*.json
 # Uploaded profile images (keep folder placeholders only)
 backend/data/**/images/*
 !backend/data/**/images/.gitkeep
+# Local feature-flag overrides (defaults created on first API use)
+backend/data/feature_flags/store.json
 
 # IDE
 .vscode/

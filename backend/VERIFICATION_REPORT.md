@@ -389,7 +389,7 @@ python main.py
 
 ### Production (Simple)
 ```bash
-uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4
+uvicorn main:app --host 0.0.0.0 --port 8080 --workers 4
 ```
 
 ### Docker
@@ -435,7 +435,7 @@ The backend is ready for:
 
 1. Install dependencies: `pip install -r requirements.txt`
 2. Start server: `python main.py`
-3. Access Swagger UI: http://localhost:8000/docs
+3. Access Swagger UI: http://localhost:8080/docs
 4. Connect frontend to API
 5. Plan database migration
 6. Add authentication

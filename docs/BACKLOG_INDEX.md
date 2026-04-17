@@ -1,6 +1,6 @@
 # BabyHealth — Backlog Index
 
-> Hierarquia completa: **12 Epics → 40 Features → 49 Stories → 193 Tasks**
+> Hierarquia completa: **14 Epics → 48 Features → 57 Stories → 201 Tasks**
 
 ---
 
@@ -140,20 +140,30 @@
 
 ---
 
+## EP-14 — Feature flags e rollout `P1`
+
+| Feature | Stories | Tasks | Priority |
+|---------|---------|-------|----------|
+| [FE-14.1 — Backend de feature flags](features/FE-14.1-backend-feature-flags.md) | [US-14.1.1](stories/US-14.1.1-api-feature-flags.md) | [TK-14.1.1](tasks/TK-14.1.1-router-schemas-constants.md), [TK-14.1.2](tasks/TK-14.1.2-store-json-overrides.md), [TK-14.1.3](tasks/TK-14.1.3-totp-admin-endpoints.md), [TK-14.1.4](tasks/TK-14.1.4-tests-and-main-integration.md) | P1 |
+| [FE-14.2 — Rollout na Home Hoje](features/FE-14.2-frontend-rollout-hoje.md) | [US-14.2.1](stories/US-14.2.1-ui-por-perfil-hoje.md) | [TK-14.2.1](tasks/TK-14.2.1-client-api-and-utils.md), [TK-14.2.2](tasks/TK-14.2.2-uibootstrap-fetch-flags.md), [TK-14.2.3](tasks/TK-14.2.3-today-components-rollout.md) | P1 |
+| [FE-14.3 — DevEx e documentação](features/FE-14.3-devex-e-documentacao.md) | [US-14.3.1](stories/US-14.3.1-guia-operacional.md) | [TK-14.3.1](tasks/TK-14.3.1-dotenv-cors-default-port.md), [TK-14.3.2](tasks/TK-14.3.2-docs-local-run-readme-legacy.md) | P1 |
+
+---
+
 ## Resumo Quantitativo
 
 | Nível | Quantidade |
 |-------|-----------|
-| Epics | 13 |
-| Features | 45 |
-| User Stories | 54 |
-| Tasks | 193 |
-| **Total de arquivos** | **292** |
+| Epics | 14 |
+| Features | 48 |
+| User Stories | 57 |
+| Tasks | 201 |
+| **Total de arquivos** | **307** |
 
 ### Por Prioridade
 
 | Prioridade | Features | Descrição |
 |------------|----------|-----------|
 | **P0** | 31 | MVP Core (EP-01 a EP-08, EP-12) |
-| **P1** | 12 | Post-MVP (EP-09 a EP-11 + filtro cuidadores + insights + EP-13 refatoração) |
+| **P1** | 15 | Post-MVP (EP-09 a EP-11 + filtro cuidadores + insights + EP-13 refatoração + EP-14 feature flags) |
 | **P2** | 2 | Futuro (curadoria externa, observações, saúde leve) |

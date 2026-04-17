@@ -56,7 +56,7 @@ WorkingDirectory=/opt/babyhealth/backend
 Environment=PATH=/opt/babyhealth/backend/venv/bin:/usr/bin
 Environment=STORAGE_TYPE=json
 Environment=DATA_DIR=/opt/babyhealth/backend/data
-ExecStart=/opt/babyhealth/backend/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8000
+ExecStart=/opt/babyhealth/backend/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8080
 Restart=always
 RestartSec=3
 
@@ -82,7 +82,7 @@ server {
 
     # API proxy
     location /api/ {
-        proxy_pass http://127.0.0.1:8000/api/;
+        proxy_pass http://127.0.0.1:8080/api/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -92,13 +92,13 @@ server {
 
     # OpenAPI docs
     location /docs {
-        proxy_pass http://127.0.0.1:8000/docs;
+        proxy_pass http://127.0.0.1:8080/docs;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
     }
 
     location /openapi.json {
-        proxy_pass http://127.0.0.1:8000/openapi.json;
+        proxy_pass http://127.0.0.1:8080/openapi.json;
         proxy_set_header Host $host;
     }
 
@@ -121,7 +121,7 @@ sudo systemctl restart nginx
 
 echo ""
 echo "=== Setup Complete! ==="
-echo "Backend: http://localhost:8000/api"
+echo "Backend: http://localhost:8080/api"
 echo "Frontend: http://localhost (via Nginx)"
 echo ""
 echo "Check status:"
