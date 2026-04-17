@@ -25,6 +25,7 @@ async def login(
         username=user.username,
         profile_dir=user.profile_dir,
         caregiver_id=user.caregiver_id,
+        display_name=user.display_name,
     )
 
     return LoginResponse(
@@ -44,7 +45,7 @@ async def me(current: TokenPayload = Depends(get_current_user)):
     return UserInfo(
         id=current.sub,
         username=current.username,
-        display_name=current.username,
+        display_name=current.display_name or current.username,
         profile_dir=current.profile_dir,
         caregiver_id=current.caregiver_id,
     )

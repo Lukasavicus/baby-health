@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useAuth } from "@/app/AuthContext";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
@@ -52,7 +52,7 @@ export function LoginPage() {
                 id="username"
                 type="text"
                 autoComplete="username"
-                placeholder="gisele"
+                placeholder="nome de usuário"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 disabled={submitting}
@@ -83,6 +83,12 @@ export function LoginPage() {
             >
               {submitting ? "Entrando..." : "Entrar"}
             </Button>
+            <p className="text-center text-sm text-muted-foreground pt-2">
+              Novo por aqui?{" "}
+              <Link to="/onboarding" className="text-primary font-medium underline-offset-2 hover:underline">
+                Criar conta
+              </Link>
+            </p>
           </form>
         </CardContent>
       </Card>

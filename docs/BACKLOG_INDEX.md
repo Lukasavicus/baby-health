@@ -18,7 +18,7 @@
 
 | Feature | Stories | Tasks | Priority |
 |---------|---------|-------|----------|
-| [FE-02.1 — Entidade Genérica de Evento](features/FE-02.1-entidade-generica-evento.md) | [US-02.1.1](stories/US-02.1.1-registros-consistentes.md), [US-02.1.2](stories/US-02.1.2-timeline-unificada.md) | [TK-02.1.1](tasks/TK-02.1.1-schema-generico-evento.md), [TK-02.1.2](tasks/TK-02.1.2-campos-base.md), [TK-02.1.3](tasks/TK-02.1.3-normalizacao-categoria.md), [TK-02.1.4](tasks/TK-02.1.4-utilitario-ordenacao-tempo.md) | P0 |
+| [FE-02.1 — Entidade Genérica de Evento](features/FE-02.1-entidade-generica-evento.md) | [US-02.1.1](stories/US-02.1.1-registros-consistentes.md), [US-02.1.2](stories/US-02.1.2-timeline-unificada.md) | [TK-02.1.1](tasks/TK-02.1.1-schema-generico-evento.md), [TK-02.1.2](tasks/TK-02.1.2-campos-base.md), [TK-02.1.3](tasks/TK-02.1.3-normalizacao-categoria.md), [TK-02.1.4](tasks/TK-02.1.4-utilitario-ordenacao-tempo.md), [TK-02.1.5](tasks/TK-02.1.5-cores-homogeneas-tipo-evento.md) | P0 |
 | [FE-02.2 — Persistência Local](features/FE-02.2-persistencia-local.md) | [US-02.2.1](stories/US-02.2.1-registros-salvos.md) | [TK-02.2.1](tasks/TK-02.2.1-estrategia-persistencia.md), [TK-02.2.2](tasks/TK-02.2.2-camada-leitura-escrita.md), [TK-02.2.3](tasks/TK-02.2.3-seed-data-demo.md), [TK-02.2.4](tasks/TK-02.2.4-versionamento-dados.md) | P0 |
 | [FE-02.3 — Quick Log Engine](features/FE-02.3-quick-log-engine.md) | [US-02.3.1](stories/US-02.3.1-registrar-poucos-toques.md), [US-02.3.2](stories/US-02.3.2-atualizar-home-timeline.md) | [TK-02.3.1](tasks/TK-02.3.1-dispatcher-generico-logs.md), [TK-02.3.2](tasks/TK-02.3.2-atualizar-timeline-insert.md), [TK-02.3.3](tasks/TK-02.3.3-atualizar-cards-resumo.md), [TK-02.3.4](tasks/TK-02.3.4-presets-rapidos.md), [TK-02.3.5](tasks/TK-02.3.5-botao-log-manual.md) | P0 |
 
@@ -39,7 +39,7 @@
 
 | Feature | Stories | Tasks | Priority |
 |---------|---------|-------|----------|
-| [FE-04.1 — Mamadeira/Leite](features/FE-04.1-mamadeira-leite.md) | [US-04.1.1](stories/US-04.1.1-registrar-mamadeira.md), [US-04.1.2](stories/US-04.1.2-ultima-mamada.md) | [TK-04.1.1](tasks/TK-04.1.1-tipos-mamadeira.md) .. [TK-04.1.6](tasks/TK-04.1.6-icone-mamadeira-alimentacao.md), [TK-04.4.7](tasks/TK-04.4.7-grafico-semanal-alimentacao.md) | P0 |
+| [FE-04.1 — Mamadeira/Leite](features/FE-04.1-mamadeira-leite.md) | [US-04.1.1](stories/US-04.1.1-registrar-mamadeira.md), [US-04.1.2](stories/US-04.1.2-ultima-mamada.md) | [TK-04.1.1](tasks/TK-04.1.1-tipos-mamadeira.md) .. [TK-04.1.7](tasks/TK-04.1.7-spike-multiplas-modalidades-alimentacao.md), [TK-04.4.7](tasks/TK-04.4.7-grafico-semanal-alimentacao.md) | P0 |
 | [FE-04.2 — Amamentação](features/FE-04.2-amamentacao-basica-avancada.md) | [US-04.2.1](stories/US-04.2.1-modo-simples-amamentacao.md), [US-04.2.2](stories/US-04.2.2-modo-avancado-amamentacao.md) | [TK-04.2.1](tasks/TK-04.2.1-modo-basico.md) .. [TK-04.2.7](tasks/TK-04.2.7-sessoes-compostas.md) | P0 |
 | [FE-04.3 — Sólidos/Papinhas](features/FE-04.3-solidos-papinhas-refeicoes.md) | [US-04.3.1](stories/US-04.3.1-registrar-solidos.md), [US-04.3.2](stories/US-04.3.2-primeira-exposicao.md) | [TK-04.3.1](tasks/TK-04.3.1-tipos-solidos.md) .. [TK-04.3.6](tasks/TK-04.3.6-reacao-alergia.md) | P0 |
 | [FE-04.4 — Hidratação](features/FE-04.4-hidratacao.md) | [US-04.4.1](stories/US-04.4.1-registrar-hidratacao.md) | [TK-04.4.1](tasks/TK-04.4.1-presets-volume.md) .. [TK-04.4.6](tasks/TK-04.4.6-grafico-semanal-hidratacao.md) | P0 |

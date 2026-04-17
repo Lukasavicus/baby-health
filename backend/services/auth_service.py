@@ -24,6 +24,7 @@ def create_access_token(
     username: str,
     profile_dir: str,
     caregiver_id: str,
+    display_name: Optional[str] = None,
     expires_delta: Optional[timedelta] = None,
 ) -> str:
     expire = datetime.utcnow() + (
@@ -36,6 +37,8 @@ def create_access_token(
         "caregiver_id": caregiver_id,
         "exp": expire,
     }
+    if display_name:
+        payload["display_name"] = display_name
     return jwt.encode(payload, settings.jwt_secret, algorithm=settings.jwt_algorithm)
 
 

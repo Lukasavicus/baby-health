@@ -20,10 +20,12 @@ import { HealthEventsPage } from "./components/pages/HealthEventsPage";
 import { MyDataPage } from "./components/pages/MyDataPage";
 import { TimelineDetailPage } from "./components/pages/TimelineDetailPage";
 import { LoginPage } from "./components/pages/LoginPage";
+import { OnboardingWizard } from "./components/onboarding/OnboardingWizard";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 export const router = createBrowserRouter([
   { path: "/login", Component: LoginPage },
+  { path: "/onboarding", Component: OnboardingWizard },
   {
     path: "/",
     element: (

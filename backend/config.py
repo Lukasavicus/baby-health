@@ -39,6 +39,13 @@ def use_ui_seed() -> bool:
     return os.getenv("BABYHEALTH_USE_UI_SEED", "").lower() in ("1", "true", "yes")
 
 
+def allow_mock_onboarding_email_code() -> bool:
+    """When True, POST /api/onboarding/complete accepts the fixed demo code (123456)."""
+    debug = os.getenv("DEBUG", "True").lower() == "true"
+    flag = os.getenv("BABYHEALTH_ALLOW_MOCK_EMAIL_CODE", "").lower() in ("1", "true", "yes")
+    return debug or flag
+
+
 class Settings:
     """Application settings"""
 
@@ -71,6 +78,9 @@ class Settings:
             "http://127.0.0.1:5173,http://127.0.0.1:8080",
         )
         self.cors_allowed_origins = _parse_cors_origins(cors_str)
+
+        # Onboarding mock email (fixed 6-digit code); see allow_mock_onboarding_email_code()
+        self.allow_mock_onboarding_email_code = allow_mock_onboarding_email_code()
 
 
 settings = Settings()

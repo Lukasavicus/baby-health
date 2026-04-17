@@ -8,7 +8,7 @@ function apiOrigin(): string {
   return (raw ?? "").replace(/\/$/, "");
 }
 
-function authHeaders(): Record<string, string> {
+export function authHeaders(): Record<string, string> {
   const token = localStorage.getItem(TOKEN_KEY);
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
@@ -44,6 +44,26 @@ async function parseJsonResponse<T>(res: Response): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+/** Public endpoints (e.g. onboarding): never strip token on 401. */
+async function parsePublicJsonResponse<T>(res: Response): Promise<T> {
+  if (!res.ok) {
+    let message = `${res.status}: ${res.statusText}`;
+    try {
+      const j = (await res.json()) as { detail?: string | { msg?: string }[] };
+      if (typeof j.detail === "string") message = j.detail;
+      else if (Array.isArray(j.detail)) {
+        message = j.detail
+          .map((x) => (typeof x === "object" && x && "msg" in x ? String((x as { msg: string }).msg) : String(x)))
+          .join(", ");
+      }
+    } catch {
+      /* ignore */
+    }
+    throw new Error(message);
+  }
+  return res.json() as Promise<T>;
+}
+
 export interface ApiCaregiver {
   id: string;
   name: string;
@@ -55,6 +75,95 @@ export interface ApiCaregiver {
 export async function listCaregivers(): Promise<ApiCaregiver[]> {
   const res = await fetch(buildApiUrl("/api/caregivers"), { headers: authHeaders() });
   return parseJsonResponse<ApiCaregiver[]>(res);
+}
+
+export interface ApiBabyBrief {
+  id: string;
+  name: string;
+  birth_date: string;
+  photo_url?: string | null;
+  gender?: string | null;
+  created_at?: string;
+}
+
+export async function listBabies(): Promise<ApiBabyBrief[]> {
+  const res = await fetch(buildApiUrl("/api/babies"), { headers: authHeaders() });
+  return parseJsonResponse<ApiBabyBrief[]>(res);
+}
+
+// --- Onboarding (public) ---
+
+export interface OnboardingSendVerificationResponse {
+  ok: boolean;
+  mock: boolean;
+}
+
+export async function onboardingSendVerification(email: string): Promise<OnboardingSendVerificationResponse> {
+  const res = await fetch(buildApiUrl("/api/onboarding/send-verification"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+  return parsePublicJsonResponse<OnboardingSendVerificationResponse>(res);
+}
+
+export async function onboardingCheckEmail(email: string): Promise<{ available: boolean }> {
+  const res = await fetch(buildApiUrl("/api/onboarding/check-email"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+  return parsePublicJsonResponse<{ available: boolean }>(res);
+}
+
+export type OnboardingCaregiverRole =
+  | "pai"
+  | "mãe"
+  | "babá"
+  | "avó"
+  | "avô"
+  | "vovô"
+  | "vovó"
+  | "tia"
+  | "tio"
+  | "outro";
+
+export type OnboardingBabyGender = "male" | "female" | "unknown";
+
+export interface OnboardingCompleteBody {
+  email: string;
+  password: string;
+  display_name: string;
+  role: OnboardingCaregiverRole;
+  verification_code: string;
+  baby: {
+    name: string;
+    birth_date: string;
+    gender?: OnboardingBabyGender | null;
+    weight_kg?: number | null;
+    height_cm?: number | null;
+  };
+}
+
+export interface LoginResponseData {
+  access_token: string;
+  token_type: string;
+  user: {
+    id: string;
+    username: string;
+    display_name: string;
+    profile_dir: string;
+    caregiver_id: string;
+  };
+}
+
+export async function onboardingComplete(body: OnboardingCompleteBody): Promise<LoginResponseData> {
+  const res = await fetch(buildApiUrl("/api/onboarding/complete"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return parsePublicJsonResponse<LoginResponseData>(res);
 }
 
 export interface ApiEvent {

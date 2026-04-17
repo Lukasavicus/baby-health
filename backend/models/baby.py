@@ -1,7 +1,10 @@
 """Baby model"""
 from datetime import datetime
-from typing import Optional
-from pydantic import BaseModel, Field
+from typing import Literal, Optional
+from pydantic import BaseModel, ConfigDict, Field
+
+
+BabyGender = Literal["male", "female", "unknown"]
 
 
 class Baby(BaseModel):
@@ -11,6 +14,7 @@ class Baby(BaseModel):
     name: str
     birth_date: str  # ISO format: YYYY-MM-DD
     photo_url: Optional[str] = None
+    gender: Optional[BabyGender] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
     class Config:
@@ -31,6 +35,7 @@ class BabyCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
     birth_date: str = Field(..., description="ISO format: YYYY-MM-DD")
     photo_url: Optional[str] = None
+    gender: Optional[BabyGender] = None
 
 
 class BabyUpdate(BaseModel):
@@ -39,13 +44,17 @@ class BabyUpdate(BaseModel):
     name: Optional[str] = None
     birth_date: Optional[str] = None
     photo_url: Optional[str] = None
+    gender: Optional[BabyGender] = None
 
 
 class BabyResponse(BaseModel):
     """Schema for baby response"""
 
+    model_config = ConfigDict(extra="ignore")
+
     id: str
     name: str
     birth_date: str
     photo_url: Optional[str]
+    gender: Optional[BabyGender] = None
     created_at: datetime

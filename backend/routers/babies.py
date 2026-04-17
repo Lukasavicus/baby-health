@@ -28,6 +28,7 @@ async def create_baby(
         name=baby_data.name,
         birth_date=baby_data.birth_date,
         photo_url=baby_data.photo_url,
+        gender=baby_data.gender,
         created_at=datetime.utcnow(),
     )
 

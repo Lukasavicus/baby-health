@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { Pencil, Trash2, Check } from "lucide-react";
+import { LOG_ROW_ACTION_OPACITY } from "./logRowActionVisibility";
 
 export interface EventLogListProps<T extends { id: string }> {
   items: T[];
@@ -41,7 +42,7 @@ export function EventLogList<T extends { id: string }>({
             )}
             <div className="flex-1 min-w-0">{renderItem(item)}</div>
             {(onEdit || onDelete) && (
-              <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className={`flex items-center gap-1 shrink-0 ${LOG_ROW_ACTION_OPACITY}`}>
                 {onEdit && (
                   <button
                     onClick={() => onEdit(item)}
