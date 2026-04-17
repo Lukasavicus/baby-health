@@ -1,7 +1,37 @@
 """Configuration for BabyHealth API"""
+import json
 import os
 import secrets
+import sys
 from pathlib import Path
+
+from dotenv import load_dotenv
+
+
+def _parse_cors_origins(raw: str) -> list[str]:
+    """Support comma-separated URLs or a JSON array (as in root .env.example)."""
+    text = raw.strip()
+    if not text:
+        return []
+    if text.startswith("["):
+        try:
+            data = json.loads(text)
+            if isinstance(data, list):
+                return [str(x).strip() for x in data if str(x).strip()]
+        except json.JSONDecodeError:
+            pass
+    out: list[str] = []
+    for part in text.split(","):
+        p = part.strip().strip('"').strip("'")
+        if p and p != "*":
+            out.append(p)
+    return out
+
+# Repo root = parent of backend/ — load .env before reading any os.getenv below.
+# Skip under pytest so local `.env` does not override test expectations (auth, DEBUG, etc.).
+if "pytest" not in sys.modules:
+    _REPO_ROOT = Path(__file__).resolve().parent.parent
+    load_dotenv(_REPO_ROOT / ".env")
 
 
 def use_ui_seed() -> bool:
@@ -34,12 +64,13 @@ class Settings:
             os.getenv("FRONTEND_DIST_DIR", str(_default_dist))
         ).resolve()
 
-        # CORS
+        # CORS (no "*" — incompatible with allow_credentials=True in Starlette)
         cors_str = os.getenv(
             "CORS_ALLOWED_ORIGINS",
-            "http://localhost:3000,http://localhost:8000,http://localhost:5173,*"
+            "http://localhost:3000,http://localhost:8080,http://localhost:5173,"
+            "http://127.0.0.1:5173,http://127.0.0.1:8080",
         )
-        self.cors_allowed_origins = [origin.strip() for origin in cors_str.split(",")]
+        self.cors_allowed_origins = _parse_cors_origins(cors_str)
 
 
 settings = Settings()

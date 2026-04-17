@@ -14,6 +14,7 @@ import {
   type ApiCaregiver,
 } from "@/api/client";
 import type { UIBootstrapPayload } from "@/api/types";
+import { fetchMyFeatureFlags } from "@/api/featureFlags";
 import { useAuth } from "./AuthContext";
 
 interface UIBootstrapState {
@@ -28,6 +29,8 @@ interface UIBootstrapState {
   caregivers: ApiCaregiver[];
   /** True when baby has id and we have a caregiver (API persistence ready). */
   canPersist: boolean;
+  /** Effective feature flag assignments for JWT profile_dir (empty if API off or error). */
+  featureAssignments: Record<string, string>;
 }
 
 const Ctx = createContext<UIBootstrapState | null>(null);
@@ -45,6 +48,7 @@ export function UIBootstrapProvider({
   const [babyId, setBabyId] = useState<string | null>(null);
   const [caregivers, setCaregivers] = useState<ApiCaregiver[]>([]);
   const [caregiverId, setCaregiverIdState] = useState<string | null>(null);
+  const [featureAssignments, setFeatureAssignments] = useState<Record<string, string>>({});
 
   const setCaregiverId = useCallback((id: string) => {
     setCaregiverIdState(id);
@@ -88,6 +92,25 @@ export function UIBootstrapProvider({
     }
     void refetch(initialBabyId);
   }, [initialBabyId, refetch, isAuthenticated]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setFeatureAssignments({});
+      return;
+    }
+    let cancelled = false;
+    void (async () => {
+      try {
+        const a = await fetchMyFeatureFlags();
+        if (!cancelled) setFeatureAssignments(a);
+      } catch {
+        if (!cancelled) setFeatureAssignments({});
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (!babyId) {
@@ -138,8 +161,20 @@ export function UIBootstrapProvider({
       setCaregiverId,
       caregivers,
       canPersist,
+      featureAssignments,
     }),
-    [data, loading, error, refetch, babyId, caregiverId, setCaregiverId, caregivers, canPersist],
+    [
+      data,
+      loading,
+      error,
+      refetch,
+      babyId,
+      caregiverId,
+      setCaregiverId,
+      caregivers,
+      canPersist,
+      featureAssignments,
+    ],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

@@ -24,6 +24,7 @@ export interface TodayTrackerGridProps {
   hydrationMlDisplayed: number;
   quickActivities: QuickActivity[];
   activityV2Preview: ActivityV2Row[];
+  activitiesVariant: "v1" | "v2";
   icons: {
     Milk: React.ComponentType<{ className?: string }>;
     Droplets: React.ComponentType<{ className?: string }>;
@@ -42,6 +43,7 @@ export function TodayTrackerGrid({
   hydrationMlDisplayed,
   quickActivities,
   activityV2Preview,
+  activitiesVariant,
   icons,
   onOpenLog,
   onNavigate,
@@ -117,62 +119,64 @@ export function TodayTrackerGrid({
         onTap={() => onNavigate("/tracker/diaper")}
       />
 
-      {/* Activities V1: quick activity buttons */}
-      <TrackerCard
-        icon={icons.Activity}
-        title="Atividades"
-        value={String(summaries.activitySessions)}
-        subtitle="sessões hoje"
-        color="bg-baby-mint/40"
-        onAction={() => onOpenLog("activity")}
-        onTap={() => onNavigate("/tracker/activity")}
-      >
-        <div className="flex gap-3 mt-3 pt-3 border-t border-border/30">
-          {quickActivities.map((qa) => (
-            <button
-              key={qa.id}
-              onClick={(e) => { e.stopPropagation(); onQuickActivity(qa.id); }}
-              className="flex-1 flex flex-col items-center gap-1 active:scale-95 transition-transform"
-            >
-              <div className="w-10 h-10 rounded-full bg-baby-mint/30 flex items-center justify-center">
-                <qa.Icon className="w-4 h-4 text-foreground/60" />
-              </div>
-              <span className="text-[10px] text-muted-foreground">{qa.label}</span>
-            </button>
-          ))}
-        </div>
-      </TrackerCard>
-
-      {/* Activities V2: developmental categories */}
-      <TrackerCard
-        icon={icons.Activity}
-        title="Atividades (V2)"
-        value={String(summaries.activitySessions)}
-        subtitle="sessões hoje"
-        color="bg-baby-mint/40"
-        onAction={() => onOpenLog("activity")}
-        onTap={() => onNavigate("/tracker/activity")}
-      >
-        <div className="mt-3 pt-3 border-t border-border/30">
-          <p className="text-[10px] text-muted-foreground mb-2">Áreas estimuladas</p>
-          <div className="flex flex-wrap gap-1.5">
-            {activityV2Preview.map((area) => (
-              <div
-                key={area.label}
-                className={`flex items-center gap-1 py-1 px-2 rounded-full text-[10px] transition-all ${
-                  area.active
-                    ? `${area.bg} ${area.color}`
-                    : "bg-secondary/50 text-muted-foreground/40"
-                }`}
+      {activitiesVariant === "v1" && (
+        <TrackerCard
+          icon={icons.Activity}
+          title="Atividades"
+          value={String(summaries.activitySessions)}
+          subtitle="sessões hoje"
+          color="bg-baby-mint/40"
+          onAction={() => onOpenLog("activity")}
+          onTap={() => onNavigate("/tracker/activity")}
+        >
+          <div className="flex gap-3 mt-3 pt-3 border-t border-border/30">
+            {quickActivities.map((qa) => (
+              <button
+                key={qa.id}
+                onClick={(e) => { e.stopPropagation(); onQuickActivity(qa.id); }}
+                className="flex-1 flex flex-col items-center gap-1 active:scale-95 transition-transform"
               >
-                <area.Icon className="w-3 h-3" />
-                {area.label}
-                {area.active && <Check className="w-2.5 h-2.5" />}
-              </div>
+                <div className="w-10 h-10 rounded-full bg-baby-mint/30 flex items-center justify-center">
+                  <qa.Icon className="w-4 h-4 text-foreground/60" />
+                </div>
+                <span className="text-[10px] text-muted-foreground">{qa.label}</span>
+              </button>
             ))}
           </div>
-        </div>
-      </TrackerCard>
+        </TrackerCard>
+      )}
+
+      {activitiesVariant === "v2" && (
+        <TrackerCard
+          icon={icons.Activity}
+          title="Atividades (V2)"
+          value={String(summaries.activitySessions)}
+          subtitle="sessões hoje"
+          color="bg-baby-mint/40"
+          onAction={() => onOpenLog("activity")}
+          onTap={() => onNavigate("/tracker/activity")}
+        >
+          <div className="mt-3 pt-3 border-t border-border/30">
+            <p className="text-[10px] text-muted-foreground mb-2">Áreas estimuladas</p>
+            <div className="flex flex-wrap gap-1.5">
+              {activityV2Preview.map((area) => (
+                <div
+                  key={area.label}
+                  className={`flex items-center gap-1 py-1 px-2 rounded-full text-[10px] transition-all ${
+                    area.active
+                      ? `${area.bg} ${area.color}`
+                      : "bg-secondary/50 text-muted-foreground/40"
+                  }`}
+                >
+                  <area.Icon className="w-3 h-3" />
+                  {area.label}
+                  {area.active && <Check className="w-2.5 h-2.5" />}
+                </div>
+              ))}
+            </div>
+          </div>
+        </TrackerCard>
+      )}
 
       {/* Bath */}
       <TrackerCard

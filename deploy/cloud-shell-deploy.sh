@@ -75,7 +75,7 @@ Type=simple
 User=root
 WorkingDirectory=/opt/babyhealth/backend
 Environment=PATH=/opt/babyhealth/backend/venv/bin:/usr/bin
-ExecStart=/opt/babyhealth/backend/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8000
+ExecStart=/opt/babyhealth/backend/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8080
 Restart=always
 RestartSec=3
 [Install]
@@ -94,13 +94,13 @@ server {
     root /var/www/babyhealth;
     index index.html;
     location /api/ {
-        proxy_pass http://127.0.0.1:8000/api/;
+        proxy_pass http://127.0.0.1:8080/api/;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
     }
-    location /docs { proxy_pass http://127.0.0.1:8000/docs; proxy_set_header Host \$host; }
-    location /openapi.json { proxy_pass http://127.0.0.1:8000/openapi.json; }
+    location /docs { proxy_pass http://127.0.0.1:8080/docs; proxy_set_header Host \$host; }
+    location /openapi.json { proxy_pass http://127.0.0.1:8080/openapi.json; }
     location / { try_files \$uri \$uri/ /index.html; }
     gzip on;
     gzip_types text/plain text/css application/json application/javascript text/xml;

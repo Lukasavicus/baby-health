@@ -112,7 +112,7 @@ pip install -r requirements.txt
 python main.py
 ```
 
-Backend will be available at `http://localhost:8000`
+Backend will be available at `http://localhost:8080`
 
 **Frontend Setup (in a new terminal):**
 ```bash
@@ -134,8 +134,8 @@ Then visit `http://localhost:8080`
 ### API Documentation
 
 Once the backend is running, visit:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
+- Swagger UI: `http://localhost:8080/docs`
+- ReDoc: `http://localhost:8080/redoc`
 - API Reference: `backend/API_REFERENCE.md`
 
 ## Deployment

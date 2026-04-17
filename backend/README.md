@@ -69,17 +69,17 @@ cp .env.example .env
 python main.py
 ```
 
-The API will be available at `http://localhost:8000`
+The API will be available at `http://localhost:8080`
 
 ## API Documentation
 
 ### Interactive Documentation
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
+- **Swagger UI**: http://localhost:8080/docs
+- **ReDoc**: http://localhost:8080/redoc
 
 ### Base URL
 ```
-http://localhost:8000/api
+http://localhost:8080/api
 ```
 
 ## Endpoints
@@ -367,7 +367,7 @@ APP_VERSION=1.0.0
 DEBUG=True
 STORAGE_TYPE=json
 DATA_DIR=./data
-CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8000,*
+CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8080,*
 ```
 
 ## CORS Configuration

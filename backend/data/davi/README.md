@@ -15,7 +15,7 @@ DATA_DIR="$(pwd)/data/davi_test" python3 main.py
 **Bootstrap:**
 
 ```bash
-curl -s "http://localhost:8000/api/ui/bootstrap"
+curl -s "http://localhost:8080/api/ui/bootstrap"
 ```
 
 **app-design:** apenas `VITE_API_BASE_URL` apontando para a API; não há variável de perfil no front — o dataset é sempre o `DATA_DIR` do processo da API.

@@ -53,7 +53,7 @@ Output will be in the `dist/` folder.
 Copy `.env.example` to `.env` and configure:
 
 ```env
-VITE_API_BASE_URL=http://localhost:8000/api
+VITE_API_BASE_URL=http://localhost:8080/api
 VITE_APP_NAME=BabyHealth
 ```
 

@@ -32,21 +32,21 @@ You should see:
 INFO:     Started server process [12345]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete [0.00s]
-INFO:     Uvicorn running on http://0.0.0.0:8000
+INFO:     Uvicorn running on http://0.0.0.0:8080
 ```
 
 ## Using the API
 
 ### Access API Documentation
 Open your browser and visit:
-- **Swagger UI**: http://localhost:8000/docs
+- **Swagger UI**: http://localhost:8080/docs
 - **Interactive API explorer** with try-it-out buttons
 
 ### Seed Demo Data
 Create a demo baby and events:
 
 ```bash
-curl -X POST http://localhost:8000/api/setup/seed
+curl -X POST http://localhost:8080/api/setup/seed
 ```
 
 Response:
@@ -61,7 +61,7 @@ Response:
 ### Create Your First Baby
 
 ```bash
-curl -X POST http://localhost:8000/api/babies \
+curl -X POST http://localhost:8080/api/babies \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Emma",
@@ -83,7 +83,7 @@ Response:
 ### Create a Caregiver
 
 ```bash
-curl -X POST http://localhost:8000/api/caregivers \
+curl -X POST http://localhost:8080/api/caregivers \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Maria",
@@ -95,7 +95,7 @@ curl -X POST http://localhost:8000/api/caregivers \
 ### Log a Feeding Event
 
 ```bash
-curl -X POST http://localhost:8000/api/events \
+curl -X POST http://localhost:8080/api/events \
   -H "Content-Type: application/json" \
   -d '{
     "baby_id": "baby_xyz",
@@ -112,7 +112,7 @@ curl -X POST http://localhost:8000/api/events \
 ### View Today's Dashboard
 
 ```bash
-curl http://localhost:8000/api/dashboard?baby_id=baby_xyz
+curl http://localhost:8080/api/dashboard?baby_id=baby_xyz
 ```
 
 Response includes:
@@ -124,7 +124,7 @@ Response includes:
 ### Get Daily Summary
 
 ```bash
-curl "http://localhost:8000/api/events/summary/daily?baby_id=baby_xyz&date=2024-01-15"
+curl "http://localhost:8080/api/events/summary/daily?baby_id=baby_xyz&date=2024-01-15"
 ```
 
 Response:
@@ -205,7 +205,7 @@ These are automatically created when the server starts.
 ## Troubleshooting
 
 ### Port Already in Use
-If port 8000 is busy, edit `main.py`:
+If port 8080 is busy, edit `main.py`:
 ```python
 uvicorn.run(
     "main:app",
@@ -265,4 +265,4 @@ self.cors_allowed_origins = [
 
 ## Support
 
-For detailed API documentation, visit: http://localhost:8000/docs
+For detailed API documentation, visit: http://localhost:8080/docs

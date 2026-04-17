@@ -365,7 +365,7 @@ npm run dev
 
 # Terminal 2: Backend (optional)
 # Your backend server
-# Port 8000 (or configured in .env)
+# Port 8080 (or configured in .env)
 ```
 
 ### Testing Offline
