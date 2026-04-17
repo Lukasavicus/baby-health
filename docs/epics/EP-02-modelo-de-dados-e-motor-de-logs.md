@@ -109,6 +109,12 @@ Criar a espinha dorsal do produto para registrar, armazenar e exibir eventos de 
   - Effort: 3 hours
   - Acceptance: Events sort by timestamp (ascending/descending); timezone handling correct; millisecond precision
 
+- **TK-02.1.5** — Fix: esquema de cores homogêneo (tiles + formulários por tipo de evento)
+  - Deliverable: Uma fonte de verdade de cor por tipo de evento; tiles e formulários de adição/edição alinhados (relacionado a US-02.1.1 / issue #96)
+  - Owner: Frontend Engineer
+  - Effort: 4 hours
+  - Acceptance: Mesma família cromática por tipo entre tracker, criação e edição; sem divergência visível entre superfícies
+
 ---
 
 ### FE-02.2 — Persistência Local (P0, depends on FE-02.1)

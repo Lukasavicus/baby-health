@@ -11,6 +11,7 @@ import {
   Calendar,
 } from "lucide-react";
 import { TrackerDrawer } from "../TrackerDrawer";
+import { LOG_ROW_ACTION_OPACITY } from "../logRowActionVisibility";
 import { getIcon } from "../../iconMap";
 import { useUIBootstrap } from "../../UIBootstrapContext";
 import { getBabyUiState, putBabyUiState } from "@/api/client";
@@ -220,7 +221,7 @@ export function HealthEventsPage() {
                 </div>
               </div>
               {/* Actions */}
-              <div className="flex justify-end gap-2 mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className={`flex justify-end gap-2 mt-3 ${LOG_ROW_ACTION_OPACITY}`}>
                 <button
                   onClick={() => openEdit(e)}
                   className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center"

@@ -28,7 +28,7 @@ O acesso à API é protegido por JWT. Para usar o app, faça login na tela inici
 | Usuário | Senha | Cuidador | Papel |
 |---------|-------|----------|-------|
 | `gisele` | `davi123` | Gisele | babá |
-| `suely` | `davi123` | Suely | avó |
+| `suely` | `davi123` | Suely | mãe |
 | `lucas` | `davi123` | Lucas | pai |
 
 Todos os usuários acessam o mesmo perfil de dados (Davi). O cuidador associado é definido automaticamente pelo login.

@@ -22,6 +22,7 @@ import {
   ComposedChart,
 } from "recharts";
 import { TrackerDrawer } from "../TrackerDrawer";
+import { LOG_ROW_ACTION_OPACITY } from "../logRowActionVisibility";
 import { getIcon } from "../../iconMap";
 import { useUIBootstrap } from "../../UIBootstrapContext";
 import { getBabyUiState, putBabyUiState } from "@/api/client";
@@ -439,7 +440,7 @@ export function GrowthPage() {
                       <span className="text-xs">{e.head} cm</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className={`flex items-center gap-1 shrink-0 ${LOG_ROW_ACTION_OPACITY}`}>
                     <button
                       onClick={() => openEdit(e)}
                       className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center"

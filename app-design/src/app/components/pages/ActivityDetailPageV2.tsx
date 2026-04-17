@@ -12,6 +12,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { TrackerDrawer } from "../TrackerDrawer";
+import { LOG_ROW_ACTION_OPACITY } from "../logRowActionVisibility";
 import { EventDateField, clampYmdNotAfterToday, todayYmd } from "../EventDateField";
 import { TimePickerField } from "../TimePickerDialog";
 import { WeekBarChart } from "../WeekBarChart";
@@ -391,7 +392,7 @@ export function ActivityDetailPageV2() {
                       <span className={`text-[10px] ${cat.color}/70`}>{cat.label}</span>
                     )}
                   </div>
-                  <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className={`flex items-center gap-1 shrink-0 ${LOG_ROW_ACTION_OPACITY}`}>
                     <button
                       onClick={() => openEdit(l)}
                       className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center"
