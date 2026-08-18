@@ -8,12 +8,12 @@ output "data_bucket" {
   value       = google_storage_bucket.data.name
 }
 
-output "artifact_registry" {
-  description = "Docker image registry path"
-  value       = "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.babyhealth.repository_id}"
-}
-
 output "service_account_email" {
   description = "Cloud Run service account email"
   value       = google_service_account.app.email
+}
+
+output "jwt_secret_id" {
+  description = "Secret Manager ID for JWT"
+  value       = google_secret_manager_secret.jwt.secret_id
 }

@@ -48,10 +48,9 @@ INPUTS/baby-health-492304-2ba759213009.json
 # INPUTS/ -- reference materials; tracked intentionally in development
 
 # Terraform
-infra/.terraform/
-infra/*.tfstate*
-infra/terraform.tfvars
-infra/.terraform.lock.hcl
+infra/**/.terraform/
+infra/**/*.tfstate*
+infra/**/terraform.tfvars
 
 # Misc
 *.log

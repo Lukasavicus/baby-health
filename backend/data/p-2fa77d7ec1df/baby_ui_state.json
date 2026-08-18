@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "by_baby_id": {
+    "055f1cc0bbf245b5bc46ed842cd775a7": {
+      "growth_entries": [
+        {
+          "id": "1776228009332",
+          "date": "2026-04-15",
+          "weight": 10.0,
+          "height": 75.0,
+          "head": 0.0
+        }
+      ]
+    }
+  }
+}

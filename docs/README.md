@@ -317,7 +317,7 @@ Complete the health ecosystem:
 │       └── EP-11-saude-vitaminas-remedios.md
 ├── frontend/ (React/Next.js code — to be created)
 ├── backend/ (Python API code — to be created)
-└── infrastructure/ (GCP configs, CI/CD — to be created)
+└── infra/ (Terraform: [`infra/README.md`](../infra/README.md))
 ```
 
 ---

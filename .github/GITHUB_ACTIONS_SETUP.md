@@ -121,7 +121,7 @@ Go to your GitHub repository settings:
 
 ### Step 6: Test Deployment
 
-Push a change to main/master branch:
+Push a change to `main` (production deploy) or `development` (dev deploy after tests):
 ```bash
 git add .
 git commit -m "Test GitHub Actions deployment"
@@ -133,16 +133,13 @@ Monitor deployment:
 2. Click the running workflow
 3. Check logs for success
 
-## Workflow File
+## Workflow files
 
-The workflow is defined in `.github/workflows/deploy-to-cloud-run.yml`:
+- **Production**: `.github/workflows/deploy-cloud-run-prod.yml` — push to **`main`** (and manual `workflow_dispatch`). Deploys image `babyhealth` to Cloud Run service **`babyhealth`** (`--max-instances=5`).
+- **Development**: `.github/workflows/deploy-cloud-run-dev.yml` — push to **`development`** (and manual `workflow_dispatch`). Runs **`pytest`** in `backend/`, then deploys image **`babyhealth-dev`** to **`babyhealth-dev`** (`--max-instances=2`).
+- **PR checks**: `.github/workflows/backend-tests-pr.yml` — runs **`pytest`** on pull requests targeting `main` or `development` (no deploy).
 
-- Triggers on push to main/master branches
-- Can also be triggered manually via `workflow_dispatch`
-- Builds Docker image with GitHub SHA tag
-- Pushes image to Artifact Registry
-- Deploys to Cloud Run
-- Verifies deployment with health check
+Each deploy workflow builds the Docker image with the GitHub SHA tag, pushes to Artifact Registry, deploys to Cloud Run, and verifies with `/health`.
 
 ## Monitoring Deployments
 

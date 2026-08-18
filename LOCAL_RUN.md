@@ -74,3 +74,12 @@ Com a API no ar e autenticado, você pode popular dados de demo via:
 curl -X POST http://localhost:8080/api/setup/seed \
   -H "Authorization: Bearer <seu_token>"
 ```
+
+## Deploy na GCP (visão rápida)
+
+| Branch | Workflow | Cloud Run |
+|--------|----------|-----------|
+| `main` | `deploy-cloud-run-prod.yml` | `babyhealth` |
+| `development` | `deploy-cloud-run-dev.yml` (pytest antes do deploy) | `babyhealth-dev` |
+
+Terraform por ambiente (`infra/shared`, `infra/env/prod`, `infra/env/dev`), ordem de apply e secrets/WIF: [`infra/README.md`](infra/README.md) e [`.github/GITHUB_ACTIONS_SETUP.md`](.github/GITHUB_ACTIONS_SETUP.md).

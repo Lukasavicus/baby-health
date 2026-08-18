@@ -155,17 +155,29 @@ port = int(os.getenv("PORT", "8080"))
 
 ### GitHub Actions CI/CD
 
-#### .github/workflows/deploy-to-cloud-run.yml
-**Purpose**: Automatic deployment from GitHub
-**Location**: `/.github/workflows/deploy-to-cloud-run.yml`
+#### .github/workflows/deploy-cloud-run-prod.yml
+**Purpose**: Production deployment from GitHub
+**Location**: `/.github/workflows/deploy-cloud-run-prod.yml`
 **Features**:
-- Triggered on push to main/master
-- Manual trigger via workflow_dispatch
-- Builds Docker image
-- Pushes to Artifact Registry
-- Deploys to Cloud Run
+- Triggered on push to `main`
+- Manual trigger via `workflow_dispatch`
+- Builds Docker image (`babyhealth`), pushes to Artifact Registry, deploys Cloud Run service `babyhealth` (max 5 instances)
 - Health check verification
 **Setup Required**: See GITHUB_ACTIONS_SETUP.md
+
+#### .github/workflows/deploy-cloud-run-dev.yml
+**Purpose**: Development deployment from GitHub
+**Location**: `/.github/workflows/deploy-cloud-run-dev.yml`
+**Features**:
+- Triggered on push to `development`
+- Runs `pytest` in `backend/tests/` first (failure blocks deploy)
+- Builds image `babyhealth-dev`, deploys Cloud Run service `babyhealth-dev` (max 2 instances)
+- Health check verification
+
+#### .github/workflows/backend-tests-pr.yml
+**Purpose**: Backend tests on pull requests (no deploy)
+**Location**: `/.github/workflows/backend-tests-pr.yml`
+**Features**: `pytest` on PRs to `main` or `development`
 
 #### .github/GITHUB_ACTIONS_SETUP.md
 **Purpose**: Setup guide for GitHub Actions CI/CD
@@ -237,7 +249,9 @@ Troubleshooting?
 | Project documentation | README.md | `/README.md` |
 | Quick commands | DEPLOYMENT_QUICK_REFERENCE.md | `/DEPLOYMENT_QUICK_REFERENCE.md` |
 | Detailed guide | DEPLOYMENT_GUIDE.md | `/deploy/DEPLOYMENT_GUIDE.md` |
-| GitHub Actions workflow | deploy-to-cloud-run.yml | `/.github/workflows/deploy-to-cloud-run.yml` |
+| GitHub Actions (prod) | deploy-cloud-run-prod.yml | `/.github/workflows/deploy-cloud-run-prod.yml` |
+| GitHub Actions (dev) | deploy-cloud-run-dev.yml | `/.github/workflows/deploy-cloud-run-dev.yml` |
+| GitHub Actions (PR tests) | backend-tests-pr.yml | `/.github/workflows/backend-tests-pr.yml` |
 | GitHub Actions setup | GITHUB_ACTIONS_SETUP.md | `/.github/GITHUB_ACTIONS_SETUP.md` |
 | Build exclusions | .dockerignore | `/.dockerignore` |
 | Cloud Build config | cloudbuild.yaml | `/deploy/cloudbuild.yaml` |
